@@ -9,14 +9,6 @@ namespace JunctionPointer.Views
         public ProgessView()
         {
             InitializeComponent();
-
-            BindToData();
-        }
-
-        private void BindToData()
-        {
-            m_Title.DataBindings.Add("Text", this, "FeedTitle", false, DataSourceUpdateMode.OnPropertyChanged);
-            m_CurrentItem.DataBindings.Add("Text", this, "FeedbackCaption", false, DataSourceUpdateMode.OnPropertyChanged);
         }
 
         public string FeedbackTitle 
