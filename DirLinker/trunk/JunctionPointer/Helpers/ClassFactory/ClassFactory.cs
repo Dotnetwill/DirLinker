@@ -53,7 +53,9 @@ namespace JunctionPointer.Helpers.ClassFactory
                 List<object> parameters = new List<object>(constructorParameters.Length);
 
                 foreach (ParameterInfo parameterInfo in constructorParameters)
+                {
                     parameters.Add(Resolve(parameterInfo.ParameterType));
+                }
 
                 return constructor.Invoke(parameters.ToArray());
             }
