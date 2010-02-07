@@ -72,7 +72,8 @@ namespace DirLinker.Tests.Helpers.ClassFactory
         {
             IClassFactory testClassFactory = new JunctionPointer.Helpers.ClassFactory.ClassFactory();
 
-            testClassFactory.RegisterType<IDepend, Depend>();
+            testClassFactory.RegisterType<ITestClass, TestClass>()
+                .WithFactory<ITestClassFactory>();
             testClassFactory.RegisterType<ITestClassWithDelegateFactory, TestClassWithDelegateFactory>();
 
             ITestClassWithDelegateFactory manufacturedType = testClassFactory.ManufactureType<ITestClassWithDelegateFactory>();
