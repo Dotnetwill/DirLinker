@@ -41,5 +41,28 @@ namespace DirLinker.Tests.Helpers
             }
 
         }
+
+        #region IClassFactory Members
+
+        public void RegisterDelegateFactoryForType<T>(Type factoryType)
+        {
+            throw new NotImplementedException();
+        }
+
+        ITypeOptions IClassFactory.RegisterType<TContract, TImplementation>()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IClassFactory Members
+
+        public void RegisterDelegateFactoryForType<TResult, TFactoryDelegateType>()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

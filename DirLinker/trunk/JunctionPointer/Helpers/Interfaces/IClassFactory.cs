@@ -4,7 +4,7 @@ namespace JunctionPointer.Helpers.Interfaces
 {
     public interface IClassFactory
     {
-        void RegisterDelegateFactoryForType(Type type, Type factoryType);
+        void RegisterDelegateFactoryForType<TResult, TFactoryDelegateType>();
         ITypeOptions RegisterType<TContract, TImplementation>();
         T ManufactureType<T>();
 

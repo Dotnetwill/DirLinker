@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using JunctionPointer.Helpers.Interfaces;
 using System.Reflection;
+using System.Linq.Expressions;
 
 namespace JunctionPointer.Helpers.ClassFactory
 {
@@ -14,20 +15,18 @@ namespace JunctionPointer.Helpers.ClassFactory
 
     public class ClassFactory : IClassFactory
     {
-        public class TypeOptions : ITypeOptions
+        public class TypeOptions<TClass> : ITypeOptions 
         {
-            private Type _currentType;
             private IClassFactory _currentFactory;
 
-            public TypeOptions(Type type, IClassFactory classFactory)
+            public TypeOptions(IClassFactory classFactory)
             {
-                _currentType = type;
                 _currentFactory = classFactory;    
             }
       
             public ITypeOptions WithFactory<T>()
             {
-                _currentFactory.RegisterDelegateFactoryForType(_currentType, typeof(T));
+                _currentFactory.RegisterDelegateFactoryForType<TClass, T>();
                 return this;
             }
         }
@@ -44,13 +43,13 @@ namespace JunctionPointer.Helpers.ClassFactory
         }
 
         private readonly IDictionary<Type, Type> _types = new Dictionary<Type, Type>();
-        private readonly IDictionary<Type, Type> _typeFactories = new Dictionary<Type, Type>();
+        private readonly IDictionary<Type, Delegate> _typeFactories = new Dictionary<Type, Delegate>();
 
         public virtual ITypeOptions RegisterType<TContract, TImplementation>()
         {
             _types[typeof(TContract)] = typeof(TImplementation);
 
-            return new TypeOptions(typeof(TContract), this);
+            return new TypeOptions<TContract>(this);
         }
 
         public virtual T ManufactureType<T>()
@@ -75,7 +74,14 @@ namespace JunctionPointer.Helpers.ClassFactory
 
                 foreach (ParameterInfo parameterInfo in constructorParameters)
                 {
-                    parameters.Add(Resolve(parameterInfo.ParameterType));
+                    if (_typeFactories.ContainsKey(parameterInfo.ParameterType))
+                    {
+                        parameters.Add(_typeFactories[parameterInfo.ParameterType]);
+                    }
+                    else
+                    {
+                        parameters.Add(Resolve(parameterInfo.ParameterType));
+                    }
                 }
 
                 return constructor.Invoke(parameters.ToArray());
@@ -83,9 +89,27 @@ namespace JunctionPointer.Helpers.ClassFactory
             throw new ArgumentException("contract is not a known type");
         }
 
-        public void RegisterDelegateFactoryForType(Type type, Type factoryType)
+        public virtual void RegisterDelegateFactoryForType<TResult, TFactoryDelegateType>()
         {
-            
+           //var expressParam = new Expression[]
+           //{
+           //    Expression.co
+           //};
+           // Expression.Lambda(typeof(TFactoryDelegateType), 
+           //   Expression.Call(typeof(ClassFactory).GetMethod("GenericFactoryTemplate"), )
+           //     null);
+
+           // MethodInfo.
+           // 
+
+            Expression<Func<TResult>> exp = () => (TResult)Resolve(typeof(TResult));
+            MethodInfo mi = ((exp as LambdaExpression).Body as MethodCallExpression).Method;
+
+            Delegate factory = Delegate.CreateDelegate(typeof(TFactoryDelegateType), mi);
+
+            _typeFactories.Add(typeof(TFactoryDelegateType), factory);
         }
+           
+  
     }
 }
