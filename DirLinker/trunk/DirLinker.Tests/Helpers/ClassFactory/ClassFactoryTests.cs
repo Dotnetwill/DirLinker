@@ -82,5 +82,20 @@ namespace DirLinker.Tests.Helpers.ClassFactory
 
         }
 
+        [Test]
+        public void ManufactureType_Type_delegate_factory_manufactures_correct_type()
+        {
+            IClassFactory testClassFactory = new JunctionPointer.Helpers.ClassFactory.ClassFactory();
+
+            testClassFactory.RegisterType<ITestClass, TestClass>()
+                .WithFactory<ITestClassFactory>();
+            testClassFactory.RegisterType<ITestClassWithDelegateFactory, TestClassWithDelegateFactory>();
+
+            ITestClassWithDelegateFactory manufacturedType = testClassFactory.ManufactureType<ITestClassWithDelegateFactory>();
+            ITestClass instance = manufacturedType.Factory();
+
+            Assert.IsInstanceOf(typeof(TestClass), instance);
+
+        }
     }
 }
