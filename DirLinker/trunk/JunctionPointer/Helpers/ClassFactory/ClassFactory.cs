@@ -102,9 +102,15 @@ namespace JunctionPointer.Helpers.ClassFactory
            // MethodInfo.
            // 
 
-            Expression<Func<TResult>> exp = () => (TResult)Resolve(typeof(TResult));
-            MethodInfo mi = ((exp as LambdaExpression).Body as MethodCallExpression).Method;
+            //Expression<Func<TResult>> exp = () => ManufactureType<TResult>();
+            //
+            //LambdaExpression lamba = exp as LambdaExpression;
+            //Delegate del = lamba.Compile();
+            //MethodInfo mi = del.Method;
+            ////MethodInfo mi = (lamba.Body as MethodCallExpression).Method;
 
+            MethodInfo mi = typeof(ClassFactory).GetMethod("ManufactureType", BindingFlags.Instance | BindingFlags.Public).MakeGenericMethod(typeof(TResult));
+            
             Delegate factory = Delegate.CreateDelegate(typeof(TFactoryDelegateType), mi);
 
             _typeFactories.Add(typeof(TFactoryDelegateType), factory);
