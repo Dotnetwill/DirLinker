@@ -91,18 +91,32 @@ namespace JunctionPointer.Helpers.ClassFactory
 
         public virtual void RegisterDelegateFactoryForType<TResult, TFactoryDelegateType>()
         {
+            MethodInfo delegateInvoker = typeof(TFactoryDelegateType).GetMethod("Invoke");
+            List<ParameterExpression> factoryParams = GetParamsAsExpressions(delegateInvoker);
+
+            //Build the factory from the template
             MethodInfo mi = typeof(ClassFactory).GetMethod("FactoryTemplate");
             mi = mi.MakeGenericMethod(typeof(TResult));
 
-            Expression container = Expression.Constant(this);
-            Expression call = Expression.Call(mi, container);
-            
-            TFactoryDelegateType factory = Expression.Lambda<TFactoryDelegateType>(call).Compile();
+            Expression call = Expression.Call(mi, new Expression[] {Expression.Constant(this), 
+                Expression.NewArrayInit(typeof(Object), factoryParams.ToArray())} );
+
+            TFactoryDelegateType factory = Expression.Lambda<TFactoryDelegateType>(call, factoryParams.ToArray()).Compile();
 
             _typeFactories.Add(typeof(TFactoryDelegateType), factory as Delegate);
         }
 
-        public static T FactoryTemplate<T>(ClassFactory factory)
+        private List<ParameterExpression> GetParamsAsExpressions(MethodInfo mi)
+        {
+            List<ParameterExpression> paramsAsExpression = new List<ParameterExpression>();
+
+            Array.ForEach<ParameterInfo>(mi.GetParameters(),
+                p => paramsAsExpression.Add(Expression.Parameter(p.ParameterType, p.Name)));
+
+            return paramsAsExpression;
+        }
+
+        public static T FactoryTemplate<T>(ClassFactory factory, params Object[] args)
         {
             return factory.ManufactureType<T>();
         }

@@ -40,6 +40,19 @@ namespace DirLinker.Tests.Helpers.ClassFactory
             }
         }
 
+        delegate ITestClass TestClassMultiParamFactory(String paramOne, String param2);
+        interface ITestClassMultiParamFactory { TestClassMultiParamFactory Factory { get; set; } }
+
+        class TestClassMultiParam : ITestClassMultiParamFactory
+        {
+            public TestClassMultiParamFactory Factory { get; set; }
+
+            public TestClassMultiParam(TestClassMultiParamFactory delegateFactory)
+            {
+                Factory = delegateFactory;
+            }
+        }
+
         [Test]
         public void ManufactureType_ClassNoDependecies_CreatedSuccessfully()
         {
@@ -96,6 +109,20 @@ namespace DirLinker.Tests.Helpers.ClassFactory
 
             Assert.IsInstanceOf(typeof(TestClass), instance);
 
+        }
+
+        [Test]
+        public void ManfactureType_Type_with_delegate_factory_that_accepts_two_params()
+        {
+            IClassFactory testClassFactory = new JunctionPointer.Helpers.ClassFactory.ClassFactory();
+
+            testClassFactory.RegisterType<ITestClass, TestClass>()
+                .WithFactory<TestClassMultiParamFactory>();
+            testClassFactory.RegisterType<ITestClassMultiParamFactory, TestClassMultiParam>();
+
+            ITestClassMultiParamFactory manufacturedType = testClassFactory.ManufactureType<ITestClassMultiParamFactory>();
+
+            Assert.That(manufacturedType.Factory != null);
         }
     }
 }
