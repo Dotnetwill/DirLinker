@@ -54,10 +54,14 @@ namespace JunctionPointer.Helpers.ClassFactory
 
         public virtual T ManufactureType<T>()
         {
-            return (T)Resolve(typeof(T));
+            return ManufactureType<T>(new Object[] {});
+        }
+        public virtual T ManufactureType<T>(params Object[] args)
+        {
+            return (T)Resolve(typeof(T), args);
         }
 
-        public virtual object Resolve(Type contract)
+        public virtual object Resolve(Type contract, params Object[] args)
         {
             if (_types.ContainsKey(contract))
             {
@@ -74,7 +78,21 @@ namespace JunctionPointer.Helpers.ClassFactory
 
                 foreach (ParameterInfo parameterInfo in constructorParameters)
                 {
-                    if (_typeFactories.ContainsKey(parameterInfo.ParameterType))
+                    Boolean found = false;
+                    foreach (Object o in args)
+                    {
+                        if (parameterInfo.ParameterType.IsAssignableFrom(o.GetType()))
+                        {
+                            parameters.Add(o);
+                            found = true;
+                        }
+                    }
+
+                    if (found)
+                    {
+                        continue;
+                    }
+                    else if (_typeFactories.ContainsKey(parameterInfo.ParameterType))
                     {
                         parameters.Add(_typeFactories[parameterInfo.ParameterType]);
                     }
@@ -118,7 +136,7 @@ namespace JunctionPointer.Helpers.ClassFactory
 
         public static T FactoryTemplate<T>(ClassFactory factory, params Object[] args)
         {
-            return factory.ManufactureType<T>();
+            return factory.ManufactureType<T>(args);
         }
     }
 }

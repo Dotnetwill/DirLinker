@@ -64,5 +64,15 @@ namespace DirLinker.Tests.Helpers
         }
 
         #endregion
+
+        #region IClassFactory Members
+
+
+        public T ManufactureType<T>(params object[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

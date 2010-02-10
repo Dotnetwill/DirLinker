@@ -7,6 +7,7 @@ namespace JunctionPointer.Helpers.Interfaces
         void RegisterDelegateFactoryForType<TResult, TFactoryDelegateType>();
         ITypeOptions RegisterType<TContract, TImplementation>();
         T ManufactureType<T>();
+        T ManufactureType<T>(params Object[] args);
 
     }
 
