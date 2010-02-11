@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using JunctionPointer.Helpers.Interfaces;
 using System.Reflection;
@@ -45,6 +46,11 @@ namespace JunctionPointer.Helpers.ClassFactory
         private readonly IDictionary<Type, Type> _types = new Dictionary<Type, Type>();
         private readonly IDictionary<Type, Delegate> _typeFactories = new Dictionary<Type, Delegate>();
 
+        public void AddFactory(Type contract, Delegate factory)
+        {
+            _typeFactories.Add(contract, factory);    
+        }
+
         public virtual ITypeOptions RegisterType<TContract, TImplementation>()
         {
             _types[typeof(TContract)] = typeof(TImplementation);
@@ -63,6 +69,7 @@ namespace JunctionPointer.Helpers.ClassFactory
 
         public virtual object Resolve(Type contract, params Object[] args)
         {
+            
             if (_types.ContainsKey(contract))
             {
                 Type implementation = _types[contract];
@@ -74,32 +81,12 @@ namespace JunctionPointer.Helpers.ClassFactory
                 if (constructorParameters.Length == 0)
                     return Activator.CreateInstance(implementation);
 
-                List<object> parameters = new List<object>(constructorParameters.Length);
+                List<Object> parameters = new List<Object>(constructorParameters.Length);
+                List<Object> arguments = new List<Object>(args);
 
                 foreach (ParameterInfo parameterInfo in constructorParameters)
                 {
-                    Boolean found = false;
-                    foreach (Object o in args)
-                    {
-                        if (parameterInfo.ParameterType.IsAssignableFrom(o.GetType()))
-                        {
-                            parameters.Add(o);
-                            found = true;
-                        }
-                    }
-
-                    if (found)
-                    {
-                        continue;
-                    }
-                    else if (_typeFactories.ContainsKey(parameterInfo.ParameterType))
-                    {
-                        parameters.Add(_typeFactories[parameterInfo.ParameterType]);
-                    }
-                    else
-                    {
-                        parameters.Add(Resolve(parameterInfo.ParameterType));
-                    }
+                    parameters.Add(ResolveConstructorArgs(arguments, parameterInfo));
                 }
 
                 return constructor.Invoke(parameters.ToArray());
@@ -107,31 +94,53 @@ namespace JunctionPointer.Helpers.ClassFactory
             throw new ArgumentException("contract is not a known type");
         }
 
+        private Object ResolveConstructorArgs(IList<Object> args, ParameterInfo parameterInfo)
+        {
+            Object param;
+
+            param = args.FirstOrDefault(o => parameterInfo.ParameterType.IsAssignableFrom(o.GetType()));
+
+            if (param != null)
+            {
+                args.Remove(param);
+            }
+            else if (_typeFactories.ContainsKey(parameterInfo.ParameterType))
+            {
+                param = _typeFactories[parameterInfo.ParameterType];
+            }
+            else
+            {
+                param = Resolve(parameterInfo.ParameterType);
+            }
+
+            return param;
+        }
+
         public virtual void RegisterDelegateFactoryForType<TResult, TFactoryDelegateType>()
         {
             MethodInfo delegateInvoker = typeof(TFactoryDelegateType).GetMethod("Invoke");
-            List<ParameterExpression> factoryParams = GetParamsAsExpressions(delegateInvoker);
+            ParameterExpression[] factoryParams = GetParamsAsExpressions(delegateInvoker);
 
             //Build the factory from the template
             MethodInfo mi = typeof(ClassFactory).GetMethod("FactoryTemplate");
             mi = mi.MakeGenericMethod(typeof(TResult));
 
             Expression call = Expression.Call(mi, new Expression[] {Expression.Constant(this), 
-                Expression.NewArrayInit(typeof(Object), factoryParams.ToArray())} );
+                Expression.NewArrayInit(typeof(Object), factoryParams)} );
 
-            TFactoryDelegateType factory = Expression.Lambda<TFactoryDelegateType>(call, factoryParams.ToArray()).Compile();
+            TFactoryDelegateType factory = Expression.Lambda<TFactoryDelegateType>(call, factoryParams).Compile();
 
             _typeFactories.Add(typeof(TFactoryDelegateType), factory as Delegate);
         }
 
-        private List<ParameterExpression> GetParamsAsExpressions(MethodInfo mi)
+        private static ParameterExpression[] GetParamsAsExpressions(MethodInfo mi)
         {
             List<ParameterExpression> paramsAsExpression = new List<ParameterExpression>();
 
             Array.ForEach<ParameterInfo>(mi.GetParameters(),
                 p => paramsAsExpression.Add(Expression.Parameter(p.ParameterType, p.Name)));
 
-            return paramsAsExpression;
+            return paramsAsExpression.ToArray();
         }
 
         public static T FactoryTemplate<T>(ClassFactory factory, params Object[] args)
