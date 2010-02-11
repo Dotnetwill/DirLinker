@@ -26,6 +26,7 @@ namespace JunctionPointer.Helpers.ClassFactory
             Type[] concreteTypes = GetTypeListFromMethodInfo(typeof(TResult), delegateInvoker);
             mi = mi.MakeGenericMethod(concreteTypes);
 
+            //Construct an expression that looks, roughly, like (T param) => DelegateFactoryCreator.FactoryTemplate<TResult>(_callFactory, T param)
             List<Expression> delegateParams = new List<Expression>();
             delegateParams.Add(Expression.Constant(_ClassFactory));
             delegateParams.AddRange(factoryParams);
@@ -64,11 +65,12 @@ namespace JunctionPointer.Helpers.ClassFactory
         private Type[] GetTypeListFromMethodInfo(Type resultType, MethodInfo delegateInvoker)
         {
             List<Type> types = new List<Type>();
-            types.Add(resultType);
 
             types.AddRange(delegateInvoker.GetParameters()
                 .Select(t => t.ParameterType));
 
+            //TResult is always the last parameter
+            types.Add(resultType);
             return types.ToArray();
         }
 
