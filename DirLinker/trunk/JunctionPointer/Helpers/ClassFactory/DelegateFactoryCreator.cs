@@ -23,7 +23,8 @@ namespace JunctionPointer.Helpers.ClassFactory
 
             //Build the factory from the template
             MethodInfo mi = GetMatchingTemplateMethod(delegateInvoker.GetParameters());
-            mi = mi.MakeGenericMethod(GetTypeListFromMethodInfo(delegateInvoker));
+            Type[] concreteTypes = GetTypeListFromMethodInfo(typeof(TResult), delegateInvoker);
+            mi = mi.MakeGenericMethod(concreteTypes);
 
             List<Expression> delegateParams = new List<Expression>();
             delegateParams.Add(Expression.Constant(_ClassFactory));
@@ -60,11 +61,15 @@ namespace JunctionPointer.Helpers.ClassFactory
             
         }
 
-        private Type[] GetTypeListFromMethodInfo(MethodInfo delegateInvoker)
+        private Type[] GetTypeListFromMethodInfo(Type resultType, MethodInfo delegateInvoker)
         {
-            return delegateInvoker.GetParameters()
-                .Select(t => t.ParameterType)
-                .ToArray();
+            List<Type> types = new List<Type>();
+            types.Add(resultType);
+
+            types.AddRange(delegateInvoker.GetParameters()
+                .Select(t => t.ParameterType));
+
+            return types.ToArray();
         }
 
         public static T FactoryTemplate<T>(ClassFactory factory)
