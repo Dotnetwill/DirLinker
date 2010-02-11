@@ -74,5 +74,14 @@ namespace DirLinker.Tests.Helpers
         }
 
         #endregion
+
+        #region IClassFactory Members
+
+        public void AddFactory(Type contract, Delegate factory)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

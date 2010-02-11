@@ -19,15 +19,17 @@ namespace JunctionPointer.Helpers.ClassFactory
         public class TypeOptions<TClass> : ITypeOptions 
         {
             private IClassFactory _currentFactory;
+            private DelegateFactoryCreator _delegateFactoryCreator;
 
-            public TypeOptions(IClassFactory classFactory)
+            public TypeOptions(IClassFactory classFactory, DelegateFactoryCreator factoryCreator)
             {
-                _currentFactory = classFactory;    
+                _currentFactory = classFactory;
+                _delegateFactoryCreator = factoryCreator;
             }
       
             public ITypeOptions WithFactory<T>()
             {
-                _currentFactory.RegisterDelegateFactoryForType<TClass, T>();
+                _delegateFactoryCreator.RegisterDelegateFactoryForType<TClass, T>();
                 return this;
             }
         }
@@ -46,6 +48,13 @@ namespace JunctionPointer.Helpers.ClassFactory
         private readonly IDictionary<Type, Type> _types = new Dictionary<Type, Type>();
         private readonly IDictionary<Type, Delegate> _typeFactories = new Dictionary<Type, Delegate>();
 
+        private DelegateFactoryCreator _FactoryCreator;
+
+        public ClassFactory()
+        {
+            _FactoryCreator = new DelegateFactoryCreator(this);
+        }
+
         public void AddFactory(Type contract, Delegate factory)
         {
             _typeFactories.Add(contract, factory);    
@@ -55,7 +64,7 @@ namespace JunctionPointer.Helpers.ClassFactory
         {
             _types[typeof(TContract)] = typeof(TImplementation);
 
-            return new TypeOptions<TContract>(this);
+            return new TypeOptions<TContract>(this, _FactoryCreator);
         }
 
         public virtual T ManufactureType<T>()
@@ -115,37 +124,5 @@ namespace JunctionPointer.Helpers.ClassFactory
 
             return param;
         }
-
-        public virtual void RegisterDelegateFactoryForType<TResult, TFactoryDelegateType>()
-        {
-            MethodInfo delegateInvoker = typeof(TFactoryDelegateType).GetMethod("Invoke");
-            ParameterExpression[] factoryParams = GetParamsAsExpressions(delegateInvoker);
-
-            //Build the factory from the template
-            MethodInfo mi = typeof(ClassFactory).GetMethod("FactoryTemplate");
-            mi = mi.MakeGenericMethod(typeof(TResult));
-
-            Expression call = Expression.Call(mi, new Expression[] {Expression.Constant(this), 
-                Expression.NewArrayInit(typeof(Object), factoryParams)} );
-
-            TFactoryDelegateType factory = Expression.Lambda<TFactoryDelegateType>(call, factoryParams).Compile();
-
-            _typeFactories.Add(typeof(TFactoryDelegateType), factory as Delegate);
-        }
-
-        private static ParameterExpression[] GetParamsAsExpressions(MethodInfo mi)
-        {
-            List<ParameterExpression> paramsAsExpression = new List<ParameterExpression>();
-
-            Array.ForEach<ParameterInfo>(mi.GetParameters(),
-                p => paramsAsExpression.Add(Expression.Parameter(p.ParameterType, p.Name)));
-
-            return paramsAsExpression.ToArray();
-        }
-
-        public static T FactoryTemplate<T>(ClassFactory factory, params Object[] args)
-        {
-            return factory.ManufactureType<T>(args);
-        }
-    }
+   }
 }
