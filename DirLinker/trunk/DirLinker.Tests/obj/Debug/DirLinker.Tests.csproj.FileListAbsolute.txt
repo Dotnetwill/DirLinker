@@ -9,3 +9,14 @@ D:\source\dirlinker\DirLinker\trunk\DirLinker.Tests\bin\Debug\nunit.framework.xm
 D:\source\dirlinker\DirLinker\trunk\DirLinker.Tests\bin\Debug\Rhino.Mocks.xml
 D:\source\dirlinker\DirLinker\trunk\DirLinker.Tests\obj\Debug\DirLinker.Tests.dll
 D:\source\dirlinker\DirLinker\trunk\DirLinker.Tests\obj\Debug\DirLinker.Tests.pdb
+C:\PersonalSource\dirlinker\DirLinker\trunk\DirLinker.Tests\bin\Debug\DirLinker.Tests.dll
+C:\PersonalSource\dirlinker\DirLinker\trunk\DirLinker.Tests\bin\Debug\DirLinker.Tests.pdb
+C:\PersonalSource\dirlinker\DirLinker\trunk\DirLinker.Tests\bin\Debug\JunctionPointer.exe
+C:\PersonalSource\dirlinker\DirLinker\trunk\DirLinker.Tests\bin\Debug\nunit.framework.dll
+C:\PersonalSource\dirlinker\DirLinker\trunk\DirLinker.Tests\bin\Debug\Rhino.Mocks.dll
+C:\PersonalSource\dirlinker\DirLinker\trunk\DirLinker.Tests\bin\Debug\JunctionPointer.pdb
+C:\PersonalSource\dirlinker\DirLinker\trunk\DirLinker.Tests\bin\Debug\nunit.framework.xml
+C:\PersonalSource\dirlinker\DirLinker\trunk\DirLinker.Tests\bin\Debug\Rhino.Mocks.xml
+C:\PersonalSource\dirlinker\DirLinker\trunk\DirLinker.Tests\obj\Debug\ResolveAssemblyReference.cache
+C:\PersonalSource\dirlinker\DirLinker\trunk\DirLinker.Tests\obj\Debug\DirLinker.Tests.dll
+C:\PersonalSource\dirlinker\DirLinker\trunk\DirLinker.Tests\obj\Debug\DirLinker.Tests.pdb

@@ -8,3 +8,13 @@ D:\source\dirlinker\DirLinker\trunk\JunctionPointer\bin\Debug\JunctionPointer.ex
 D:\source\dirlinker\DirLinker\trunk\JunctionPointer\bin\Debug\JunctionPointer.pdb
 D:\source\dirlinker\DirLinker\trunk\JunctionPointer\obj\Debug\JunctionPointer.exe
 D:\source\dirlinker\DirLinker\trunk\JunctionPointer\obj\Debug\JunctionPointer.pdb
+C:\PersonalSource\dirlinker\DirLinker\trunk\JunctionPointer\bin\Debug\JunctionPointer.exe.config
+C:\PersonalSource\dirlinker\DirLinker\trunk\JunctionPointer\obj\Debug\JunctionPointer.exe
+C:\PersonalSource\dirlinker\DirLinker\trunk\JunctionPointer\obj\Debug\JunctionPointer.pdb
+C:\PersonalSource\dirlinker\DirLinker\trunk\JunctionPointer\bin\Debug\JunctionPointer.exe
+C:\PersonalSource\dirlinker\DirLinker\trunk\JunctionPointer\bin\Debug\JunctionPointer.pdb
+C:\PersonalSource\dirlinker\DirLinker\trunk\JunctionPointer\obj\Debug\ResolveAssemblyReference.cache
+C:\PersonalSource\dirlinker\DirLinker\trunk\JunctionPointer\obj\Debug\JunctionPointer.Properties.Resources.resources
+C:\PersonalSource\dirlinker\DirLinker\trunk\JunctionPointer\obj\Debug\JunctionPointer.Views.DirLinkerView.resources
+C:\PersonalSource\dirlinker\DirLinker\trunk\JunctionPointer\obj\Debug\JunctionPointer.Views.ProgessView.resources
+C:\PersonalSource\dirlinker\DirLinker\trunk\JunctionPointer\obj\Debug\DirLinker.csproj.GenerateResource.Cache
