@@ -7,8 +7,6 @@ namespace DirLinker.Tests.Helpers.ClassFactory
     [TestFixture]
     public class ClassFactoryTests
     {
-        #region Test classes and interfaces
-
         interface ITestClass { }
         class TestClass : ITestClass { }
 
@@ -16,10 +14,10 @@ namespace DirLinker.Tests.Helpers.ClassFactory
         class Depend : IDepend { }
 
 
-        interface ITestClassWithDepend { IDepend Depend { get; set; } }
+        interface ITestClassWithDepend { IDepend Depend {get; set;} }
         class TestClassWithDepend : ITestClassWithDepend
         {
-            public IDepend Depend { get; set; }
+            public IDepend Depend {get; set;}
 
             public TestClassWithDepend(IDepend idepend)
             {
@@ -40,13 +38,13 @@ namespace DirLinker.Tests.Helpers.ClassFactory
             }
         }
 
-        interface ITestClassTwoParam
+        interface ITestClassTwoParam 
         {
             String One { get; }
             String Two { get; }
         }
 
-        class TestClassTwoParam : ITestClassTwoParam
+        class TestClassTwoParam : ITestClassTwoParam 
         {
             public String One { get; set; }
             public String Two { get; set; }
@@ -57,7 +55,6 @@ namespace DirLinker.Tests.Helpers.ClassFactory
                 Two = two;
             }
         }
-        #endregion
 
         delegate ITestClassTwoParam TestClassMultiParamFactory(String paramOne, String param2);
 

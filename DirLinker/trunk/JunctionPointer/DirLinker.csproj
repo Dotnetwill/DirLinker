@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{3EBCE70F-0A6B-4F50-B381-AE4E8743873B}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -52,7 +52,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\ClassFactory\ClassFactory.cs" />
-    <Compile Include="Helpers\ClassFactory\DelegateFactoryCreator.cs" />
     <Compile Include="Helpers\Interfaces\IClassFactory.cs" />
     <Compile Include="Implemenation\FileImp.cs" />
     <Compile Include="Interfaces\Controllers\IMainController.cs" />
