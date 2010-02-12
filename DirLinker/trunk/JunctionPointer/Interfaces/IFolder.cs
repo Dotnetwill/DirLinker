@@ -19,6 +19,7 @@ namespace JunctionPointer.Interfaces
         Unknown
     }
 
+    public delegate IFolder IFolderFactoryForPath(String folder);
 
     public interface IFolder
     {
@@ -41,6 +42,6 @@ namespace JunctionPointer.Interfaces
 
         Char[] GetIllegalPathChars();
 
-        String FolderPath { get; set; }
+        String FolderPath { get; }
     }
 }

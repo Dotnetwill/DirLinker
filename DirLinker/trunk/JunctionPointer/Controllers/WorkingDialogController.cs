@@ -14,14 +14,6 @@ namespace JunctionPointer.Controllers
         protected IFolder m_DirManager;
         protected BackgroundWorker m_BackgroundWorker;
 
-        public WorkingDialogController(IDirLinker dirLinker, IFolder dirManager)
-        {
-            m_DirManager = dirManager;
-            m_Linker = dirLinker;
-            m_View = ClassFactory.CreateInstance<IWorkingView>();
-            m_BackgroundWorker = new BackgroundWorker();
-        }
-
         public WorkingDialogController(IDirLinker dirLinker, IFolder dirManager, IWorkingView workingView)
         {
             m_DirManager = dirManager;

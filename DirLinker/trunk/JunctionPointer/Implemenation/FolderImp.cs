@@ -10,16 +10,28 @@ namespace JunctionPointer.Implemenation
 {
     class FolderImp : IFolder
     {
-        public String FolderPath { get; set; }
+        public String FolderPath { get; protected set; }
+
+        IFileFactoryForPath FileFactoryForFile;
+        IFolderFactoryForPath FolderFactoryForPath;
 
         [DllImport("kernel32.dll", SetLastError=true)]
         [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.I1)]
+        
         private static extern bool CreateSymbolicLink(String lpSymlinkFileName, String lpTargetFileName, SYMBOLIC_LINK_FLAG dwFlags);
 
         public bool CreateLinkToFolderAt(String linkToBeCreated)
         {
             return CreateSymbolicLink(linkToBeCreated, FolderPath, SYMBOLIC_LINK_FLAG.Directory);
         }
+
+        public FolderImp(IFileFactoryForPath fileFactory, IFolderFactoryForPath folderFactory, String path)
+        {
+            FolderPath = path;
+            FileFactoryForFile = fileFactory;
+            FolderFactoryForPath = folderFactory;
+        }
+        
 
         public Boolean FolderExists()
         {
@@ -51,8 +63,7 @@ namespace JunctionPointer.Implemenation
 
             foreach (String file in Directory.GetFiles(FolderPath))
             {
-                IFile aFile = JunctionPointer.Helpers.ClassFactory.ClassFactory.CreateInstance<IFile>();
-                aFile.SetFile(file);
+                IFile aFile = FileFactoryForFile(file);
                 fileList.Add(aFile);
             }
 
@@ -88,8 +99,7 @@ namespace JunctionPointer.Implemenation
 
             foreach (string subFolder in Directory.GetDirectories(FolderPath))
             {
-                IFolder folder = ClassFactory.CreateInstance<IFolder>();
-                folder.FolderPath = subFolder;
+                IFolder folder = FolderFactoryForPath(subFolder);
                 folderList.Add(folder);
             }
 

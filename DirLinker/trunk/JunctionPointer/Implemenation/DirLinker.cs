@@ -18,8 +18,13 @@ namespace JunctionPointer.Implemenation
         protected event UserMessage m_UserResponseRequired;
         private readonly String regexForDrive = @"^([a-zA-Z]\:)";
 
-        public DirLinker()
+        protected IFolderFactoryForPath FolderFactoryForPath;
+        protected IFileFactoryForPath FileFactoryForPath;
+
+        public DirLinker(IFolderFactoryForPath folderFactory, IFileFactoryForPath fileFactory)
         {
+            FolderFactoryForPath = folderFactory;
+            FileFactoryForPath = fileFactory;
         }
 
         public void CreateSymbolicLinkFolder(String linkPoint, String linkTo, Boolean copyContentsToTarget, Boolean overwriteTargetFiles)
@@ -29,12 +34,9 @@ namespace JunctionPointer.Implemenation
                 throw new ArgumentException("linkPoint and linkTo can not be the same");
             }
 
-            IFolder linkPointFolder = ClassFactory.CreateInstance<IFolder>();
-            linkPointFolder.FolderPath = linkPoint;
-
-            IFolder linkToFolder = ClassFactory.CreateInstance<IFolder>();
-            linkToFolder.FolderPath = linkTo;
-
+            IFolder linkPointFolder = FolderFactoryForPath(linkPoint);
+            IFolder linkToFolder = FolderFactoryForPath(linkTo);
+            
             try
             {
                 if (!linkToFolder.FolderExists())
@@ -119,9 +121,9 @@ namespace JunctionPointer.Implemenation
                             {
                                 SendFeedbackReport("Copying Folder", String.Format("Currently copying file: {0}", file.FileName));
 
-                                IFile targetFile = ClassFactory.CreateInstance<IFile>();
-                                targetFile.SetFile(Path.Combine(targetFolder.FolderPath, file.FileName));
-
+                                String path = Path.Combine(targetFolder.FolderPath, file.FileName);
+                                IFile targetFile = FileFactoryForPath(path);
+                                
                                 if (!targetFile.Exists() || TargetFileWriteable(targetFile, overWriteTargetFile))
                                 {
                                      file.CopyFile(targetFile, overWriteTargetFile);
@@ -178,9 +180,9 @@ namespace JunctionPointer.Implemenation
                 {
                     SendFeedbackReport("Copying Folder", String.Format("Currently copying file: {0}", subFolder));
 
-                    IFolder targetSubFolderPath = ClassFactory.CreateInstance<IFolder>();
-                    targetSubFolderPath.FolderPath = subFolder.FolderPath.Replace(sourceFolder.FolderPath, targetFolder.FolderPath);
-
+                    String path = subFolder.FolderPath.Replace(sourceFolder.FolderPath, targetFolder.FolderPath);
+                    IFolder targetSubFolderPath = FolderFactoryForPath(path);
+                    
                     CopyFolder(subFolder, targetSubFolderPath, overWriteTargetFile);
                 }
             );
@@ -212,8 +214,7 @@ namespace JunctionPointer.Implemenation
         }
         public Boolean CheckEnoughSpace(String source, String target)
         {
-            IFolder sourceFolder = Helpers.ClassFactory.ClassFactory.CreateInstance<IFolder>();
-            sourceFolder.FolderPath = source;
+            IFolder sourceFolder = FolderFactoryForPath(source);
 
             if (sourceFolder.DirectorySize() > sourceFolder.FreeSpaceOnDrive(Path.GetPathRoot(target)))
             {
@@ -247,7 +248,7 @@ namespace JunctionPointer.Implemenation
         public bool ValidDirectoryPath(String path, out String errorMessage)
         {
             errorMessage = String.Empty;
-            IFolder folder = ClassFactory.CreateInstance<IFolder>();
+            IFolder folder = FolderFactoryForPath(String.Empty);
 
             if (!String.IsNullOrEmpty(path))
             {

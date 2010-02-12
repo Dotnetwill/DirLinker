@@ -26,7 +26,6 @@ namespace JunctionPointer
 
             IClassFactory classFactory = new ClassFactory();
             FillIoCContainer(classFactory);
-            ClassFactory.CurrentFactory = classFactory;
 
             IMainController mainController = new MainController(classFactory);
             Application.Run(mainController.Start());
@@ -35,12 +34,14 @@ namespace JunctionPointer
         {
 
             classFactory.RegisterType<IDirLinker, DirLinker>();
-            classFactory.RegisterType<IFolder, FolderImp>();
             classFactory.RegisterType<IFile, FileImp>();
             classFactory.RegisterType<IWorkingController, WorkingDialogController>();
             classFactory.RegisterType<ILinkerView, DirLinkerView>();
             classFactory.RegisterType<IWorkingView, ProgessView>();
 
+            classFactory.RegisterType<IFolder, FolderImp>()
+                .WithFactory<IFolderFactoryForPath>();
+            
         }
     }
 }

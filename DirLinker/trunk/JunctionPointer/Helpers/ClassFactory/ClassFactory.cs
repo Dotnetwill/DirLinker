@@ -7,12 +7,6 @@ using System.Linq.Expressions;
 
 namespace JunctionPointer.Helpers.ClassFactory
 {
-    public class NoCurrentFactoryException : Exception
-    {
-        public NoCurrentFactoryException()
-            : base("No class factory is specified")
-        { }
-    }
 
     public class ClassFactory : IClassFactory
     {
@@ -30,17 +24,6 @@ namespace JunctionPointer.Helpers.ClassFactory
                 _currentFactory.RegisterDelegateFactoryForType<TClass, T>();
                 return this;
             }
-        }
-
-        public static IClassFactory CurrentFactory { get; set; }
- 
-        public static T CreateInstance<T>()
-        {
-            if (CurrentFactory == null)
-            {
-                throw new NoCurrentFactoryException();
-            }
-            return CurrentFactory.ManufactureType<T>();
         }
 
         private readonly IDictionary<Type, Type> _types = new Dictionary<Type, Type>();

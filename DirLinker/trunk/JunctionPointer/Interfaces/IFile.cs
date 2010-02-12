@@ -2,7 +2,7 @@
 
 namespace JunctionPointer.Interfaces
 {
-   
+    public delegate IFile IFileFactoryForPath(String filePath);
     public interface IFile
     {
 
