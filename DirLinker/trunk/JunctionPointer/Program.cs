@@ -9,7 +9,7 @@ using JunctionPointer.Interfaces;
 using JunctionPointer.Interfaces.Controllers;
 using JunctionPointer.Interfaces.Views;
 using JunctionPointer.Helpers.Interfaces;
-using JunctionPointer.Helpers.ClassFactory;
+using JunctionPointer.Helpers.OCInject;
 
 namespace JunctionPointer
 {

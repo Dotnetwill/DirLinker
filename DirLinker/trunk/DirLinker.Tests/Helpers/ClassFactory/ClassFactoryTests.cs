@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using JunctionPointer.Helpers.Interfaces;
 
-namespace DirLinker.Tests.Helpers.ClassFactory
+namespace DirLinker.Tests.Helpers.OCInject
 {
     [TestFixture]
     public class ClassFactoryTests
@@ -74,7 +74,7 @@ namespace DirLinker.Tests.Helpers.ClassFactory
         public void ManufactureType_ClassNoDependecies_CreatedSuccessfully()
         {
 
-            IClassFactory testClssFactory = new JunctionPointer.Helpers.ClassFactory.ClassFactory();
+            IClassFactory testClssFactory = new JunctionPointer.Helpers.OCInject.ClassFactory();
             testClssFactory.RegisterType<ITestClass, TestClass>();
 
             ITestClass manufacturedType = testClssFactory.ManufactureType<ITestClass>();
@@ -85,7 +85,7 @@ namespace DirLinker.Tests.Helpers.ClassFactory
         [Test]
         public void ManufactureType_ClassWithDespendecies_CreatedSuccessfully()
         {
-            IClassFactory testClassFactory = new JunctionPointer.Helpers.ClassFactory.ClassFactory();
+            IClassFactory testClassFactory = new JunctionPointer.Helpers.OCInject.ClassFactory();
 
             testClassFactory.RegisterType<IDepend, Depend>();
             testClassFactory.RegisterType<ITestClassWithDepend, TestClassWithDepend>();
@@ -99,7 +99,7 @@ namespace DirLinker.Tests.Helpers.ClassFactory
         [Test]
         public void ManufactureType_Class_With_Despendecies_Dependency_Passed_In_Created_Successfully()
         {
-            IClassFactory testClassFactory = new JunctionPointer.Helpers.ClassFactory.ClassFactory();
+            IClassFactory testClassFactory = new JunctionPointer.Helpers.OCInject.ClassFactory();
 
             testClassFactory.RegisterType<IDepend, Depend>();
             testClassFactory.RegisterType<ITestClassWithDepend, TestClassWithDepend>();
@@ -113,7 +113,7 @@ namespace DirLinker.Tests.Helpers.ClassFactory
         [Test]
         public void ManufactureType_Type_accepts_delegate_factory_past_correctly()
         {
-            IClassFactory testClassFactory = new JunctionPointer.Helpers.ClassFactory.ClassFactory();
+            IClassFactory testClassFactory = new JunctionPointer.Helpers.OCInject.ClassFactory();
 
             testClassFactory.RegisterType<ITestClass, TestClass>()
                 .WithFactory<ITestClassFactory>();
@@ -127,7 +127,7 @@ namespace DirLinker.Tests.Helpers.ClassFactory
         [Test]
         public void ManufactureType_Type_delegate_factory_manufactures_correct_type()
         {
-            IClassFactory testClassFactory = new JunctionPointer.Helpers.ClassFactory.ClassFactory();
+            IClassFactory testClassFactory = new JunctionPointer.Helpers.OCInject.ClassFactory();
 
             testClassFactory.RegisterType<ITestClass, TestClass>()
                 .WithFactory<ITestClassFactory>();
@@ -143,7 +143,7 @@ namespace DirLinker.Tests.Helpers.ClassFactory
         [Test]
         public void ManfactureType_Type_with_delegate_factory_that_accepts_two_params()
         {
-            IClassFactory testClassFactory = new JunctionPointer.Helpers.ClassFactory.ClassFactory();
+            IClassFactory testClassFactory = new JunctionPointer.Helpers.OCInject.ClassFactory();
 
             testClassFactory.RegisterType<ITestClassTwoParam, TestClassTwoParam>()
                 .WithFactory<TestClassMultiParamFactory>();
@@ -157,7 +157,7 @@ namespace DirLinker.Tests.Helpers.ClassFactory
         [Test]
         public void ManfactureType_Type_with_delegate_factory_that_accepts_two_params_delegate_factory_produces_correct_class()
         {
-            IClassFactory testClassFactory = new JunctionPointer.Helpers.ClassFactory.ClassFactory();
+            IClassFactory testClassFactory = new JunctionPointer.Helpers.OCInject.ClassFactory();
 
             testClassFactory.RegisterType<ITestClassTwoParam, TestClassTwoParam>()
                 .WithFactory<TestClassMultiParamFactory>();

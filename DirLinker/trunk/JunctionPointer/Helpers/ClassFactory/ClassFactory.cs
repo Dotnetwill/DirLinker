@@ -5,7 +5,7 @@ using JunctionPointer.Helpers.Interfaces;
 using System.Reflection;
 using System.Linq.Expressions;
 
-namespace JunctionPointer.Helpers.ClassFactory
+namespace JunctionPointer.Helpers.OCInject
 {
 
     public class ClassFactory : IClassFactory
@@ -45,6 +45,7 @@ namespace JunctionPointer.Helpers.ClassFactory
         {
             return ManufactureType<T>(new Object[] {});
         }
+
         public virtual T ManufactureType<T>(params Object[] args)
         {
             return (T)Resolve(typeof(T), args);

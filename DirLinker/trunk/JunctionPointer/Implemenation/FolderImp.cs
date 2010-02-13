@@ -4,7 +4,7 @@ using System.Linq;
 using JunctionPointer.Interfaces;
 using System.IO;
 using System.Runtime.InteropServices;
-using JunctionPointer.Helpers.ClassFactory;
+using JunctionPointer.Helpers.OCInject;
 
 namespace JunctionPointer.Implemenation
 {

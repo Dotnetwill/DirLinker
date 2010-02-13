@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DirLinker.Tests.Helpers
 {
-    public class UnitTestClassFactory : JunctionPointer.Helpers.ClassFactory.ClassFactory
+    public class UnitTestClassFactory : JunctionPointer.Helpers.OCInject.ClassFactory
     {
         protected Dictionary<Type, Object> m_ObjectList = new Dictionary<Type,Object>();
 

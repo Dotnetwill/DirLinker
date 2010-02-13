@@ -4,9 +4,10 @@ using Rhino.Mocks;
 using JunctionPointer.Interfaces;
 using System.Collections.Generic;
 using DirLinker.Tests.Helpers;
-using JunctionPointer.Helpers.ClassFactory;
+using JunctionPointer.Helpers.OCInject;
 using System.IO;
 using System.Windows.Forms;
+using JunctionPointer.Helpers.Interfaces;
 
 namespace DirLinker.Tests
 {
@@ -22,6 +23,16 @@ namespace DirLinker.Tests
 
         }
 
+        private IFolderFactoryForPath CreateIFolderFactoryFromContainer(IClassFactory container)
+        {
+            return f => container.ManufactureType<IFolder>();
+        }
+
+        private IFileFactoryForPath CreateIFileFactoryFromContainer(IClassFactory container)
+        {
+            return f => container.ManufactureType<IFile>();
+        }
+
         [Test]
         public void CreateSymbolicLinkFolder_Target_File_Readonly_User_Cancel_File_Not_Copied()
         {
@@ -29,7 +40,6 @@ namespace DirLinker.Tests
             //Arrange   
             String source = @"c:\source";
             QueueBasedClassFactory container = new QueueBasedClassFactory();
-            ClassFactory.CurrentFactory = container;
 
             IFile sourceFile = MockRepository.GenerateStub<IFile>();
             sourceFile.Stub(s => s.Folder).Return(source);
@@ -53,7 +63,8 @@ namespace DirLinker.Tests
             container.IFolderQueue.Enqueue(targetFolder);
 
             //Act
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker();
+            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                                                            CreateIFileFactoryFromContainer(container));
             dirLinker.UserMessage += (sender, e) => e.Response = DialogResult.Cancel;
 
             dirLinker.CreateSymbolicLinkFolder(source, @"c:\target", true, true);
@@ -72,7 +83,6 @@ namespace DirLinker.Tests
             //Arrange   
             String source = @"c:\source";
             QueueBasedClassFactory container = new QueueBasedClassFactory();
-            ClassFactory.CurrentFactory = container;
 
             IFile sourceFile = MockRepository.GenerateStub<IFile>();
             sourceFile.Stub(s => s.Folder).Return(source);
@@ -96,7 +106,8 @@ namespace DirLinker.Tests
             container.IFolderQueue.Enqueue(targetFolder);
 
             //Act
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker();
+            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                                                            CreateIFileFactoryFromContainer(container));
             dirLinker.UserMessage += (sender, e) => e.Response = DialogResult.No;
 
             dirLinker.CreateSymbolicLinkFolder(source, @"c:\target", true, true);
@@ -114,7 +125,6 @@ namespace DirLinker.Tests
             //Arrange   
             String source = @"c:\source";
             QueueBasedClassFactory container = new QueueBasedClassFactory();
-            ClassFactory.CurrentFactory = container;
 
             IFile sourceFile = MockRepository.GenerateStub<IFile>();
             sourceFile.Stub(s => s.Folder).Return(source);
@@ -138,7 +148,8 @@ namespace DirLinker.Tests
             container.IFolderQueue.Enqueue(targetFolder);
 
             //Act
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker();
+            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                                                            CreateIFileFactoryFromContainer(container));
             dirLinker.UserMessage += (sender, e) => e.Response = DialogResult.Yes;
 
             dirLinker.CreateSymbolicLinkFolder(source, @"c:\target", true, true);
@@ -156,7 +167,6 @@ namespace DirLinker.Tests
             //Arrange   
             String source = @"c:\source";
             QueueBasedClassFactory container = new QueueBasedClassFactory();
-            ClassFactory.CurrentFactory = container;
 
             IFile sourceFile = MockRepository.GenerateStub<IFile>();
             sourceFile.Stub(s => s.Folder).Return(source);
@@ -180,7 +190,8 @@ namespace DirLinker.Tests
             container.IFolderQueue.Enqueue(targetFolder);
 
             //Act
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker();
+            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                                                            CreateIFileFactoryFromContainer(container));
             dirLinker.UserMessage += (sender, e) => 
                 {
                     if (!e.Message.Contains("Success"))
@@ -202,7 +213,6 @@ namespace DirLinker.Tests
             //Arrange   
             String source = @"c:\source";
             QueueBasedClassFactory container = new QueueBasedClassFactory();
-            ClassFactory.CurrentFactory = container;
 
             IFile sourceFile = MockRepository.GenerateStub<IFile>();
             sourceFile.Stub(s => s.Folder).Return(source);
@@ -225,7 +235,8 @@ namespace DirLinker.Tests
             container.IFolderQueue.Enqueue(targetFolder);
 
             //Act
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker();
+            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                                                            CreateIFileFactoryFromContainer(container));
             dirLinker.UserMessage += (sender, e) => e.Response = System.Windows.Forms.DialogResult.Yes;
             dirLinker.CreateSymbolicLinkFolder(source, @"c:\target", true, true);
 
@@ -242,7 +253,6 @@ namespace DirLinker.Tests
             //Arrange   
             String source = @"c:\source";
             QueueBasedClassFactory container = new QueueBasedClassFactory();
-            ClassFactory.CurrentFactory = container;
 
             IFile sourceFile = MockRepository.GenerateStub<IFile>();
             sourceFile.Stub(s => s.Folder).Return(source);
@@ -267,7 +277,8 @@ namespace DirLinker.Tests
 
 
             //Act
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker();
+            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                                                            CreateIFileFactoryFromContainer(container));
             dirLinker.CreateSymbolicLinkFolder(source, @"c:\target", true, true);
 
             //Assert
@@ -282,7 +293,6 @@ namespace DirLinker.Tests
             //Arrange   
             String source = @"c:\source";
             QueueBasedClassFactory container = new QueueBasedClassFactory();
-            ClassFactory.CurrentFactory = container;
 
             IFile sourceFile = MockRepository.GenerateStub<IFile>();
             sourceFile.Stub(s => s.Folder).Return(source);
@@ -305,7 +315,8 @@ namespace DirLinker.Tests
 
 
             //Act
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker();
+            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                                                            CreateIFileFactoryFromContainer(container));
             dirLinker.CreateSymbolicLinkFolder(source, @"c:\target", true, false);
 
             //Assert
@@ -321,7 +332,6 @@ namespace DirLinker.Tests
             //Arrange   
             String source = @"c:\source";
             QueueBasedClassFactory container = new QueueBasedClassFactory();
-            ClassFactory.CurrentFactory = container;
 
             IFile sourceFile = MockRepository.GenerateStub<IFile>();
             sourceFile.Stub(s => s.Folder).Return(source);
@@ -345,7 +355,8 @@ namespace DirLinker.Tests
            
 
             //Act
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker();
+            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                                                            CreateIFileFactoryFromContainer(container));
             dirLinker.CreateSymbolicLinkFolder(source, @"c:\target", true, false);
 
             //Assert
@@ -359,7 +370,6 @@ namespace DirLinker.Tests
             //Arrange   
             String source = @"c:\source";
             QueueBasedClassFactory container = new QueueBasedClassFactory();
-            ClassFactory.CurrentFactory = container;
 
             MockRepository mockRepo = new MockRepository();
             IFolder sourceFolder = mockRepo.DynamicMock<IFolder>();
@@ -382,7 +392,8 @@ namespace DirLinker.Tests
             mockRepo.ReplayAll();
 
             //Act
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker();
+            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                                                            CreateIFileFactoryFromContainer(container));
             dirLinker.CreateSymbolicLinkFolder(source, @"c:\target", false, true);
 
             //Assert
@@ -397,7 +408,6 @@ namespace DirLinker.Tests
             //Arrange   
             String source = @"c:\source";
             QueueBasedClassFactory container = new QueueBasedClassFactory();
-            ClassFactory.CurrentFactory = container;
             
             MockRepository mockRepo = new MockRepository();
         
@@ -433,7 +443,8 @@ namespace DirLinker.Tests
 
             //Act
             mockRepo.ReplayAll();
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker();
+            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                                                            CreateIFileFactoryFromContainer(container));
             dirLinker.CreateSymbolicLinkFolder(source, @"c:\target", true, true);
 
             //Assert
@@ -449,7 +460,6 @@ namespace DirLinker.Tests
             //Arrange   
             String source = @"c:\source";
             QueueBasedClassFactory container = new QueueBasedClassFactory();
-            ClassFactory.CurrentFactory = container;
 
             IFolder sourceFolder = MockRepository.GenerateStub<IFolder>();
             sourceFolder.Stub(d => d.GetSubFolderList()).Return(new List<IFolder>());
@@ -462,7 +472,8 @@ namespace DirLinker.Tests
             container.IFolderQueue.Enqueue(targetFolder);
 
             //Act
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker();
+            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                                                            CreateIFileFactoryFromContainer(container));
             dirLinker.CreateSymbolicLinkFolder(source, @"c:\target", false, true);
 
             //Assert
@@ -479,7 +490,6 @@ namespace DirLinker.Tests
             String target = @"c:\target";
 
             QueueBasedClassFactory container = new QueueBasedClassFactory();
-            ClassFactory.CurrentFactory = container;
 
             IFolder sourceFolder = MockRepository.GenerateStub<IFolder>();
             sourceFolder.Stub(d => d.GetFileList()).Return(new List<IFile>());
@@ -490,7 +500,8 @@ namespace DirLinker.Tests
             targetFolder.Stub(d => d.CreateLinkToFolderAt(Arg<String>.Is.Anything)).Return(true);
             container.IFolderQueue.Enqueue(targetFolder);
 
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker();
+            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                                                            CreateIFileFactoryFromContainer(container));
             
             //Act
             dirLinker.CreateSymbolicLinkFolder(source, target, true, true);
@@ -508,7 +519,6 @@ namespace DirLinker.Tests
             String source = @"c:\source";
 
             QueueBasedClassFactory container = new QueueBasedClassFactory();
-            ClassFactory.CurrentFactory = container;
 
             IFolder sourceFolder = MockRepository.GenerateStub<IFolder>(); 
             sourceFolder.Stub(d => d.GetFileList()).Throw(new Exception());
@@ -516,7 +526,8 @@ namespace DirLinker.Tests
 
             container.IFolderQueue.Enqueue(MockRepository.GenerateStub<IFolder>());
 
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker();
+            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                                                            CreateIFileFactoryFromContainer(container));
 
             //Act
             dirLinker.CreateSymbolicLinkFolder(source, @"c:\target", true, true);
@@ -533,7 +544,6 @@ namespace DirLinker.Tests
             //Arrange 
 
             QueueBasedClassFactory container = new QueueBasedClassFactory();
-            ClassFactory.CurrentFactory = container;
 
             IFolder sourceFolder = MockRepository.GenerateStub<IFolder>();
             sourceFolder.Stub(d => d.GetFileList()).Return(new List<IFile>());
@@ -544,7 +554,8 @@ namespace DirLinker.Tests
             targetFolder.Stub(d => d.CreateLinkToFolderAt(Arg<String>.Is.Anything)).Return(false);
             container.IFolderQueue.Enqueue(targetFolder);
 
-            IDirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker();
+            IDirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                               CreateIFileFactoryFromContainer(container));
 
             dirLinker.UserMessage += (sender, args) =>
             {
@@ -562,7 +573,6 @@ namespace DirLinker.Tests
             //
             //Arrange 
             QueueBasedClassFactory container = new QueueBasedClassFactory();
-            ClassFactory.CurrentFactory = container;
             
             IFolder sourceFolder = MockRepository.GenerateStub<IFolder>();
             sourceFolder.Stub(s => s.GetFileList()).Throw(new UnauthorizedAccessException());
@@ -570,7 +580,8 @@ namespace DirLinker.Tests
             container.IFolderQueue.Enqueue(sourceFolder);
             container.IFolderQueue.Enqueue(MockRepository.GenerateStub<IFolder>());
 
-            IDirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker();
+            IDirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                               CreateIFileFactoryFromContainer(container));
 
             dirLinker.UserMessage += (sender, args) =>
             {
@@ -589,7 +600,6 @@ namespace DirLinker.Tests
             //
             //Arrange 
             QueueBasedClassFactory container = new QueueBasedClassFactory();
-            ClassFactory.CurrentFactory = container;
 
             IFolder sourceFolder = MockRepository.GenerateStub<IFolder>();
             sourceFolder.Stub(s => s.GetFileList()).Return(new List<IFile>());
@@ -600,7 +610,8 @@ namespace DirLinker.Tests
             container.IFolderQueue.Enqueue(sourceFolder);
             container.IFolderQueue.Enqueue(MockRepository.GenerateStub<IFolder>());
 
-            IDirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker();
+            IDirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                               CreateIFileFactoryFromContainer(container));
 
             dirLinker.UserMessage += (sender, args) =>
             {
@@ -622,10 +633,10 @@ namespace DirLinker.Tests
             IFolder sourceFolder = mocks.DynamicMock<IFolder>();
 
             QueueBasedClassFactory container = new QueueBasedClassFactory();
-            ClassFactory.CurrentFactory = container;
             container.IFolderQueue.Enqueue(sourceFolder);
 
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker();
+            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                                                            CreateIFileFactoryFromContainer(container));
 
             using (mocks.Record())
             {
@@ -654,10 +665,10 @@ namespace DirLinker.Tests
             IFolder sourceFolder = mocks.DynamicMock<IFolder>();
             
             QueueBasedClassFactory container = new QueueBasedClassFactory();
-            ClassFactory.CurrentFactory = container;
             container.IFolderQueue.Enqueue(sourceFolder);
 
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker();
+            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                                                            CreateIFileFactoryFromContainer(container));
 
             using (mocks.Record())
             {
@@ -681,7 +692,7 @@ namespace DirLinker.Tests
         public void CreateSymbolicLinkFolder_SourceTargetAreTheSame_ExceptionThrown()
         {
             String path = @"c:\testDir\";
-            JunctionPointer.Implemenation.DirLinker testLinker = new JunctionPointer.Implemenation.DirLinker();
+            JunctionPointer.Implemenation.DirLinker testLinker = new JunctionPointer.Implemenation.DirLinker(null, null);
 
             testLinker.CreateSymbolicLinkFolder(path, path, true, true);
         }
@@ -695,7 +706,6 @@ namespace DirLinker.Tests
             String pathTo = @"c:\testTarget\";
 
             QueueBasedClassFactory container = new QueueBasedClassFactory();
-            ClassFactory.CurrentFactory = container;
            
             IFile fileStub = Helpers.CreateStubHelpers.GetIFileStub("file1", @"c:\testDir\");
            
@@ -712,7 +722,8 @@ namespace DirLinker.Tests
             container.IFolderQueue.Enqueue(new StubDirManagerReturnSubFolderList());
 
             //Act
-            JunctionPointer.Implemenation.DirLinker testLinker = new JunctionPointer.Implemenation.DirLinker();
+            JunctionPointer.Implemenation.DirLinker testLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                                                             CreateIFileFactoryFromContainer(container));
             testLinker.CreateSymbolicLinkFolder(pathLink, pathTo, true, true);
             
             //Assert
@@ -729,7 +740,6 @@ namespace DirLinker.Tests
             String pathTo = @"c:\testTarget\";
 
             QueueBasedClassFactory container = new QueueBasedClassFactory();
-            ClassFactory.CurrentFactory = container;
            
             IFile fileStub = Helpers.CreateStubHelpers.GetIFileStub("file1", @"c:\testDir\");
 
@@ -745,7 +755,8 @@ namespace DirLinker.Tests
             container.IFolderQueue.Enqueue(MockRepository.GenerateStub<IFolder>());
 
             //Act
-            JunctionPointer.Implemenation.DirLinker testLinker = new JunctionPointer.Implemenation.DirLinker();
+            JunctionPointer.Implemenation.DirLinker testLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                                                             CreateIFileFactoryFromContainer(container));
             testLinker.CreateSymbolicLinkFolder(pathLink, pathTo, true, false);
 
             //Assert
@@ -768,7 +779,6 @@ namespace DirLinker.Tests
             newList.Add(fileB);
 
             QueueBasedClassFactory container = new QueueBasedClassFactory();
-            ClassFactory.CurrentFactory = container;
 
             IFile targetFileA = Helpers.CreateStubHelpers.GetIFileStub("", "");
             container.IFileQueue.Enqueue(targetFileA);
@@ -783,11 +793,12 @@ namespace DirLinker.Tests
             String target = @"c:\target\";
 
             IFolder targetFolder = MockRepository.GenerateStub<IFolder>();
-            targetFolder.FolderPath = target;
-
+            targetFolder.Stub(t => t.FolderPath).Return(target);
+            
             //
             //Act
-            JunctionPointer.Implemenation.DirLinker testLinker = new JunctionPointer.Implemenation.DirLinker();
+            JunctionPointer.Implemenation.DirLinker testLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                                                             CreateIFileFactoryFromContainer(container));
             testLinker.CopyFolder(sourceFolder, targetFolder, true);
 
             //
@@ -808,24 +819,23 @@ namespace DirLinker.Tests
             String target = @"c:\target\";
             
             IFolder subFolderA = MockRepository.GenerateStub<IFolder>();
-            subFolderA.FolderPath =  source+"a";
+            subFolderA.Stub(d => d.FolderPath).Return(source + "a");
             subFolderA.Stub(d => d.GetSubFolderList()).Return(new List<IFolder>());
             subFolderA.Stub(d => d.GetFileList()).Return(new List<IFile>());
             
             IFolder subFolderB = MockRepository.GenerateStub<IFolder>();
-            subFolderB.FolderPath =  source+"b";
+            subFolderB.Stub(d => d.FolderPath).Return(source + "b");
             subFolderB.Stub(d => d.GetSubFolderList()).Return(new List<IFolder>());
             subFolderB.Stub(d => d.GetFileList()).Return(new List<IFile>());
             
             IFolder sourceFolder = MockRepository.GenerateStub<IFolder>();
-            sourceFolder.FolderPath = source;
+            sourceFolder.Stub(d => d.FolderPath).Return(source);
             sourceFolder.Stub(d => d.GetFileList()).Return(new List<IFile>());
             sourceFolder.Stub(d => d.GetSubFolderList()).Return(new List<IFolder> { subFolderA, subFolderB });
             
             //Queue up two target folder to assert against
             QueueBasedClassFactory container = new QueueBasedClassFactory();
-            ClassFactory.CurrentFactory = container;
-
+            
             IFolder targetSubFolderA = MockRepository.GenerateStub<IFolder>();
             IFolder targetSubFolderB = MockRepository.GenerateStub<IFolder>();
 
@@ -833,11 +843,12 @@ namespace DirLinker.Tests
             container.IFolderQueue.Enqueue(targetSubFolderB);
 
             IFolder targetFolder = MockRepository.GenerateStub<IFolder>();
-            targetFolder.FolderPath = target;
+            targetFolder.Stub(d => d.FolderPath).Return(target);
 
             //
             //Act
-            IDirLinker testLinker = new JunctionPointer.Implemenation.DirLinker();
+            IDirLinker testLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                                CreateIFileFactoryFromContainer(container));
 
             testLinker.CopyFolder(sourceFolder, targetFolder, true);
 
@@ -860,7 +871,6 @@ namespace DirLinker.Tests
             String target = @"c:\target\";
 
             QueueBasedClassFactory container = new QueueBasedClassFactory();
-            ClassFactory.CurrentFactory = container;
 
             container.IFolderQueue.Enqueue(new StubDirManagerReturnSubFolderList());
             container.IFolderQueue.Enqueue(new StubDirManagerReturnSubFolderList());
@@ -882,12 +892,12 @@ namespace DirLinker.Tests
 
 
             IFolder subFolder1 = MockRepository.GenerateStub<IFolder>();
-            subFolder1.FolderPath = source + "a";
+            subFolder1.Stub(d => d.FolderPath).Return(source + "a");
             subFolder1.Stub(s => s.GetSubFolderList()).Return(new List<IFolder>());
             subFolder1.Stub(s => s.GetFileList()).Return(fileList1);
 
             IFolder subFolder2 = MockRepository.GenerateStub<IFolder>();
-            subFolder2.FolderPath = source + "b";
+            subFolder2.Stub(d => d.FolderPath).Return(source + "b");
             subFolder2.Stub(s => s.GetSubFolderList()).Return(new List<IFolder>());
             subFolder2.Stub(s => s.GetFileList()).Return(fileList2);
 
@@ -899,11 +909,12 @@ namespace DirLinker.Tests
             sourceFolder.OnlyReturnSubFolderListFor = sourceFolder;
 
             IFolder targetFolder = MockRepository.GenerateStub<IFolder>();
-            targetFolder.FolderPath = target;
+            targetFolder.Stub(d => d.FolderPath).Return(target);
 
             //
             //Act
-            IDirLinker testLinker = new JunctionPointer.Implemenation.DirLinker();
+            IDirLinker testLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                                CreateIFileFactoryFromContainer(container));
             testLinker.CopyFolder(sourceFolder, targetFolder, true);
 
             //
@@ -923,7 +934,6 @@ namespace DirLinker.Tests
             String target = @"c:\target";
            
             QueueBasedClassFactory container = new QueueBasedClassFactory();
-            ClassFactory.CurrentFactory = container;
             
             IFolder sourceFolder = MockRepository.GenerateStub<IFolder>();
             sourceFolder.Stub(d => d.GetFileList()).Return(new List<IFile>());
@@ -935,7 +945,8 @@ namespace DirLinker.Tests
             targetFolder.Stub(d => d.CreateLinkToFolderAt(source)).Return(true);
             container.IFolderQueue.Enqueue(targetFolder);
 
-            IDirLinker dirLinker =  new JunctionPointer.Implemenation.DirLinker();
+            IDirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                               CreateIFileFactoryFromContainer(container));
             //Act
             dirLinker.CreateSymbolicLinkFolder(source, target,  false, true);
 
@@ -952,7 +963,6 @@ namespace DirLinker.Tests
             IFolder dirManager = MockRepository.GenerateStub<IFolder>();
 
             QueueBasedClassFactory container = new QueueBasedClassFactory();
-            ClassFactory.CurrentFactory = container;
 
             IFolder sourceFolder = MockRepository.GenerateStub<IFolder>();
             sourceFolder.Stub(d => d.GetFileList()).Return(new List<IFile>());
@@ -964,7 +974,8 @@ namespace DirLinker.Tests
             targetFolder.Stub(d => d.CreateLinkToFolderAt(Arg<String>.Is.Anything)).Return(true);
             container.IFolderQueue.Enqueue(targetFolder);
 
-            IDirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker();
+            IDirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                               CreateIFileFactoryFromContainer(container));
 
             Boolean delegateCalled = false;
             dirLinker.UserMessage += delegate(Object sender, UserMessageArgs args)
@@ -990,9 +1001,9 @@ namespace DirLinker.Tests
             
             UnitTestClassFactory container = new UnitTestClassFactory();
             container.ReturnObjectForType<IFolder>(dirManager);
-            ClassFactory.CurrentFactory = container;
-            
-            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker();
+
+            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                                CreateIFileFactoryFromContainer(container));
 
             //Act
             String errorMessage;
@@ -1011,9 +1022,9 @@ namespace DirLinker.Tests
 
             UnitTestClassFactory container = new UnitTestClassFactory();
             container.ReturnObjectForType<IFolder>(dirManager);
-            ClassFactory.CurrentFactory = container;
-            
-            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker();
+
+            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                                CreateIFileFactoryFromContainer(container));
   
             //Act
             String errorMessage;
@@ -1033,9 +1044,9 @@ namespace DirLinker.Tests
             
             UnitTestClassFactory container = new UnitTestClassFactory();
             container.ReturnObjectForType<IFolder>(dirManager);
-            ClassFactory.CurrentFactory = container;
-            
-            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker();
+
+            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                                CreateIFileFactoryFromContainer(container));
 
             //Act
             String errorMessage;
@@ -1054,9 +1065,9 @@ namespace DirLinker.Tests
 
             UnitTestClassFactory container = new UnitTestClassFactory();
             container.ReturnObjectForType<IFolder>(dirManager);
-            ClassFactory.CurrentFactory = container;
 
-            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker();
+            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                                CreateIFileFactoryFromContainer(container));
 
             String longPath = @"c:\testPathThatIsLongerTheDirManagerAllows";
 
@@ -1079,9 +1090,9 @@ namespace DirLinker.Tests
 
             UnitTestClassFactory container = new UnitTestClassFactory();
             container.ReturnObjectForType<IFolder>(dirManager);
-            ClassFactory.CurrentFactory = container;
-            
-            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker();
+
+            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                                CreateIFileFactoryFromContainer(container));
 
             //Act
             String errorMessage;
@@ -1102,9 +1113,9 @@ namespace DirLinker.Tests
 
             UnitTestClassFactory container = new UnitTestClassFactory();
             container.ReturnObjectForType<IFolder>(dirManager);
-            ClassFactory.CurrentFactory = container;
-            
-            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker();
+
+            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                                CreateIFileFactoryFromContainer(container));
 
             //Act
             String errorMessage;
@@ -1124,9 +1135,9 @@ namespace DirLinker.Tests
             
             UnitTestClassFactory container = new UnitTestClassFactory();
             container.ReturnObjectForType<IFolder>(dirManager);
-            ClassFactory.CurrentFactory = container;
-            
-            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker();
+
+            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                                CreateIFileFactoryFromContainer(container));
 
             //Act
             String errorMessage;
@@ -1146,9 +1157,9 @@ namespace DirLinker.Tests
 
             UnitTestClassFactory container = new UnitTestClassFactory();
             container.ReturnObjectForType<IFolder>(dirManager);
-            ClassFactory.CurrentFactory = container;
-            
-            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker();
+
+            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                                CreateIFileFactoryFromContainer(container));
 
 
             //Act
@@ -1169,9 +1180,9 @@ namespace DirLinker.Tests
 
             UnitTestClassFactory container = new UnitTestClassFactory();
             container.ReturnObjectForType<IFolder>(dirManager);
-            ClassFactory.CurrentFactory = container;
-            
-            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker();
+
+            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                                CreateIFileFactoryFromContainer(container));
 
             //Act
             String errorMessage;
@@ -1191,9 +1202,9 @@ namespace DirLinker.Tests
 
             UnitTestClassFactory container = new UnitTestClassFactory();
             container.ReturnObjectForType<IFolder>(dirManager);
-            ClassFactory.CurrentFactory = container;
-            
-            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker();
+
+            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                                CreateIFileFactoryFromContainer(container));
             
             //Act
             String errorMessage;
@@ -1212,9 +1223,9 @@ namespace DirLinker.Tests
             
             UnitTestClassFactory container = new UnitTestClassFactory();
             container.ReturnObjectForType<IFolder>(dirManager);
-            ClassFactory.CurrentFactory = container;
-            
-            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker();
+
+            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
+                                                                                CreateIFileFactoryFromContainer(container));
 
 
             //Act
