@@ -11,15 +11,13 @@ namespace JunctionPointer.Controllers
     {
         protected IWorkingView m_View;
         protected IDirLinker m_Linker;
-        protected IFolder m_DirManager;
-        protected BackgroundWorker m_BackgroundWorker;
+        protected IBackgroundWorker m_BackgroundWorker;
 
-        public WorkingDialogController(IDirLinker dirLinker, IFolder dirManager, IWorkingView workingView)
+        public WorkingDialogController(IDirLinker dirLinker, IWorkingView workingView, IBackgroundWorker bgWorker)
         {
-            m_DirManager = dirManager;
             m_Linker = dirLinker;
             m_View = workingView;
-            m_BackgroundWorker = new BackgroundWorker();
+            m_BackgroundWorker = bgWorker;
         }
 
         public void DoDirectoryLinkWithFeedBack(String linkPoint, String linkTo, Boolean copyContentsToTarget, Boolean overwriteTargetFiles)

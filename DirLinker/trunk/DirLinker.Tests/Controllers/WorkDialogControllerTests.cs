@@ -22,7 +22,8 @@ namespace DirLinker.Tests.Controllers
             Boolean copyBeforeDelete = true;
 
             StubDirLinker stubLinker = new StubDirLinker();
-            WorkingDialogController workingController = new WorkingDialogController(stubLinker, null, mockView);
+            FakeBackgroundWorker bgWorker = new FakeBackgroundWorker();
+            WorkingDialogController workingController = new WorkingDialogController(stubLinker, mockView, bgWorker);
 
             workingController.DoDirectoryLinkWithFeedBack(linkPoint, linkTo, copyBeforeDelete, true);
 

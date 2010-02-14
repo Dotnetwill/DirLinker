@@ -59,6 +59,7 @@
     <Compile Include="DirLinkerTests.cs" />
     <Compile Include="Helpers\ClassFactory\ClassFactoryTests.cs" />
     <Compile Include="Helpers\CreateStubHelpers.cs" />
+    <Compile Include="Helpers\FakeBackgroundWorker.cs" />
     <Compile Include="Helpers\FakeFile.cs" />
     <Compile Include="Helpers\FakeFolder.cs" />
     <Compile Include="Helpers\StubDirLinker.cs" />
