@@ -21,29 +21,38 @@ namespace DirLinker.Tests.Helpers
     
         public override ITypeOptions RegisterType<TContract, TImplementation>()
         {
-            throw new NotImplementedException();
+            return base.RegisterType<TContract, TImplementation>();
         }
 
         public override T ManufactureType<T>()
         {
-            if (typeof(T).Equals(typeof(IFolder)))
-            {
-                return (T)IFolderQueue.Dequeue();
-            }
-            if (typeof(T).Equals(typeof(IFile)))
-            {
-                return (T)IFileQueue.Dequeue();
-            }
-
-            else
-            {
-                return default(T);
-            }
+            return ManufactureType<T>(new Object[] { }); 
         }
 
         public override T ManufactureType<T>(params object[] args)
         {
-            return ManufactureType<T>();
+            if (typeof(T).Equals(typeof(IFolder)) && IFolderQueue.Count > 0)
+            {
+                IFolder folder = IFolderQueue.Dequeue();
+                //if (args.Length == 1)
+                //{
+                //    (folder as FakeFolder).FolderPath = args[0] as String;
+                //}
+                return (T)folder;
+            }
+            if (typeof(T).Equals(typeof(IFile)) && IFileQueue.Count > 0)
+            {
+                IFile file = IFileQueue.Dequeue();
+                //if (args.Length == 1)
+                //{
+                //    (file as FakeFile).FullFilePath = args[0] as String;
+                //}
+                return (T)file;
+            }
+            else
+            {
+                return (T)base.ManufactureType<T>(args);
+            }
         }
 
     }

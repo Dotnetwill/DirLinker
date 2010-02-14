@@ -58,21 +58,24 @@ namespace DirLinker.Tests.Helpers
         public bool SetFileCalled { get; set; }
         public void SetFile(string fileWithFullPath)
         {
-            throw new NotImplementedException();
+            SetFileCalled = true;
         }
 
         [System.ComponentModel.DefaultValue(false)]
         public bool DeleteCalled { get; set; }
         public void Delete()
         {
-            throw new NotImplementedException();
+            DeleteCalled = true;
         }
 
+        [System.ComponentModel.DefaultValue(false)]
+        public bool ExistsReturnValue { get; set; }
         [System.ComponentModel.DefaultValue(false)]
         public bool ExistsCalled { get; set; }
         public bool Exists()
         {
-            throw new NotImplementedException();
+            ExistsCalled = true;
+            return ExistsReturnValue;
         }
 
     }

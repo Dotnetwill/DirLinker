@@ -61,7 +61,6 @@
     <Compile Include="Helpers\CreateStubHelpers.cs" />
     <Compile Include="Helpers\FakeFile.cs" />
     <Compile Include="Helpers\FakeFolder.cs" />
-    <Compile Include="Helpers\QueueBasedClassFactory.cs" />
     <Compile Include="Helpers\StubDirLinker.cs" />
     <Compile Include="Helpers\StubDirManagerReturnSubFolderList.cs" />
     <Compile Include="Helpers\StubMainView.cs" />

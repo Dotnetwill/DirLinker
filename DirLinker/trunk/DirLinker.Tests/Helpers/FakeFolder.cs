@@ -8,6 +8,9 @@ namespace DirLinker.Tests.Helpers
 {
     public class FakeFolder : IFolder
     {
+        public FakeFolder()
+        {
+        }
         public FakeFolder(String path)
         {
             FolderPath = path;

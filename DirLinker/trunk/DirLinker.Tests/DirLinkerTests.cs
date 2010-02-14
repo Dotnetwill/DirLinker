@@ -25,12 +25,33 @@ namespace DirLinker.Tests
 
         private IFolderFactoryForPath CreateIFolderFactoryFromContainer(IClassFactory container)
         {
-            return f => container.ManufactureType<IFolder>();
+            return delegate(String f)
+            {
+                if (String.IsNullOrEmpty(f))
+                {
+                    return container.ManufactureType<IFolder>();
+                }
+                else
+                {
+                    return container.ManufactureType<IFolder>(f);
+                }
+            };
+
         }
 
         private IFileFactoryForPath CreateIFileFactoryFromContainer(IClassFactory container)
         {
-            return f => container.ManufactureType<IFile>();
+            return delegate(String f)
+                   {
+                       if (String.IsNullOrEmpty(f))
+                       {
+                           return container.ManufactureType<IFile>();
+                       }
+                       else
+                       {
+                           return container.ManufactureType<IFile>(f);
+                       }
+                   };
         }
 
         [Test]
@@ -124,35 +145,38 @@ namespace DirLinker.Tests
             //
             //Arrange   
             String source = @"c:\source";
-            QueueBasedClassFactory container = new QueueBasedClassFactory();
+            String target = @"c:\target";
+            String filename = "file1";
 
             IFile sourceFile = MockRepository.GenerateStub<IFile>();
             sourceFile.Stub(s => s.Folder).Return(source);
-            sourceFile.Stub(s => s.FileName).Return("file1");
+            sourceFile.Stub(s => s.FileName).Return(filename);
 
-
+            Dictionary<String, IFile> fileContainer = new Dictionary<String, IFile>(); 
             IFile targetFile = MockRepository.GenerateStub<IFile>();
             targetFile.Stub(f => f.Exists()).Return(true);
             targetFile.Stub(f => f.GetAttributes()).Return(FileAttributes.ReadOnly);
-            targetFile.Stub(f => f.FullFilePath).Return("file1");
-            container.IFileQueue.Enqueue(targetFile);
+            targetFile.Stub(f => f.FullFilePath).Return(filename);
+            fileContainer.Add(Path.Combine(target, filename), targetFile);
 
+            Dictionary<String, IFolder> folderConatiner = new Dictionary<String, IFolder>();
             IFolder sourceFolder = MockRepository.GenerateStub<IFolder>();
             sourceFolder.Stub(d => d.FolderExists()).Return(true);
             sourceFolder.Stub(d => d.GetSubFolderList()).Return(new List<IFolder>());
             sourceFolder.Stub(d => d.GetFileList()).Return(new List<IFile> { sourceFile });
-            container.IFolderQueue.Enqueue(sourceFolder);
+            folderConatiner.Add(source, sourceFolder);
 
             IFolder targetFolder = MockRepository.GenerateStub<IFolder>();
+            targetFolder.Stub(d => d.FolderPath).Return(target);
             targetFolder.Stub(d => d.CreateLinkToFolderAt(Arg<String>.Is.Anything)).Return(true);
-            container.IFolderQueue.Enqueue(targetFolder);
+            folderConatiner.Add(target, targetFolder);
 
             //Act
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
-                                                                                                            CreateIFileFactoryFromContainer(container));
+            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(f => folderConatiner[f],
+                                                                                                            f => fileContainer[f]);
             dirLinker.UserMessage += (sender, e) => e.Response = DialogResult.Yes;
 
-            dirLinker.CreateSymbolicLinkFolder(source, @"c:\target", true, true);
+            dirLinker.CreateSymbolicLinkFolder(source, target, true, true);
 
             //
             //Assert
@@ -166,33 +190,39 @@ namespace DirLinker.Tests
             //
             //Arrange   
             String source = @"c:\source";
-            QueueBasedClassFactory container = new QueueBasedClassFactory();
+            String filename = "file1";
+            String target = @"c:\target";
 
+            Dictionary<String, IFile> fileContainer = new Dictionary<String, IFile>();
+            
             IFile sourceFile = MockRepository.GenerateStub<IFile>();
             sourceFile.Stub(s => s.Folder).Return(source);
-            sourceFile.Stub(s => s.FileName).Return("file1");
-
+            sourceFile.Stub(s => s.FileName).Return(filename);
+            fileContainer.Add(Path.Combine(source, filename), sourceFile);
 
             IFile targetFile = MockRepository.GenerateStub<IFile>();
             targetFile.Stub(f => f.Exists()).Return(true);
             targetFile.Stub(f => f.GetAttributes()).Return(FileAttributes.ReadOnly);
             targetFile.Stub(f => f.FullFilePath).Return("file1");
-            container.IFileQueue.Enqueue(targetFile);
+            fileContainer.Add(Path.Combine(target, filename), targetFile);
+
+            Dictionary<String, IFolder> folderContainer = new Dictionary<String, IFolder>();
 
             IFolder sourceFolder = MockRepository.GenerateStub<IFolder>();
             sourceFolder.Stub(d => d.FolderExists()).Return(true);
             sourceFolder.Stub(d => d.GetSubFolderList()).Return(new List<IFolder>());
             sourceFolder.Stub(d => d.GetFileList()).Return(new List<IFile> { sourceFile });
-            container.IFolderQueue.Enqueue(sourceFolder);
+            folderContainer.Add(source, sourceFolder);
 
             IFolder targetFolder = MockRepository.GenerateStub<IFolder>();
+            targetFolder.Stub(d => d.FolderPath).Return(target);
             targetFolder.Stub(d => d.CreateLinkToFolderAt(Arg<String>.Is.Anything)).Return(true);
-            container.IFolderQueue.Enqueue(targetFolder);
+            folderContainer.Add(target, targetFolder);
 
             //Act
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
-                                                                                                            CreateIFileFactoryFromContainer(container));
-            dirLinker.UserMessage += (sender, e) => 
+            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(f => folderContainer[f],
+                                                                                                            f => fileContainer[f]);
+            dirLinker.UserMessage += (sender, e) =>
                 {
                     if (!e.Message.Contains("Success"))
                     {
@@ -203,7 +233,7 @@ namespace DirLinker.Tests
                     e.Response = DialogResult.Yes;
                 };
 
-            dirLinker.CreateSymbolicLinkFolder(source, @"c:\target", true, true);
+            dirLinker.CreateSymbolicLinkFolder(source, target, true, true);
         }
         
         [Test]
@@ -212,33 +242,38 @@ namespace DirLinker.Tests
             //
             //Arrange   
             String source = @"c:\source";
-            QueueBasedClassFactory container = new QueueBasedClassFactory();
+            String target = @"c:\target";
+            String filename = "file1";
+
+            Dictionary<String, IFile> fileContainer = new Dictionary<String,IFile>();
 
             IFile sourceFile = MockRepository.GenerateStub<IFile>();
-            sourceFile.Stub(s => s.Folder).Return(source);
-            sourceFile.Stub(s => s.FileName).Return("file1");
+            sourceFile.Stub(s => s.Folder).Return(source);            
+            sourceFile.Stub(s => s.FileName).Return(filename);
+            fileContainer.Add(Path.Combine(source, filename), sourceFile);
 
-            
             IFile targetFile = MockRepository.GenerateStub<IFile>();
             targetFile.Stub(f => f.Exists()).Return(true);
             targetFile.Stub(f => f.GetAttributes()).Return(FileAttributes.ReadOnly);
-            container.IFileQueue.Enqueue(targetFile);
-
+            fileContainer.Add(Path.Combine(target, filename), targetFile);
+           
+            Dictionary<String, IFolder> folderContainer = new Dictionary<String,IFolder>();
             IFolder sourceFolder = MockRepository.GenerateStub<IFolder>();
             sourceFolder.Stub(d => d.FolderExists()).Return(true);
             sourceFolder.Stub(d => d.GetSubFolderList()).Return(new List<IFolder>());
             sourceFolder.Stub(d => d.GetFileList()).Return(new List<IFile> { sourceFile });
-            container.IFolderQueue.Enqueue(sourceFolder);
+            folderContainer.Add(source, sourceFolder);
 
             IFolder targetFolder = MockRepository.GenerateStub<IFolder>();
+            targetFolder.Stub(d => d.FolderPath).Return(target);
             targetFolder.Stub(d => d.CreateLinkToFolderAt(Arg<String>.Is.Anything)).Return(true);
-            container.IFolderQueue.Enqueue(targetFolder);
+            folderContainer.Add(target, targetFolder);
 
             //Act
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
-                                                                                                            CreateIFileFactoryFromContainer(container));
+            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(f => folderContainer[f],
+                                                                                                            f => fileContainer[f]);
             dirLinker.UserMessage += (sender, e) => e.Response = System.Windows.Forms.DialogResult.Yes;
-            dirLinker.CreateSymbolicLinkFolder(source, @"c:\target", true, true);
+            dirLinker.CreateSymbolicLinkFolder(source, target, true, true);
 
             //Assert
             targetFile.AssertWasCalled(f => f.SetAttributes(FileAttributes.Normal));
@@ -247,39 +282,40 @@ namespace DirLinker.Tests
 
 
         [Test]
-        public void CreateSymbolicLinkFolder_Target_File_Exists_When_Overwriting_Check_If_Its_Readonly()
+        public void CreateSymbolicLinkFolder_Target_File_Exists_When_Overwriting_Should_Check_Target_ReadOnly_Flag()
         {
             //
             //Arrange   
-            String source = @"c:\source";
-            QueueBasedClassFactory container = new QueueBasedClassFactory();
-
+            String source = @"c:\source\";
+            String target = @"c:\target\";
+            String filename = "file1";
+            
+            Dictionary<String, IFile> fileContainer = new Dictionary<String, IFile>();
             IFile sourceFile = MockRepository.GenerateStub<IFile>();
             sourceFile.Stub(s => s.Folder).Return(source);
-            sourceFile.Stub(s => s.FileName).Return("file1");
+            sourceFile.Stub(s => s.FileName).Return(filename);
+            fileContainer.Add(source + filename, sourceFile);
 
-            
             IFile targetFile = MockRepository.GenerateStub<IFile>();
             targetFile.Stub(f => f.Exists()).Return(true);
             targetFile.Stub(f => f.GetAttributes()).Return(FileAttributes.Normal);
-            container.IFileQueue.Enqueue(targetFile);
+            fileContainer.Add(target + filename, targetFile);
 
+            Dictionary<String, IFolder> folderContainer = new Dictionary<String, IFolder>();
             IFolder sourceFolder = MockRepository.GenerateStub<IFolder>();
             sourceFolder.Stub(d => d.FolderExists()).Return(true);
             sourceFolder.Stub(d => d.GetSubFolderList()).Return(new List<IFolder>());
             sourceFolder.Stub(d => d.GetFileList()).Return(new List<IFile> { sourceFile });
-            container.IFolderQueue.Enqueue(sourceFolder);
+            folderContainer.Add(source, sourceFolder);
 
             IFolder targetFolder = MockRepository.GenerateStub<IFolder>();
             targetFolder.Stub(d => d.CreateLinkToFolderAt(Arg<String>.Is.Anything)).Return(true);
-            container.IFolderQueue.Enqueue(targetFolder);
-
-
-
+            targetFolder.Stub(d => d.FolderPath).Return(target);
+            folderContainer.Add(target, targetFolder);
             //Act
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
-                                                                                                            CreateIFileFactoryFromContainer(container));
-            dirLinker.CreateSymbolicLinkFolder(source, @"c:\target", true, true);
+            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(f => folderContainer[f],
+                                                                                                            f => fileContainer[f]);
+            dirLinker.CreateSymbolicLinkFolder(source, target, true, true);
 
             //Assert
             targetFile.AssertWasCalled(f => f.GetAttributes());
@@ -292,32 +328,29 @@ namespace DirLinker.Tests
             //
             //Arrange   
             String source = @"c:\source";
-            QueueBasedClassFactory container = new QueueBasedClassFactory();
-
+            String target = @"c:\target";
+            
             IFile sourceFile = MockRepository.GenerateStub<IFile>();
             sourceFile.Stub(s => s.Folder).Return(source);
             sourceFile.Stub(s => s.FileName).Return("file1");
 
-
-            IFile targetFile = MockRepository.GenerateStub<IFile>();
-            container.IFileQueue.Enqueue(targetFile);
-
+            Dictionary<String, IFolder> folderConatiner = new Dictionary<String, IFolder>();
             IFolder sourceFolder = MockRepository.GenerateStub<IFolder>();
             sourceFolder.Stub(d => d.FolderExists()).Return(true);
             sourceFolder.Stub(d => d.GetSubFolderList()).Return(new List<IFolder>());
             sourceFolder.Stub(d => d.GetFileList()).Return(new List<IFile> { sourceFile });
-            container.IFolderQueue.Enqueue(sourceFolder);
+            folderConatiner.Add(source, sourceFolder);
 
             IFolder targetFolder = MockRepository.GenerateStub<IFolder>();
+            targetFolder.Stub(d => d.FolderPath).Return(target);
             targetFolder.Stub(d => d.CreateLinkToFolderAt(Arg<String>.Is.Anything)).Return(true);
-            container.IFolderQueue.Enqueue(targetFolder);
-
+            folderConatiner.Add(target, targetFolder);
 
 
             //Act
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
-                                                                                                            CreateIFileFactoryFromContainer(container));
-            dirLinker.CreateSymbolicLinkFolder(source, @"c:\target", true, false);
+            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(f => folderConatiner[f],
+                                                                                                            f => new FakeFile(f));
+            dirLinker.CreateSymbolicLinkFolder(source, target, true, false);
 
             //Assert
             sourceFile.AssertWasCalled(f => f.SetAttributes(FileAttributes.Normal));
@@ -704,30 +737,32 @@ namespace DirLinker.Tests
             //Arrange
             String pathLink = @"c:\testDir\";
             String pathTo = @"c:\testTarget\";
+            String filename = "file1";
 
-            QueueBasedClassFactory container = new QueueBasedClassFactory();
-           
-            IFile fileStub = Helpers.CreateStubHelpers.GetIFileStub("file1", @"c:\testDir\");
-           
+            Dictionary<String, IFile> fileContainer = new Dictionary<String, IFile>();
+            IFile fileStub = Helpers.CreateStubHelpers.GetIFileStub(filename, @"c:\testDir\");
+            fileContainer.Add(pathLink + filename, fileStub);
+
             IFile targetFile = Helpers.CreateStubHelpers.GetIFileStub("", "");
-            container.IFileQueue.Enqueue(targetFile);
+            fileContainer.Add(pathTo + filename, targetFile);
 
+            Dictionary<String, IFolder> folderContainer = new Dictionary<String,IFolder>();
             IFolder sourceFolder = MockRepository.GenerateStub<IFolder>();
             sourceFolder.Stub(d => d.GetFileList()).Return(new List<IFile> { fileStub });
             sourceFolder.Stub(d => d.GetSubFolderList()).Return(new List<IFolder>());
             sourceFolder.Stub(d => d.FolderExists()).Return(true);
+            folderContainer.Add(pathLink, sourceFolder);
 
-            
-            container.IFolderQueue.Enqueue(sourceFolder);
-            container.IFolderQueue.Enqueue(new StubDirManagerReturnSubFolderList());
+            folderContainer.Add(pathTo, new FakeFolder(pathTo));
+
 
             //Act
-            JunctionPointer.Implemenation.DirLinker testLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
-                                                                                                             CreateIFileFactoryFromContainer(container));
+            JunctionPointer.Implemenation.DirLinker testLinker = new JunctionPointer.Implemenation.DirLinker(f => folderContainer[f],
+                                                                                                             f => fileContainer[f]);
             testLinker.CreateSymbolicLinkFolder(pathLink, pathTo, true, true);
-            
+
             //Assert
-            targetFile.AssertWasCalled(f => f.SetFile(pathTo + "file1"));
+            //targetFile.AssertWasCalled(f => f.SetFile(pathTo + "file1"));
             fileStub.AssertWasCalled(f => f.CopyFile(targetFile, true));
         }
 
@@ -739,28 +774,28 @@ namespace DirLinker.Tests
             String pathLink = @"c:\testDir\";
             String pathTo = @"c:\testTarget\";
 
-            QueueBasedClassFactory container = new QueueBasedClassFactory();
-           
-            IFile fileStub = Helpers.CreateStubHelpers.GetIFileStub("file1", @"c:\testDir\");
 
+            Dictionary<String, IFile> fileContainer = new Dictionary<String, IFile>();
+            IFile fileStub = Helpers.CreateStubHelpers.GetIFileStub("file1", @"c:\testDir\");
+            fileContainer.Add(pathLink + "file1", fileStub);
             IFile targetFile = Helpers.CreateStubHelpers.GetIFileStub("", "");
-            container.IFileQueue.Enqueue(targetFile);
+            fileContainer.Add(pathTo + "file1", targetFile);
 
             IFolder sourceFolder = MockRepository.GenerateStub<IFolder>();
             sourceFolder.Stub(d => d.GetFileList()).Return(new List<IFile> { fileStub });
             sourceFolder.Stub(d => d.GetSubFolderList()).Return(new List<IFolder>());
             sourceFolder.Stub(d => d.FolderExists()).Return(true);
 
-            container.IFolderQueue.Enqueue(sourceFolder);
-            container.IFolderQueue.Enqueue(MockRepository.GenerateStub<IFolder>());
+            Dictionary<String, IFolder> folderContainer = new Dictionary<String, IFolder>();
+            folderContainer.Add(pathLink, sourceFolder);
+            folderContainer.Add(pathTo, new FakeFolder(pathTo));
 
             //Act
-            JunctionPointer.Implemenation.DirLinker testLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
-                                                                                                             CreateIFileFactoryFromContainer(container));
+            JunctionPointer.Implemenation.DirLinker testLinker = new JunctionPointer.Implemenation.DirLinker(f => folderContainer[f],
+                                                                                                             f => fileContainer[f]);
             testLinker.CreateSymbolicLinkFolder(pathLink, pathTo, true, false);
 
             //Assert
-            targetFile.AssertWasCalled(f => f.SetFile(pathTo + "file1"));
             fileStub.AssertWasCalled(f => f.CopyFile(targetFile, false));
             
         }
@@ -771,41 +806,37 @@ namespace DirLinker.Tests
         {
             //
             //Arrange
-           IFile fileA = Helpers.CreateStubHelpers.GetIFileStub("a", @"c:\source\");
+            IFile fileA = Helpers.CreateStubHelpers.GetIFileStub("a", @"c:\source\");
             IFile fileB = Helpers.CreateStubHelpers.GetIFileStub("b", @"c:\source\");
 
             List<IFile> newList = new List<IFile>();
             newList.Add(fileA);
             newList.Add(fileB);
 
-            QueueBasedClassFactory container = new QueueBasedClassFactory();
-
+            String target = @"c:\target\";
+            Dictionary<String, IFile> fileContainer = new Dictionary<String, IFile>();
             IFile targetFileA = Helpers.CreateStubHelpers.GetIFileStub("", "");
-            container.IFileQueue.Enqueue(targetFileA);
+            fileContainer.Add(target + "a", targetFileA);
 
             IFile targetFileB = Helpers.CreateStubHelpers.GetIFileStub("", "");
-            container.IFileQueue.Enqueue(targetFileB);
+            fileContainer.Add(target + "b", targetFileB);
 
             IFolder sourceFolder = MockRepository.GenerateStub<IFolder>();
             sourceFolder.Stub(s => s.GetFileList()).Return(newList);
             sourceFolder.Stub(s => s.GetSubFolderList()).Return(new List<IFolder>());
 
-            String target = @"c:\target\";
-
+            
             IFolder targetFolder = MockRepository.GenerateStub<IFolder>();
             targetFolder.Stub(t => t.FolderPath).Return(target);
             
             //
             //Act
-            JunctionPointer.Implemenation.DirLinker testLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
-                                                                                                             CreateIFileFactoryFromContainer(container));
+            JunctionPointer.Implemenation.DirLinker testLinker = new JunctionPointer.Implemenation.DirLinker(null,
+                                                                                                             f => fileContainer[f]);
             testLinker.CopyFolder(sourceFolder, targetFolder, true);
 
             //
             //Assert
-
-            targetFileA.AssertWasCalled(f => f.SetFile(target + "a"));
-            targetFileB.AssertWasCalled(f => f.SetFile(target + "b"));
             fileA.AssertWasCalled(f => f.CopyFile(targetFileA, true));
             fileB.AssertWasCalled(f => f.CopyFile(targetFileB, true));
         }
@@ -817,48 +848,43 @@ namespace DirLinker.Tests
             //Arrange
             String source = @"c:\source\";
             String target = @"c:\target\";
-            
-            IFolder subFolderA = MockRepository.GenerateStub<IFolder>();
-            subFolderA.Stub(d => d.FolderPath).Return(source + "a");
-            subFolderA.Stub(d => d.GetSubFolderList()).Return(new List<IFolder>());
-            subFolderA.Stub(d => d.GetFileList()).Return(new List<IFile>());
-            
-            IFolder subFolderB = MockRepository.GenerateStub<IFolder>();
-            subFolderB.Stub(d => d.FolderPath).Return(source + "b");
-            subFolderB.Stub(d => d.GetSubFolderList()).Return(new List<IFolder>());
-            subFolderB.Stub(d => d.GetFileList()).Return(new List<IFile>());
-            
-            IFolder sourceFolder = MockRepository.GenerateStub<IFolder>();
-            sourceFolder.Stub(d => d.FolderPath).Return(source);
-            sourceFolder.Stub(d => d.GetFileList()).Return(new List<IFile>());
-            sourceFolder.Stub(d => d.GetSubFolderList()).Return(new List<IFolder> { subFolderA, subFolderB });
+
+            FakeFolder subFolderA = new FakeFolder { FolderPath = source + "a", 
+                                                       SubFolderList = new List<IFolder>(), 
+                                                       FileList = new List<IFile>() };
+
+            FakeFolder subFolderB = new FakeFolder { FolderPath = source + "b", 
+                                                       SubFolderList = new List<IFolder>(), 
+                                                       FileList = new List<IFile>() };
+
+            FakeFolder sourceFolder = new FakeFolder { FolderPath = source, 
+                                                         FileList = new List<IFile>(), 
+                                                         SubFolderList = new List<IFolder> { subFolderA, subFolderB } };
+
             
             //Queue up two target folder to assert against
-            QueueBasedClassFactory container = new QueueBasedClassFactory();
+            Dictionary<String, IFolder> folderContainer = new Dictionary<String, IFolder>();
+
+            FakeFolder targetSubFolderA = new FakeFolder();
+            folderContainer.Add(target + "a", targetSubFolderA);
             
-            IFolder targetSubFolderA = MockRepository.GenerateStub<IFolder>();
-            IFolder targetSubFolderB = MockRepository.GenerateStub<IFolder>();
-
-            container.IFolderQueue.Enqueue(targetSubFolderA);
-            container.IFolderQueue.Enqueue(targetSubFolderB);
-
+            FakeFolder targetSubFolderB = new FakeFolder();
+            folderContainer.Add(target + "b", targetSubFolderB);
+                        
             IFolder targetFolder = MockRepository.GenerateStub<IFolder>();
             targetFolder.Stub(d => d.FolderPath).Return(target);
 
             //
             //Act
-            IDirLinker testLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
-                                                                                CreateIFileFactoryFromContainer(container));
+            IDirLinker testLinker = new JunctionPointer.Implemenation.DirLinker(f => folderContainer[f],
+                                                                                null);
 
             testLinker.CopyFolder(sourceFolder, targetFolder, true);
 
             //
             //Assert
-            Assert.AreEqual(targetSubFolderA.FolderPath, target + "a"); 
-            targetSubFolderA.AssertWasCalled(d => d.CreateFolder());
-
-            Assert.AreEqual(targetSubFolderB.FolderPath, target + "b"); 
-            targetSubFolderB.AssertWasCalled(d => d.CreateFolder());    
+            Assert.IsTrue(targetSubFolderA.CreateFolderCalled);
+            Assert.IsTrue(targetSubFolderB.CreateFolderCalled);
         }
 
         [Test]
@@ -870,32 +896,21 @@ namespace DirLinker.Tests
             String source = @"c:\source\";
             String target = @"c:\target\";
 
-            QueueBasedClassFactory container = new QueueBasedClassFactory();
-
-            container.IFolderQueue.Enqueue(new StubDirManagerReturnSubFolderList());
-            container.IFolderQueue.Enqueue(new StubDirManagerReturnSubFolderList());
-
             IFile file1 = Helpers.CreateStubHelpers.GetIFileStub("file1", @"c:\source\a\");
             IFile file2 = Helpers.CreateStubHelpers.GetIFileStub("file2", @"c:\source\b");
 
+            
+            
+            
             List<IFile> fileList1 = new List<IFile>();
             fileList1.Add(file1);
-
-            List<IFile> fileList2 = new List<IFile>();
-            fileList2.Add(file2);
-
-            IFile targetFileA = MockRepository.GenerateStub<IFile>();
-            container.IFileQueue.Enqueue(targetFileA);
-
-            IFile targetFileB = MockRepository.GenerateStub<IFile>();
-            container.IFileQueue.Enqueue(targetFileB);
-
-
             IFolder subFolder1 = MockRepository.GenerateStub<IFolder>();
             subFolder1.Stub(d => d.FolderPath).Return(source + "a");
             subFolder1.Stub(s => s.GetSubFolderList()).Return(new List<IFolder>());
             subFolder1.Stub(s => s.GetFileList()).Return(fileList1);
 
+            List<IFile> fileList2 = new List<IFile>();
+            fileList2.Add(file2);
             IFolder subFolder2 = MockRepository.GenerateStub<IFolder>();
             subFolder2.Stub(d => d.FolderPath).Return(source + "b");
             subFolder2.Stub(s => s.GetSubFolderList()).Return(new List<IFolder>());
@@ -905,23 +920,28 @@ namespace DirLinker.Tests
             sourceFolder.FolderPath = source;
             sourceFolder.FolderList.Add(subFolder1);
             sourceFolder.FolderList.Add(subFolder2);
-
             sourceFolder.OnlyReturnSubFolderListFor = sourceFolder;
 
+            
+            Dictionary<String, IFile> targetFileContainer = new Dictionary<String, IFile>();
+            IFile targetFileA = MockRepository.GenerateStub<IFile>();
+            targetFileContainer.Add(target + @"a\file1" , targetFileA);
+
+            IFile targetFileB = MockRepository.GenerateStub<IFile>();
+            targetFileContainer.Add(target + @"b\file2" , targetFileB);
+
+
+            
             IFolder targetFolder = MockRepository.GenerateStub<IFolder>();
             targetFolder.Stub(d => d.FolderPath).Return(target);
 
             //
             //Act
-            IDirLinker testLinker = new JunctionPointer.Implemenation.DirLinker(CreateIFolderFactoryFromContainer(container),
-                                                                                CreateIFileFactoryFromContainer(container));
+            IDirLinker testLinker = new JunctionPointer.Implemenation.DirLinker(f => new FakeFolder(f), f => targetFileContainer[f]);
             testLinker.CopyFolder(sourceFolder, targetFolder, true);
 
             //
             //Assert
-            targetFileA.AssertWasCalled(f => f.SetFile(target + @"a\file1"));
-            targetFileB.AssertWasCalled(f => f.SetFile(target + @"b\file2"));
-
             file1.AssertWasCalled(f => f.CopyFile(targetFileA, true));
             file2.AssertWasCalled(f => f.CopyFile(targetFileB, true));
         }
