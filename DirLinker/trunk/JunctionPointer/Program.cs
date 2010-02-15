@@ -34,13 +34,15 @@ namespace JunctionPointer
         {
 
             classFactory.RegisterType<IDirLinker, DirLinker>();
-            classFactory.RegisterType<IFile, FileImp>();
             classFactory.RegisterType<IWorkingController, WorkingDialogController>();
             classFactory.RegisterType<ILinkerView, DirLinkerView>();
             classFactory.RegisterType<IWorkingView, ProgessView>();
-
+            classFactory.RegisterType<IBackgroundWorker, BackgroundWorkerImp>();
             classFactory.RegisterType<IFolder, FolderImp>()
                 .WithFactory<IFolderFactoryForPath>();
+
+            classFactory.RegisterType<IFile, FileImp>()
+                .WithFactory<IFileFactoryForPath>();
             
         }
     }

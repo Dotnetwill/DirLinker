@@ -14,7 +14,6 @@ namespace JunctionPointer.Interfaces
 
         void CopyFile(IFile fullTargetPathWithFileName, Boolean overwrite);
         void SetAttributes(System.IO.FileAttributes attributes);
-        void SetFile(String fileWithFullPath);
         void Delete();
         
         Boolean Exists();

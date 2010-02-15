@@ -6,6 +6,10 @@ namespace JunctionPointer.Implemenation
 {
     class FileImp : IFile
     {
+        public FileImp(String fullPath)
+        {
+            m_FullPath = fullPath;
+        }
         private String m_FullPath;
 
         public string FileName
@@ -45,11 +49,6 @@ namespace JunctionPointer.Implemenation
         public void SetAttributes(FileAttributes attributes)
         {
             File.SetAttributes(m_FullPath, attributes);
-        }
-
-        public void SetFile(string fileWithFullPath)
-        {
-            m_FullPath = fileWithFullPath;
         }
 
         public Boolean Exists()

@@ -27,10 +27,11 @@ namespace DirLinker.Tests.Helpers
             throw new NotImplementedException();
         }
 
+        //We know these are unused because it's a test double so disable the warnings
+#pragma warning disable 0067
         public event PathValidater ValidatePath;
-
         public event PerformLink PerformOperation;
-
+#pragma warning restore 0067
         #endregion
     }
 }

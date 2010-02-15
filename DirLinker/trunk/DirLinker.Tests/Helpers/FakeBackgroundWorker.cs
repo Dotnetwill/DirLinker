@@ -10,9 +10,10 @@ namespace DirLinker.Tests.Helpers
     class FakeBackgroundWorker : IBackgroundWorker
     {
         public event System.ComponentModel.DoWorkEventHandler DoWork;
-
+        //We know these are unused because it's a test double so disable the warnings
+#pragma warning disable 0067
         public event System.ComponentModel.RunWorkerCompletedEventHandler RunWorkerCompleted;
-
+#pragma warning restore 0067
         public void RunWorkerAsync()
         {
             DoWork(this, new DoWorkEventArgs(null));
