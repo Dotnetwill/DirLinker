@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\CopyCommandTests.cs" />
     <Compile Include="Controllers\MainControllerTests.cs" />
     <Compile Include="Controllers\WorkDialogControllerTests.cs" />
     <Compile Include="DirLinkerTests.cs" />
