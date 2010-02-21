@@ -5,6 +5,7 @@ using System.Text;
 using JunctionPointer.Interfaces;
 using System.Drawing;
 using JunctionPointer.Exceptions;
+using System.IO;
 
 namespace JunctionPointer.Commands
 {
@@ -23,7 +24,20 @@ namespace JunctionPointer.Commands
 
         public void Execute()
         {
-            _Source.CopyFile(_Target, _Overwrite);
+            if (_Target.Exists() && _Overwrite)
+            {
+                if ((_Target.GetAttributes() & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                {
+                    return;
+                }
+            }
+
+            if (!_Target.Exists() || _Overwrite)
+            {
+                _Source.CopyFile(_Target, _Overwrite);
+            }
+
+            Executed = true;
         }
 
         public void Undo()
@@ -48,5 +62,12 @@ namespace JunctionPointer.Commands
 
         public Boolean Executed { get; private set; }
         
+        protected event RequestUserReponse _AskUser;
+        
+        public event RequestUserReponse AskUser
+        {
+            add { _AskUser += value; }
+            remove { _AskUser -= value; }
+        }
     }
 }

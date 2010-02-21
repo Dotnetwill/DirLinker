@@ -5,6 +5,7 @@ using JunctionPointer.Commands;
 using JunctionPointer.Interfaces;
 using Rhino.Mocks;
 using JunctionPointer.Exceptions;
+using System.IO;
 
 namespace DirLinker.Tests.Commands
 {
@@ -41,9 +42,26 @@ namespace DirLinker.Tests.Commands
 
             sourceFile.AssertWasCalled(f => f.CopyFile(Arg<IFile>.Is.Same(targetFile), Arg<Boolean>.Is.Anything));
         }
+        
+        [Test]
+        public void Execute_Target_File_Exists_When_Overwriting_Should_Check_Target_ReadOnly_Flag()
+        {
+            IFile sourceFile = MockRepository.GenerateStub<IFile>();
+            sourceFile.Stub(s => s.Folder).Return(@"c:\source");
+            sourceFile.Stub(s => s.FileName).Return("File1");
+
+            IFile targetFile = MockRepository.GenerateStub<IFile>();
+            targetFile.Stub(f => f.Exists()).Return(true);
+            targetFile.Stub(f => f.GetAttributes()).Return(FileAttributes.Normal);
+           
+            ICommand testCopyCommand = new CopyCommand(sourceFile, targetFile, true);
+            testCopyCommand.Execute();
+
+            targetFile.AssertWasCalled(f => f.GetAttributes());
+        }
 
         [Test]
-        public void Execute_target_file_exists_no_overwrite_target_should_not_be_overwritten()
+        public void Execute_target_file_exists_no_overwrite_copy_not_attempted()
         {
             IFile sourceFile = MockRepository.GenerateStub<IFile>();
             sourceFile.Stub(s => s.Folder).Return(@"c:\source\");
@@ -57,8 +75,7 @@ namespace DirLinker.Tests.Commands
             ICommand testCopyCommand = new CopyCommand(sourceFile, targetFile, false);
             testCopyCommand.Execute();
 
-            sourceFile.AssertWasCalled(f => f.CopyFile(targetFile, false));
-            
+            sourceFile.AssertWasNotCalled(f => f.CopyFile(Arg<IFile>.Is.Anything, Arg<Boolean>.Is.Anything));
         }
 
         [Test]

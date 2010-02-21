@@ -288,7 +288,7 @@ namespace DirLinker.Tests
             targetFile.Stub(f => f.Exists()).Return(true);
             targetFile.Stub(f => f.GetAttributes()).Return(FileAttributes.Normal);
             fileContainer.Add(target + filename, targetFile);
-
+            
             Dictionary<String, IFolder> folderContainer = new Dictionary<String, IFolder>();
             IFolder sourceFolder = MockRepository.GenerateStub<IFolder>();
             sourceFolder.Stub(d => d.FolderExists()).Return(true);
@@ -765,7 +765,6 @@ namespace DirLinker.Tests
             testLinker.CreateSymbolicLinkFolder(pathLink, pathTo, true, true);
 
             //Assert
-            //targetFile.AssertWasCalled(f => f.SetFile(pathTo + "file1"));
             fileStub.AssertWasCalled(f => f.CopyFile(targetFile, true));
         }
 
