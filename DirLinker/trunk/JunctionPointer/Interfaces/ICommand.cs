@@ -10,6 +10,6 @@ namespace JunctionPointer.Interfaces
         void Execute();
         void Undo();
         String Status { get; }
-
+        Boolean Executed { get; }
     }
 }

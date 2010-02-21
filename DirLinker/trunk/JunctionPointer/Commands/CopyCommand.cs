@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using JunctionPointer.Interfaces;
+using System.Drawing;
+using JunctionPointer.Exceptions;
 
 namespace JunctionPointer.Commands
 {
@@ -26,7 +28,14 @@ namespace JunctionPointer.Commands
 
         public void Undo()
         {
-            throw new NotImplementedException();
+            //We only want to undo things we've done.  Should this throw an exception?
+            if (!Executed)
+                throw new CommandRunnerException("Can't undo something that hasn't been done.");
+
+            if (!_Source.Exists())
+            {
+                _Target.CopyFile(_Source, false);
+            }
         }
 
         public String Status
@@ -36,5 +45,8 @@ namespace JunctionPointer.Commands
                 return String.Format("Copying file: {0} to {1}", _Source.FullFilePath, _Target.FullFilePath);
             }
         }
+
+        public Boolean Executed { get; private set; }
+        
     }
 }

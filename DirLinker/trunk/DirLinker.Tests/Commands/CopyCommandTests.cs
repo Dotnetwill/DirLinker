@@ -4,6 +4,7 @@ using DirLinker.Tests.Helpers;
 using JunctionPointer.Commands;
 using JunctionPointer.Interfaces;
 using Rhino.Mocks;
+using JunctionPointer.Exceptions;
 
 namespace DirLinker.Tests.Commands
 {
@@ -78,5 +79,68 @@ namespace DirLinker.Tests.Commands
             sourceFile.AssertWasCalled(f => f.CopyFile(targetFile, true));
 
         }
+
+        [Test]
+        public void Undo_Copies_target_back_to_source_when_source_does_not_exist()
+        {
+            IFile sourceFile = MockRepository.GenerateStub<IFile>();
+            sourceFile.Stub(s => s.Exists()).Return(false);
+            sourceFile.Stub(s => s.Folder).Return(@"c:\source\");
+            sourceFile.Stub(s => s.FileName).Return("source");
+
+            IFile targetFile = MockRepository.GenerateStub<IFile>();
+            targetFile.Stub(s => s.Exists()).Return(true);
+            targetFile.Stub(s => s.Folder).Return(@"c:\source\");
+            targetFile.Stub(s => s.FileName).Return("target");
+
+            ICommand testCopyCommand = new CopyCommand(sourceFile, targetFile, true);
+            testCopyCommand.Execute();
+
+            testCopyCommand.Undo();
+
+            targetFile.AssertWasCalled(x => x.CopyFile(Arg<IFile>.Is.Same(sourceFile), Arg<Boolean>.Is.Anything));
+
+        }
+
+        [Test]
+        public void Undo_Does_not_copy_target_to_source_if_source_exists()
+        {
+            IFile sourceFile = MockRepository.GenerateStub<IFile>();
+            sourceFile.Stub(s => s.Exists()).Return(true);
+            sourceFile.Stub(s => s.Folder).Return(@"c:\source\");
+            sourceFile.Stub(s => s.FileName).Return("source");
+
+            IFile targetFile = MockRepository.GenerateStub<IFile>();
+            targetFile.Stub(s => s.Exists()).Return(true);
+            targetFile.Stub(s => s.Folder).Return(@"c:\source\");
+            targetFile.Stub(s => s.FileName).Return("target");
+
+            ICommand testCopyCommand = new CopyCommand(sourceFile, targetFile, true);
+            testCopyCommand.Execute();
+
+            testCopyCommand.Undo();
+
+            targetFile.AssertWasNotCalled(x => x.CopyFile(Arg<IFile>.Is.Same(sourceFile), Arg<Boolean>.Is.Anything));
+
+        }
+
+        [Test]
+        [ExpectedException(ExpectedException=typeof(CommandRunnerException))]
+        public void Undo_Does_nothing_if_executed_has_not_been_called_first()
+        {
+            IFile sourceFile = MockRepository.GenerateStub<IFile>();
+            sourceFile.Stub(s => s.Exists()).Return(false);
+            sourceFile.Stub(s => s.Folder).Return(@"c:\source\");
+            sourceFile.Stub(s => s.FileName).Return("source");
+
+            IFile targetFile = MockRepository.GenerateStub<IFile>();
+            targetFile.Stub(s => s.Exists()).Return(true);
+            targetFile.Stub(s => s.Folder).Return(@"c:\source\");
+            targetFile.Stub(s => s.FileName).Return("target");
+
+            ICommand testCopyCommand = new CopyCommand(sourceFile, targetFile, true);
+            testCopyCommand.Undo();
+        }
+
     }
 }
