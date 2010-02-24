@@ -61,6 +61,76 @@ namespace DirLinker.Tests.Commands
         }
 
         [Test]
+        public void Execute_Target_File_Readonly_User_Asked_To_Confirm()
+        {
+            IFile sourceFile = MockRepository.GenerateStub<IFile>();
+            sourceFile.Stub(s => s.Folder).Return(@"c:\source");
+            sourceFile.Stub(s => s.FileName).Return("File1");
+
+            IFile targetFile = MockRepository.GenerateStub<IFile>();
+            targetFile.Stub(f => f.Exists()).Return(true);
+            targetFile.Stub(f => f.GetAttributes()).Return(FileAttributes.ReadOnly);
+
+            Boolean responseRequested = false;
+            ICommand testCopyCommand = new CopyCommand(sourceFile, targetFile, true);
+            testCopyCommand.AskUser += (question, options) =>
+                {
+                    responseRequested = true;
+                    return System.Windows.Forms.DialogResult.OK;
+                };
+
+            testCopyCommand.Execute();
+
+            Assert.IsTrue(responseRequested);
+        }
+
+        [Test]
+        public void Execute_Target_File_Readonly_User_Yes_Read_Only_Cleared_File_Copied()
+        {
+            IFile sourceFile = MockRepository.GenerateStub<IFile>();
+            sourceFile.Stub(s => s.Folder).Return(@"c:\source");
+            sourceFile.Stub(s => s.FileName).Return("File1");
+
+            IFile targetFile = MockRepository.GenerateStub<IFile>();
+            targetFile.Stub(f => f.Exists()).Return(true);
+            targetFile.Stub(f => f.GetAttributes()).Return(FileAttributes.ReadOnly);
+
+            ICommand testCopyCommand = new CopyCommand(sourceFile, targetFile, true);
+            testCopyCommand.AskUser += (question, options) =>
+            {
+                return System.Windows.Forms.DialogResult.Yes;
+            };
+
+            testCopyCommand.Execute();
+
+            targetFile.AssertWasCalled(t => t.SetAttributes(FileAttributes.Normal));
+            sourceFile.AssertWasCalled(s => s.CopyFile(targetFile, true));
+        }
+
+        [Test]
+        public void Execute_Target_File_Readonly_User_No_Read_Only_Not_Cleared_File_Not_Copied()
+        {
+            IFile sourceFile = MockRepository.GenerateStub<IFile>();
+            sourceFile.Stub(s => s.Folder).Return(@"c:\source");
+            sourceFile.Stub(s => s.FileName).Return("File1");
+
+            IFile targetFile = MockRepository.GenerateStub<IFile>();
+            targetFile.Stub(f => f.Exists()).Return(true);
+            targetFile.Stub(f => f.GetAttributes()).Return(FileAttributes.ReadOnly);
+
+            ICommand testCopyCommand = new CopyCommand(sourceFile, targetFile, true);
+            testCopyCommand.AskUser += (question, options) =>
+            {
+                return System.Windows.Forms.DialogResult.No;
+            };
+
+            testCopyCommand.Execute();
+
+            targetFile.AssertWasNotCalled(t => t.SetAttributes(FileAttributes.Normal));
+            sourceFile.AssertWasNotCalled(s => s.CopyFile(targetFile, true));
+        }
+
+        [Test]
         public void Execute_target_file_exists_no_overwrite_copy_not_attempted()
         {
             IFile sourceFile = MockRepository.GenerateStub<IFile>();
@@ -74,7 +144,7 @@ namespace DirLinker.Tests.Commands
 
             ICommand testCopyCommand = new CopyCommand(sourceFile, targetFile, false);
             testCopyCommand.Execute();
-
+            
             sourceFile.AssertWasNotCalled(f => f.CopyFile(Arg<IFile>.Is.Anything, Arg<Boolean>.Is.Anything));
         }
 
@@ -142,7 +212,6 @@ namespace DirLinker.Tests.Commands
         }
 
         [Test]
-        [ExpectedException(ExpectedException=typeof(CommandRunnerException))]
         public void Undo_Does_nothing_if_executed_has_not_been_called_first()
         {
             IFile sourceFile = MockRepository.GenerateStub<IFile>();
@@ -157,7 +226,11 @@ namespace DirLinker.Tests.Commands
 
             ICommand testCopyCommand = new CopyCommand(sourceFile, targetFile, true);
             testCopyCommand.Undo();
+
+            targetFile.AssertWasNotCalled(t => t.CopyFile(Arg<IFile>.Is.Anything, Arg<Boolean>.Is.Anything));
         }
+
+        
 
     }
 }

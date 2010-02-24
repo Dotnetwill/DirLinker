@@ -15,7 +15,6 @@ namespace JunctionPointer.Interfaces
         void Undo();
         
         String Status { get; }
-        Boolean Executed { get; }
 
         event RequestUserReponse AskUser;
     }
