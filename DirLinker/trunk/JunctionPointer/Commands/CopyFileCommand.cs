@@ -1,23 +1,21 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using JunctionPointer.Interfaces;
-using System.Drawing;
 using JunctionPointer.Exceptions;
 using System.IO;
 using System.Windows.Forms;
 
 namespace JunctionPointer.Commands
 {
-    public class CopyCommand : ICommand
+    public delegate ICommand CopyFileCommandFactory(IFile folder);
+
+    public class CopyFileCommand : ICommand
     {
         private IFile _Source;
         private IFile _Target;
         private Boolean _Overwrite;
         private Boolean _FileCopied;
 
-        public CopyCommand(IFile source, IFile target, Boolean overwrite)
+        public CopyFileCommand(IFile source, IFile target, Boolean overwrite)
         {
             _Source = source;
             _Target = target;
@@ -87,6 +85,7 @@ namespace JunctionPointer.Commands
             if (_FileCopied && !_Source.Exists())
             {
                 _Target.CopyFile(_Source, false);
+                _Target.Delete();
             }
         }
 
