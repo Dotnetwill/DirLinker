@@ -1,27 +1,41 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using JunctionPointer.Interfaces;
 
 namespace JunctionPointer.Commands
 {
+    public delegate ICommand CreateFolderCommandFactory(IFolder folder);
+
     public class CreateFolderCommand : ICommand
     {
-        
+        private IFolder _Folder;
+        private Boolean _FolderCreatedByCommand;
+
+        public CreateFolderCommand(IFolder folder)
+        {
+            _Folder = folder;
+            _FolderCreatedByCommand = false;
+        }
+
         public void Execute()
         {
-            throw new NotImplementedException();
+            if (!_Folder.FolderExists())
+            {
+                _Folder.CreateFolder();
+                _FolderCreatedByCommand = true;
+            }
         }
 
         public void Undo()
         {
-            throw new NotImplementedException();
+            if (_FolderCreatedByCommand)
+            {
+                _Folder.DeleteFolder();
+            }
         }
 
         public string Status
         {
-            get { throw new NotImplementedException(); }
+            get { return String.Format("Creating folder {0}", _Folder.FolderPath); }
         }
 
         public event RequestUserReponse AskUser;
