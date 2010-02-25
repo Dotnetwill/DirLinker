@@ -22,5 +22,30 @@ namespace DirLinker.Tests.Commands
 
             Assert.IsTrue(folder.DeleteFolderCalled);
         }
+
+        [Test]
+        public void Undo_Creates_folder_when_undo_is_called_after_execute()
+        {
+            FakeFolder folder = new FakeFolder(@"c:\fakeFolder\");
+            folder.FolderExistsReturnValue = true;
+
+            ICommand deleteCommand = new DeleteFolderCommand(folder);
+            deleteCommand.Execute();
+            deleteCommand.Undo();
+
+            Assert.IsTrue(folder.CreateFolderCalled);
+        }
+
+        [Test]
+        public void Undo_Execute_not_called_folder_is_not_created()
+        {
+            FakeFolder folder = new FakeFolder(@"c:\fakeFolder\");
+            folder.FolderExistsReturnValue = true;
+
+            ICommand deleteCommand = new DeleteFolderCommand(folder);
+            deleteCommand.Undo();
+
+            Assert.IsFalse(folder.CreateFolderCalled);
+        }
     }
 }

@@ -9,7 +9,7 @@ namespace JunctionPointer.Commands
     public class DeleteFolderCommand : ICommand
     {
         private IFolder _Folder;
-
+        private Boolean _FolderDeleted;
         public DeleteFolderCommand(IFolder folder)
         {
             _Folder = folder;
@@ -18,10 +18,15 @@ namespace JunctionPointer.Commands
         public void Execute()
         {
             _Folder.DeleteFolder();
+            _FolderDeleted = true;
         }
 
         public void Undo()
         {
+            if (_FolderDeleted)
+            {
+                _Folder.CreateFolder();
+            }
         }
 
         public string Status
