@@ -6,6 +6,8 @@ namespace JunctionPointer.Interfaces
     public interface IFile
     {
 
+        void MoveFile(IFile target);
+
         String FileName { get; }
         String Folder { get; }
         String FullFilePath { get; }

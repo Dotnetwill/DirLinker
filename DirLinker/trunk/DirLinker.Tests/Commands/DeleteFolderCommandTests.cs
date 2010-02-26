@@ -16,6 +16,7 @@ namespace DirLinker.Tests.Commands
         public void Execute_Folder_deleted()
         {
             FakeFolder folder = new FakeFolder(@"c:\fakeFolder\");
+            folder.FolderExistsReturnValue = true;
 
             ICommand deleteCommand = new DeleteFolderCommand(folder);
             deleteCommand.Execute();
@@ -46,6 +47,18 @@ namespace DirLinker.Tests.Commands
             deleteCommand.Undo();
 
             Assert.IsFalse(folder.CreateFolderCalled);
+        }
+
+        [Test]
+        public void Execute_folder_does_not_exist_delete_not_called()
+        {
+            FakeFolder folder = new FakeFolder(@"c:\fakeFolder\");
+            folder.FolderExistsReturnValue = false;
+
+            ICommand deleteCommand = new DeleteFolderCommand(folder);
+            deleteCommand.Execute();
+
+            Assert.IsFalse(folder.DeleteFolderCalled);
         }
     }
 }

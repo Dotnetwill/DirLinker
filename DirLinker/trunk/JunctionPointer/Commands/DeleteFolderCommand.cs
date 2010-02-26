@@ -17,8 +17,11 @@ namespace JunctionPointer.Commands
 
         public void Execute()
         {
-            _Folder.DeleteFolder();
-            _FolderDeleted = true;
+            if (_Folder.FolderExists())
+            {
+                _Folder.DeleteFolder();
+                _FolderDeleted = true;
+            }
         }
 
         public void Undo()

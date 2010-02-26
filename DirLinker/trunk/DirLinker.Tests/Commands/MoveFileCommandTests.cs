@@ -4,13 +4,12 @@ using DirLinker.Tests.Helpers;
 using JunctionPointer.Commands;
 using JunctionPointer.Interfaces;
 using Rhino.Mocks;
-using JunctionPointer.Exceptions;
 using System.IO;
 
 namespace DirLinker.Tests.Commands
 {
     [TestFixture]
-    public class CopyCommandTests
+    public class MoveFileCommandTests
     { 
         
         [Test]
@@ -19,7 +18,7 @@ namespace DirLinker.Tests.Commands
             FakeFile sourceFile = new FakeFile("file1");
             FakeFile targetFile = new FakeFile("file2");
 
-            CopyFileCommand testCopyCommand = new CopyFileCommand(sourceFile, targetFile, false);
+            MoveFileCommand testCopyCommand = new MoveFileCommand(sourceFile, targetFile, false);
             String status = testCopyCommand.Status;
 
             Assert.That(status.Contains("file1"));
@@ -27,7 +26,7 @@ namespace DirLinker.Tests.Commands
         }
 
         [Test]
-        public void Execute_source_file_should_copy_to_target()
+        public void Execute_source_file_should_move_to_target()
         {
             IFile sourceFile = MockRepository.GenerateStub<IFile>();
             sourceFile.Stub(s => s.Folder).Return(@"c:\source\");
@@ -36,11 +35,12 @@ namespace DirLinker.Tests.Commands
             IFile targetFile = MockRepository.GenerateStub<IFile>();
             targetFile.Stub(s => s.Folder).Return(@"c:\source\");
             targetFile.Stub(s => s.FileName).Return("target");
+            targetFile.Stub(s => s.Exists()).Return(false);
 
-            ICommand testCopyCommand = new CopyFileCommand(sourceFile, targetFile, false);
+            ICommand testCopyCommand = new MoveFileCommand(sourceFile, targetFile, false);
             testCopyCommand.Execute();
 
-            sourceFile.AssertWasCalled(f => f.CopyFile(Arg<IFile>.Is.Same(targetFile), Arg<Boolean>.Is.Anything));
+            sourceFile.AssertWasCalled(f => f.MoveFile(Arg<IFile>.Is.Same(targetFile)));
         }
         
         [Test]
@@ -54,7 +54,7 @@ namespace DirLinker.Tests.Commands
             targetFile.Stub(f => f.Exists()).Return(true);
             targetFile.Stub(f => f.GetAttributes()).Return(FileAttributes.Normal);
            
-            ICommand testCopyCommand = new CopyFileCommand(sourceFile, targetFile, true);
+            ICommand testCopyCommand = new MoveFileCommand(sourceFile, targetFile, true);
             testCopyCommand.Execute();
 
             targetFile.AssertWasCalled(f => f.GetAttributes());
@@ -72,7 +72,7 @@ namespace DirLinker.Tests.Commands
             targetFile.Stub(f => f.GetAttributes()).Return(FileAttributes.ReadOnly);
 
             Boolean responseRequested = false;
-            ICommand testCopyCommand = new CopyFileCommand(sourceFile, targetFile, true);
+            ICommand testCopyCommand = new MoveFileCommand(sourceFile, targetFile, true);
             testCopyCommand.AskUser += (question, options) =>
                 {
                     responseRequested = true;
@@ -95,7 +95,7 @@ namespace DirLinker.Tests.Commands
             targetFile.Stub(f => f.Exists()).Return(true);
             targetFile.Stub(f => f.GetAttributes()).Return(FileAttributes.ReadOnly);
 
-            ICommand testCopyCommand = new CopyFileCommand(sourceFile, targetFile, true);
+            ICommand testCopyCommand = new MoveFileCommand(sourceFile, targetFile, true);
             testCopyCommand.AskUser += (question, options) =>
             {
                 return System.Windows.Forms.DialogResult.Yes;
@@ -104,7 +104,7 @@ namespace DirLinker.Tests.Commands
             testCopyCommand.Execute();
 
             targetFile.AssertWasCalled(t => t.SetAttributes(FileAttributes.Normal));
-            sourceFile.AssertWasCalled(s => s.CopyFile(targetFile, true));
+            sourceFile.AssertWasCalled(s => s.MoveFile(targetFile));
         }
 
         [Test]
@@ -118,7 +118,7 @@ namespace DirLinker.Tests.Commands
             targetFile.Stub(f => f.Exists()).Return(true);
             targetFile.Stub(f => f.GetAttributes()).Return(FileAttributes.ReadOnly);
 
-            ICommand testCopyCommand = new CopyFileCommand(sourceFile, targetFile, true);
+            ICommand testCopyCommand = new MoveFileCommand(sourceFile, targetFile, true);
             testCopyCommand.AskUser += (question, options) =>
             {
                 return System.Windows.Forms.DialogResult.No;
@@ -142,7 +142,7 @@ namespace DirLinker.Tests.Commands
             targetFile.Stub(s => s.Folder).Return(@"c:\source\");
             targetFile.Stub(s => s.FileName).Return("target");
 
-            ICommand testCopyCommand = new CopyFileCommand(sourceFile, targetFile, false);
+            ICommand testCopyCommand = new MoveFileCommand(sourceFile, targetFile, false);
             testCopyCommand.Execute();
             
             sourceFile.AssertWasNotCalled(f => f.CopyFile(Arg<IFile>.Is.Anything, Arg<Boolean>.Is.Anything));
@@ -160,10 +160,10 @@ namespace DirLinker.Tests.Commands
             targetFile.Stub(s => s.Folder).Return(@"c:\source\");
             targetFile.Stub(s => s.FileName).Return("target");
 
-            ICommand testCopyCommand = new CopyFileCommand(sourceFile, targetFile, true);
+            ICommand testCopyCommand = new MoveFileCommand(sourceFile, targetFile, true);
             testCopyCommand.Execute();
 
-            sourceFile.AssertWasCalled(f => f.CopyFile(targetFile, true));
+            sourceFile.AssertWasCalled(f => f.MoveFile(targetFile));
 
         }
 
@@ -180,12 +180,12 @@ namespace DirLinker.Tests.Commands
             targetFile.Stub(s => s.Folder).Return(@"c:\source\");
             targetFile.Stub(s => s.FileName).Return("target");
 
-            ICommand testCopyCommand = new CopyFileCommand(sourceFile, targetFile, true);
+            ICommand testCopyCommand = new MoveFileCommand(sourceFile, targetFile, true);
             testCopyCommand.Execute();
 
             testCopyCommand.Undo();
 
-            targetFile.AssertWasCalled(x => x.CopyFile(Arg<IFile>.Is.Same(sourceFile), Arg<Boolean>.Is.Anything));
+            targetFile.AssertWasCalled(x => x.MoveFile(Arg<IFile>.Is.Same(sourceFile)));
 
         }
 
@@ -202,7 +202,7 @@ namespace DirLinker.Tests.Commands
             targetFile.Stub(s => s.Folder).Return(@"c:\source\");
             targetFile.Stub(s => s.FileName).Return("target");
 
-            ICommand testCopyCommand = new CopyFileCommand(sourceFile, targetFile, true);
+            ICommand testCopyCommand = new MoveFileCommand(sourceFile, targetFile, true);
             testCopyCommand.Execute();
 
             testCopyCommand.Undo();
@@ -224,7 +224,7 @@ namespace DirLinker.Tests.Commands
             targetFile.Stub(s => s.Folder).Return(@"c:\source\");
             targetFile.Stub(s => s.FileName).Return("target");
 
-            ICommand testCopyCommand = new CopyFileCommand(sourceFile, targetFile, true);
+            ICommand testCopyCommand = new MoveFileCommand(sourceFile, targetFile, true);
             testCopyCommand.Undo();
 
             targetFile.AssertWasNotCalled(t => t.CopyFile(Arg<IFile>.Is.Anything, Arg<Boolean>.Is.Anything));
@@ -243,13 +243,32 @@ namespace DirLinker.Tests.Commands
             targetFile.Stub(s => s.Folder).Return(@"c:\source\");
             targetFile.Stub(s => s.FileName).Return("target");
 
-            ICommand testCopyCommand = new CopyFileCommand(sourceFile, targetFile, true);
+            ICommand testCopyCommand = new MoveFileCommand(sourceFile, targetFile, true);
             testCopyCommand.Execute();
             testCopyCommand.Undo();
 
             targetFile.AssertWasCalled(t => t.Delete());
         }
-     
+
+        [Test]
+        public void Execute_target_file_exists_overwrite_specified_target_deleted()
+        {
+            IFile sourceFile = MockRepository.GenerateStub<IFile>();
+            sourceFile.Stub(s => s.Exists()).Return(false);
+            sourceFile.Stub(s => s.Folder).Return(@"c:\source\");
+            sourceFile.Stub(s => s.FileName).Return("source");
+
+            IFile targetFile = MockRepository.GenerateStub<IFile>();
+            targetFile.Stub(s => s.Exists()).Return(true);
+            targetFile.Stub(s => s.Folder).Return(@"c:\source\");
+            targetFile.Stub(s => s.FileName).Return("target");
+
+            ICommand testCopyCommand = new MoveFileCommand(sourceFile, targetFile, true);
+            testCopyCommand.Execute();
+
+
+            targetFile.AssertWasCalled(t => t.Delete());
+        }
 
     }
 }

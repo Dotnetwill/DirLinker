@@ -9,7 +9,11 @@ namespace DirLinker.Tests.Helpers
 {
     public class FakeFile : IFile
     {
-        
+
+        public void MoveFile(IFile _Target)
+        {
+            throw new NotImplementedException();
+        }
         public FakeFile(String filename)
         {
             FullFilePath = filename;

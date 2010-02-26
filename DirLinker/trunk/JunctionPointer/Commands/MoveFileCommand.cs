@@ -8,65 +8,75 @@ namespace JunctionPointer.Commands
 {
     public delegate ICommand CopyFileCommandFactory(IFile folder);
 
-    public class CopyFileCommand : ICommand
+    public class MoveFileCommand : ICommand
     {
         private IFile _Source;
         private IFile _Target;
         private Boolean _Overwrite;
-        private Boolean _FileCopied;
+        private Boolean _FileMoved;
 
-        public CopyFileCommand(IFile source, IFile target, Boolean overwrite)
+        public MoveFileCommand(IFile source, IFile target, Boolean overwrite)
         {
             _Source = source;
             _Target = target;
             _Overwrite = overwrite;
-            _FileCopied = false;
+            _FileMoved = false;
         }
 
         public void Execute()
         {
-            Boolean isOverwriteable = TargetOverwriteable();
+            Boolean canCopyToTarget = TargetWriteable();
 
-            if (!_Target.Exists() || isOverwriteable)
+            if (canCopyToTarget)
             {
-                _Source.CopyFile(_Target, _Overwrite);
-                _FileCopied = true;
+                _Source.MoveFile(_Target);
+                _FileMoved = true;
             }
 
         }
 
-        private Boolean TargetOverwriteable()
+        private Boolean TargetWriteable()
         {
-            Boolean overwriteTarget = true;
+            Boolean targetWriteable = true;
 
             if (_Target.Exists() && _Overwrite)
             {
-                if ((_Target.GetAttributes() & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                targetWriteable = !TargetFileReadOnly();
+                if (targetWriteable)
                 {
-                    DialogResult res = RequestUserRespone(String.Format("{0} is read only.  Would you like to overwrite it?", _Target.FullFilePath));
-                    if (res == DialogResult.Yes)
-                    {
-                        _Target.SetAttributes(FileAttributes.Normal);
-                        overwriteTarget = true;
-                    }
-                    else if (res == DialogResult.No)
-                    {
-                        overwriteTarget = false;
-                    }
-                    else if (res == DialogResult.Cancel)
-                    {
-                        throw new DirLinkerException("User requested cancel", DirLinkerStage.CopyingSourceToTemp);
-                    }
+                    _Target.Delete();
                 }
             }
             else if(_Target.Exists() && !_Overwrite)
             {
-                overwriteTarget = false;
+                targetWriteable = false;
             }
 
-            return overwriteTarget;
+            return targetWriteable;
         }
 
+        private Boolean TargetFileReadOnly()
+        {
+            Boolean targetFileReadonly = false;
+            DialogResult res = RequestUserRespone(String.Format("{0} is read only.  Would you like to overwrite it?", _Target.FullFilePath));
+            if ((_Target.GetAttributes() & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+            {
+                if (res == DialogResult.Yes)
+                {
+                    _Target.SetAttributes(FileAttributes.Normal);
+                }
+                else if (res == DialogResult.No)
+                {
+                    targetFileReadonly = false;
+                }
+                else if (res == DialogResult.Cancel)
+                {
+                    throw new DirLinkerException("User requested cancel", DirLinkerStage.CopyingSourceToTemp);
+                }
+            }
+
+            return targetFileReadonly;
+        }
         private DialogResult RequestUserRespone(String message)
         {
             RequestUserReponse ask = _AskUser;
@@ -82,9 +92,9 @@ namespace JunctionPointer.Commands
 
         public void Undo()
         {
-            if (_FileCopied && !_Source.Exists())
+            if (_FileMoved && !_Source.Exists())
             {
-                _Target.CopyFile(_Source, false);
+                _Target.MoveFile(_Source);
                 _Target.Delete();
             }
         }

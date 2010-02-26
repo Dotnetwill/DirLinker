@@ -60,5 +60,10 @@ namespace JunctionPointer.Implemenation
         {
             File.Delete(FullFilePath);
         }
+
+        public void MoveFile(IFile target)
+        {
+            File.Move(m_FullPath, target.FullFilePath);
+        }
     }
 }
