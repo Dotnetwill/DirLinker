@@ -7,11 +7,14 @@ using JunctionPointer.Exceptions;
 
 namespace JunctionPointer.Commands
 {
+   
     public class CreateLinkCommand : ICommand
     {
         private IFolder _linkTo;
         private IFolder _linkFrom;
-        
+
+        Func<IFolder, IFolder, ICommand> DeleteCommandFactory;
+   
         public CreateLinkCommand(IFolder linkTo, IFolder linkFrom)
         {
             _linkTo = linkTo;

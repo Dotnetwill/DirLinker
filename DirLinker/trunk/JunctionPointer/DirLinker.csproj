@@ -51,9 +51,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\CommandDiscovery\CommandDiscovery.cs" />
+    <Compile Include="Commands\CommandFactory.cs" />
     <Compile Include="Commands\CreateFolderCommand.cs" />
     <Compile Include="Commands\CreateLinkCommand.cs" />
     <Compile Include="Commands\DeleteFolderCommand.cs" />
+    <Compile Include="Commands\ICommandFactory.cs" />
     <Compile Include="Exceptions\CommandRunnerException.cs" />
     <Compile Include="Helpers\ClassFactory\ClassFactory.cs" />
     <Compile Include="Helpers\Interfaces\IClassFactory.cs" />
@@ -125,9 +128,6 @@
     <Content Include="1263649341_forward.ico" />
     <None Include="Resources\1263649341_forward.ico" />
     <None Include="Resources\icon.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Commands\CommandDiscovery\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
