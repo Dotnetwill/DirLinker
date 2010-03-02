@@ -37,16 +37,17 @@ namespace DirLinker.Tests.Helpers
         {
             DeleteFolderCalled = true;
         }
-
+        
         public List<IFile> FileList {get; set;}
         public List<IFile> GetFileList()
         {
+            FileList = FileList ?? new List<IFile>();
             return FileList;
         }
-
         public List<IFolder> SubFolderList {get; set;}
         public List<IFolder> GetSubFolderList()
         {
+            SubFolderList = SubFolderList ?? new List<IFolder>();
             return SubFolderList;
         }
 

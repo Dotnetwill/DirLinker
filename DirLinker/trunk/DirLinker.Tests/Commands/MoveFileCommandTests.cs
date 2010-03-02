@@ -19,7 +19,7 @@ namespace DirLinker.Tests.Commands
             FakeFile targetFile = new FakeFile("file2");
 
             MoveFileCommand testCopyCommand = new MoveFileCommand(sourceFile, targetFile, false);
-            String status = testCopyCommand.Status;
+            String status = testCopyCommand.UserFeedback;
 
             Assert.That(status.Contains("file1"));
             Assert.That(status.Contains("file2"));

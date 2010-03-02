@@ -59,7 +59,7 @@ namespace DirLinker.Tests.Commands
         {
             CreateLinkCommand command = new CreateLinkCommand(null, null);
 
-            Assert.IsNotEmpty(command.Status);
+            Assert.IsNotEmpty(command.UserFeedback);
         }
     }
 }

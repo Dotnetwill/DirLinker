@@ -99,7 +99,7 @@ namespace JunctionPointer.Commands
             }
         }
 
-        public String Status
+        public String UserFeedback
         {
             get
             {

@@ -36,7 +36,7 @@ namespace JunctionPointer.Commands
             throw new NotSupportedException("This operation is not supported for this command.");
         }
 
-        public string Status
+        public string UserFeedback
         {
             get { throw new NotImplementedException(); }
         }

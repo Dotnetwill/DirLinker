@@ -71,6 +71,7 @@
     <Compile Include="Commands\MoveFileCommand.cs" />
     <Compile Include="Interfaces\IBackgroundWorker.cs" />
     <Compile Include="Interfaces\ICommand.cs" />
+    <Compile Include="Interfaces\ICommandDiscovery.cs" />
     <Compile Include="Interfaces\IFolder.cs" />
     <Compile Include="Interfaces\IDirLinker.cs" />
     <Compile Include="Interfaces\IFile.cs" />
@@ -124,6 +125,9 @@
     <Content Include="1263649341_forward.ico" />
     <None Include="Resources\1263649341_forward.ico" />
     <None Include="Resources\icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Commands\CommandDiscovery\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

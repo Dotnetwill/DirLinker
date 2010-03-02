@@ -33,7 +33,7 @@ namespace JunctionPointer.Commands
             }
         }
 
-        public string Status
+        public string UserFeedback
         {
             get { return String.Format("Creating folder {0}", _Folder.FolderPath); }
         }
