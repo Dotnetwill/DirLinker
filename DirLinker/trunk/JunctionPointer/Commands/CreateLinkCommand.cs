@@ -2,10 +2,45 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using JunctionPointer.Interfaces;
+using JunctionPointer.Exceptions;
 
 namespace JunctionPointer.Commands
 {
-    public class CreateLinkCommand
+    public class CreateLinkCommand : ICommand
     {
+        private IFolder _linkTo;
+        private IFolder _linkFrom;
+        
+        public CreateLinkCommand(IFolder linkTo, IFolder linkFrom)
+        {
+            _linkTo = linkTo;
+            _linkFrom = linkFrom;
+        }
+
+        
+        public void Execute()
+        {
+            if (!_linkTo.FolderExists())
+            {
+                _linkFrom.CreateLinkToFolderAt(_linkTo.FolderPath);
+            }
+            else
+            {
+                throw new DirLinkerException("A link cannot be created if the a folder exists at the target", DirLinkerStage.CreatingDirectoryLink);
+            }
+        }
+
+        public void Undo()
+        {
+            throw new NotSupportedException("This operation is not supported for this command.");
+        }
+
+        public string Status
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public event RequestUserReponse AskUser;
     }
 }

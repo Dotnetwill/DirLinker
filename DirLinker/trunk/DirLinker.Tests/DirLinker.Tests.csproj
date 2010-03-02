@@ -54,7 +54,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\CopyCommandTests.cs" />
+    <Compile Include="Commands\CreateLinkCommandTests.cs" />
+    <Compile Include="Commands\MoveFileCommandTests.cs" />
     <Compile Include="Commands\CreateFolderCommandTests.cs" />
     <Compile Include="Commands\DeleteFolderCommandTests.cs" />
     <Compile Include="Controllers\MainControllerTests.cs" />

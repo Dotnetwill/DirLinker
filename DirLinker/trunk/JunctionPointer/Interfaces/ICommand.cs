@@ -11,7 +11,7 @@ namespace JunctionPointer.Interfaces
         void Execute();
         void Undo();
         
-        String Status { get; }
+        String DisplayableDescriptionOfActionPerformed { get; }
 
         event RequestUserReponse AskUser;
     }

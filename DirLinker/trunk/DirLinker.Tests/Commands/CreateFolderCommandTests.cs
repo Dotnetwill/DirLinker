@@ -78,7 +78,7 @@ namespace DirLinker.Tests.Commands
             folder.FolderExistsReturnValue = true;
 
             ICommand createFolderComand = new CreateFolderCommand(folder);
-            String status = createFolderComand.Status;
+            String status = createFolderComand.DisplayableDescriptionOfActionPerformed;
 
             Assert.IsTrue(status.Contains(folderName));
 
