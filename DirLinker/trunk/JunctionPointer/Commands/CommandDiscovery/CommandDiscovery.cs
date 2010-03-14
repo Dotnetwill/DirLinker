@@ -8,6 +8,8 @@ namespace JunctionPointer.Commands.CommandDiscovery
 {
     public class CommandDiscovery : ICommandDiscovery
     {
+        public CommandDiscovery(ICommandFactory factory)
+        { }
 
         public List<ICommand> GetCommandListForTask(IFolder linkTo, IFolder linkFrom, bool copyBeforeDelete, bool overwriteTargetFiles)
         {

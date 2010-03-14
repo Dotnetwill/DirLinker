@@ -12,5 +12,20 @@ namespace JunctionPointer.Commands
         {
             return new CreateLinkCommand(linkTo, linkFrom);
         }
+
+        public ICommand DeleteFolderCommand(IFolder folder)
+        {
+            return new DeleteFolderCommand(folder);
+        }
+
+        public ICommand CreateFolder(IFolder folder)
+        {
+            return new CreateFolderCommand(folder);
+        }
+
+        public ICommand MoveFileCommand(IFile source, IFile target, Boolean overwriteTarget)
+        {
+            return new MoveFileCommand(source, target, overwriteTarget);
+        }
     }
 }
