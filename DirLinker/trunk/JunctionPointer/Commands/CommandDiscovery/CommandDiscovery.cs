@@ -8,12 +8,23 @@ namespace JunctionPointer.Commands.CommandDiscovery
 {
     public class CommandDiscovery : ICommandDiscovery
     {
+        private ICommandFactory _factory;
+
         public CommandDiscovery(ICommandFactory factory)
-        { }
+        {
+            _factory = factory;
+        }
 
         public List<ICommand> GetCommandListForTask(IFolder linkTo, IFolder linkFrom, bool copyBeforeDelete, bool overwriteTargetFiles)
         {
-            throw new NotImplementedException();
+           List<ICommand> commandList = new List<ICommand>();
+
+           if (!linkTo.FolderExists())
+           {
+               commandList.Add(_factory.CreateLinkCommand(linkTo, linkFrom));
+           }
+
+           return commandList;
         }
 
     }
