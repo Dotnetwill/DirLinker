@@ -70,7 +70,6 @@
     <Compile Include="Helpers\StubDirManagerReturnSubFolderList.cs" />
     <Compile Include="Helpers\StubMainView.cs" />
     <Compile Include="Helpers\StubWorkingController.cs" />
-    <Compile Include="Helpers\UnitTestClassFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -78,9 +77,6 @@
       <Project>{3EBCE70F-0A6B-4F50-B381-AE4E8743873B}</Project>
       <Name>DirLinker</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Helpers\ClassFactory\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
