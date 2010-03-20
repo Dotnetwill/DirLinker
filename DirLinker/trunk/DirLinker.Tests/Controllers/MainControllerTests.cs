@@ -6,6 +6,7 @@ using JunctionPointer.Controllers;
 using JunctionPointer.Interfaces;
 using DirLinker.Tests.Helpers;
 using JunctionPointer.Interfaces.Controllers;
+using OCInject;
 
 namespace DirLinker.Tests.Controllers
 {
@@ -20,10 +21,10 @@ namespace DirLinker.Tests.Controllers
             ILinkerView stubMainView = new StubMainView();
             StubWorkingController workingController = new StubWorkingController();
 
-            UnitTestClassFactory classFactory = new UnitTestClassFactory();
-            classFactory.ReturnObjectForType<ILinkerView>(stubMainView);
-            classFactory.ReturnObjectForType<IDirLinker>(stubLinker);
-            classFactory.ReturnObjectForType<IWorkingController>(workingController);
+            ClassFactory classFactory = new ClassFactory();
+            classFactory.RegisterType<ILinkerView>().AlwaysReturnObject(stubMainView);
+            classFactory.RegisterType<IDirLinker>().AlwaysReturnObject(stubLinker);
+            classFactory.RegisterType<IWorkingController>().AlwaysReturnObject(workingController);
 
 
             stubMainView.LinkPoint = @"Link point";

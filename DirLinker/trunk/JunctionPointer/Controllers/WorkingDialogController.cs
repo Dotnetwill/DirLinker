@@ -3,7 +3,7 @@ using JunctionPointer.Interfaces.Controllers;
 using JunctionPointer.Interfaces.Views;
 using JunctionPointer.Interfaces;
 using System.ComponentModel;
-using JunctionPointer.Helpers.OCInject;
+using OCInject;
 
 namespace JunctionPointer.Controllers
 {

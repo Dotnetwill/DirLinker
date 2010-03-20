@@ -4,6 +4,7 @@ using JunctionPointer.Interfaces;
 using System.Windows.Forms;
 using JunctionPointer.Interfaces.Controllers;
 using JunctionPointer.Helpers.Interfaces;
+using OCInject;
 
 namespace JunctionPointer.Controllers
 {
@@ -11,10 +12,10 @@ namespace JunctionPointer.Controllers
     {
         protected ILinkerView m_View;
         protected IDirLinker m_Linker;
-        protected IClassFactory m_ClassFactory;
+        protected ClassFactory m_ClassFactory;
 
  
-        public MainController(IClassFactory classFactory)
+        public MainController(ClassFactory classFactory)
         {
             m_ClassFactory = classFactory;
             m_View = m_ClassFactory.ManufactureType<ILinkerView>();

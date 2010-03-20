@@ -86,11 +86,11 @@ namespace DirLinker.Tests.Commands.CommandDiscovery
         }
 
         [Test]
-        public void GetCommandListForTask_TargetDoesExist_DeleteFolderThenCreateLinkReturned()
+        public void GetCommandListForTask_TargetExist_DeleteFolderThenCreateLinkReturned()
         {
             ICommandFactory factory = new MockCommandFactory();
             IFolder linkTo = MockRepository.GenerateMock<IFolder>();
-            linkTo.Stub(l => l.FolderExists()).Return(false);
+            linkTo.Stub(l => l.FolderExists()).Return(true);
 
             IFolder linkFrom = MockRepository.GenerateMock<IFolder>();
 
@@ -101,5 +101,45 @@ namespace DirLinker.Tests.Commands.CommandDiscovery
             Assert.IsTrue(((MockCommand)taskList[0]).CommandName.Equals("DeleteFolderCommand"));
             Assert.IsTrue(((MockCommand)taskList[1]).CommandName.Equals("CreateLinkCommand"));
         }
+
+        [Test]
+        public void GetCommandListForTask_TargetExistsNoFiles_DeleteFolderThenCreateLinkReturned()
+        {
+            ICommandFactory factory = new MockCommandFactory();
+            IFolder linkTo = MockRepository.GenerateMock<IFolder>();
+            linkTo.Stub(l => l.FolderExists()).Return(true);
+
+            IFolder linkFrom = MockRepository.GenerateMock<IFolder>();
+
+            ICommandDiscovery discoverer = new stupidNameClass.CommandDiscovery(factory);
+            List<ICommand> taskList = discoverer.GetCommandListForTask(linkTo, linkFrom, true, false);
+
+            Assert.IsTrue(taskList.Count() == 2, "There should be three items in the list");
+            Assert.IsTrue(((MockCommand)taskList[0]).CommandName.Equals("DeleteFolderCommand"));
+            Assert.IsTrue(((MockCommand)taskList[1]).CommandName.Equals("CreateLinkCommand"));
+        }
+
+        [Test]
+        public void GetCommandListForTask_TargetExistsOneFiles_MoveFileThenDeleteFolderThenCreateLinkReturned()
+        {
+            ICommandFactory factory = new MockCommandFactory();
+            IFolder linkTo = MockRepository.GenerateMock<IFolder>();
+            linkTo.Stub(l => l.FolderExists()).Return(true);
+            linkTo.Stub(l => l.GetFileList()).Return(new List<IFile> 
+                        { 
+                            Helpers.CreateStubHelpers.GetIFileStub("1.txt", @"c:\path") 
+                        });
+
+            IFolder linkFrom = MockRepository.GenerateMock<IFolder>();
+
+            ICommandDiscovery discoverer = new stupidNameClass.CommandDiscovery(factory);
+            List<ICommand> taskList = discoverer.GetCommandListForTask(linkTo, linkFrom, true, false);
+
+            Assert.IsTrue(taskList.Count() == 3, "There should be three items in the list");
+            Assert.IsTrue(((MockCommand)taskList[0]).CommandName.Equals("MoveFileCommand"));
+            Assert.IsTrue(((MockCommand)taskList[1]).CommandName.Equals("DeleteFolderCommand"));
+            Assert.IsTrue(((MockCommand)taskList[2]).CommandName.Equals("CreateLinkCommand"));
+        }
+
     }
 }

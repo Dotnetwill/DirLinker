@@ -4,7 +4,7 @@ using Rhino.Mocks;
 using JunctionPointer.Interfaces;
 using System.Collections.Generic;
 using DirLinker.Tests.Helpers;
-using JunctionPointer.Helpers.OCInject;
+using OCInject;
 using System.IO;
 using System.Windows.Forms;
 using JunctionPointer.Helpers.Interfaces;
@@ -1042,8 +1042,8 @@ namespace DirLinker.Tests
             //Arrange
             IFolder dirManager = Helpers.CreateStubHelpers.GetIDirectoryManagerStub();
 
-            UnitTestClassFactory container = new UnitTestClassFactory();
-            container.ReturnObjectForType<IFolder>(dirManager);
+            ClassFactory container = new ClassFactory();
+            container.RegisterType<IFolder>().AlwaysReturnObject(dirManager);
 
             IDirLinker controller = new JunctionPointer.Implemenation.DirLinker(f => dirManager,
                                                                                 null);

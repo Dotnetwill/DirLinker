@@ -8,8 +8,8 @@
     <ProjectGuid>{3EBCE70F-0A6B-4F50-B381-AE4E8743873B}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>JunctionPointer</RootNamespace>
-    <AssemblyName>JunctionPointer</AssemblyName>
+    <RootNamespace>DirLinker</RootNamespace>
+    <AssemblyName>DirLinker</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ApplicationManifest>app.manifest</ApplicationManifest>

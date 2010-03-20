@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
 using JunctionPointer.Views;
 using JunctionPointer.Controllers;
@@ -9,7 +7,7 @@ using JunctionPointer.Interfaces;
 using JunctionPointer.Interfaces.Controllers;
 using JunctionPointer.Interfaces.Views;
 using JunctionPointer.Helpers.Interfaces;
-using JunctionPointer.Helpers.OCInject;
+using OCInject;
 
 namespace JunctionPointer
 {
@@ -24,16 +22,17 @@ namespace JunctionPointer
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            IClassFactory classFactory = new ClassFactory();
+            ClassFactory classFactory = new ClassFactory();
             FillIoCContainer(classFactory);
 
             IMainController mainController = new MainController(classFactory);
             Application.Run(mainController.Start());
         }
-        private static void FillIoCContainer(IClassFactory classFactory)
+
+        private static void FillIoCContainer(ClassFactory classFactory)
         {
 
-            classFactory.RegisterType<IDirLinker, DirLinker>();
+            classFactory.RegisterType<IDirLinker, JunctionPointer.Implemenation.DirLinker>();
             classFactory.RegisterType<IWorkingController, WorkingDialogController>();
             classFactory.RegisterType<ILinkerView, DirLinkerView>();
             classFactory.RegisterType<IWorkingView, ProgessView>();

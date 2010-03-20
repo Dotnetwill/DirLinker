@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 using System.Linq;
 using System.Windows.Forms;
 using System.Diagnostics;
-using JunctionPointer.Helpers.OCInject;
+using OCInject;
 
 namespace JunctionPointer.Implemenation
 {

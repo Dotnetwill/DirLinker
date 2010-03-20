@@ -19,11 +19,16 @@ namespace JunctionPointer.Commands.CommandDiscovery
         {
            List<ICommand> commandList = new List<ICommand>();
 
-           if (!linkTo.FolderExists())
+           if (linkTo.FolderExists())
            {
-               commandList.Add(_factory.CreateLinkCommand(linkTo, linkFrom));
+               if (!copyBeforeDelete)
+               {
+                   commandList.Add(_factory.DeleteFolderCommand(linkTo));
+               }
            }
 
+           commandList.Add(_factory.CreateLinkCommand(linkTo, linkFrom));
+           
            return commandList;
         }
 
