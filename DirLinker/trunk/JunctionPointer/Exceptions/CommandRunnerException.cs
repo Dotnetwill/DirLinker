@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
 
-namespace JunctionPointer.Exceptions
+namespace DirLinker.Exceptions
 {
     public class CommandRunnerException : Exception
     {

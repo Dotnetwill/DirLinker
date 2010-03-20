@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using JunctionPointer.Interfaces;
+using DirLinker.Interfaces;
 using System.IO;
 using System.Runtime.InteropServices;
 using OCInject;
 
-namespace JunctionPointer.Implemenation
+namespace DirLinker.Implemenation
 {
     class FolderImp : IFolder
     {

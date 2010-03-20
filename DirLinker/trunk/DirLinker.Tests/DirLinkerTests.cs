@@ -1,13 +1,13 @@
 ﻿using System;
 using NUnit.Framework;
 using Rhino.Mocks;
-using JunctionPointer.Interfaces;
+using DirLinker.Interfaces;
 using System.Collections.Generic;
 using DirLinker.Tests.Helpers;
 using OCInject;
 using System.IO;
 using System.Windows.Forms;
-using JunctionPointer.Helpers.Interfaces;
+using DirLinker.Helpers.Interfaces;
 
 namespace DirLinker.Tests
 {
@@ -67,7 +67,7 @@ namespace DirLinker.Tests
             targetFolder.Stub(d => d.CreateLinkToFolderAt(Arg<String>.Is.Anything)).Return(true);
             folderContainer.Add(target, targetFolder);
             //Act
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(f => folderContainer[f],
+            DirLinker.Implemenation.DirLinker dirLinker = new DirLinker.Implemenation.DirLinker(f => folderContainer[f],
                                                                                                             f => fileContainer[f]);
             dirLinker.UserMessage += (sender, e) => e.Response = DialogResult.Cancel;
 
@@ -115,7 +115,7 @@ namespace DirLinker.Tests
             folderContainer.Add(target, targetFolder);
 
             //Act
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(f => folderContainer[f],
+            DirLinker.Implemenation.DirLinker dirLinker = new DirLinker.Implemenation.DirLinker(f => folderContainer[f],
                                                                                                             f => fileContainer[f]);
             dirLinker.UserMessage += (sender, e) => e.Response = DialogResult.No;
 
@@ -160,7 +160,7 @@ namespace DirLinker.Tests
             folderConatiner.Add(target, targetFolder);
 
             //Act
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(f => folderConatiner[f],
+            DirLinker.Implemenation.DirLinker dirLinker = new DirLinker.Implemenation.DirLinker(f => folderConatiner[f],
                                                                                                             f => fileContainer[f]);
             dirLinker.UserMessage += (sender, e) => e.Response = DialogResult.Yes;
 
@@ -208,7 +208,7 @@ namespace DirLinker.Tests
             folderContainer.Add(target, targetFolder);
 
             //Act
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(f => folderContainer[f],
+            DirLinker.Implemenation.DirLinker dirLinker = new DirLinker.Implemenation.DirLinker(f => folderContainer[f],
                                                                                                             f => fileContainer[f]);
             dirLinker.UserMessage += (sender, e) =>
                 {
@@ -258,7 +258,7 @@ namespace DirLinker.Tests
             folderContainer.Add(target, targetFolder);
 
             //Act
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(f => folderContainer[f],
+            DirLinker.Implemenation.DirLinker dirLinker = new DirLinker.Implemenation.DirLinker(f => folderContainer[f],
                                                                                                             f => fileContainer[f]);
             dirLinker.UserMessage += (sender, e) => e.Response = System.Windows.Forms.DialogResult.Yes;
             dirLinker.CreateSymbolicLinkFolder(source, target, true, true);
@@ -301,7 +301,7 @@ namespace DirLinker.Tests
             targetFolder.Stub(d => d.FolderPath).Return(target);
             folderContainer.Add(target, targetFolder);
             //Act
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(f => folderContainer[f],
+            DirLinker.Implemenation.DirLinker dirLinker = new DirLinker.Implemenation.DirLinker(f => folderContainer[f],
                                                                                                             f => fileContainer[f]);
             dirLinker.CreateSymbolicLinkFolder(source, target, true, true);
 
@@ -336,7 +336,7 @@ namespace DirLinker.Tests
 
 
             //Act
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(f => folderConatiner[f],
+            DirLinker.Implemenation.DirLinker dirLinker = new DirLinker.Implemenation.DirLinker(f => folderConatiner[f],
                                                                                                             f => new FakeFile(f));
             dirLinker.CreateSymbolicLinkFolder(source, target, true, false);
 
@@ -380,7 +380,7 @@ namespace DirLinker.Tests
 
 
             //Act
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(f => folderContainer[f],
+            DirLinker.Implemenation.DirLinker dirLinker = new DirLinker.Implemenation.DirLinker(f => folderContainer[f],
                                                                                                             f => fileContainer[f]);
             dirLinker.CreateSymbolicLinkFolder(source, target, true, false);
 
@@ -420,7 +420,7 @@ namespace DirLinker.Tests
             mockRepo.ReplayAll();
 
             //Act
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(f => folderContainer[f],
+            DirLinker.Implemenation.DirLinker dirLinker = new DirLinker.Implemenation.DirLinker(f => folderContainer[f],
                                                                                                             null);
             dirLinker.CreateSymbolicLinkFolder(source, target, false, true);
 
@@ -478,7 +478,7 @@ namespace DirLinker.Tests
 
             //Act
             mockRepo.ReplayAll();
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(f => folderContainer[f],
+            DirLinker.Implemenation.DirLinker dirLinker = new DirLinker.Implemenation.DirLinker(f => folderContainer[f],
                                                                                                             null);
             dirLinker.CreateSymbolicLinkFolder(source, target, true, true);
 
@@ -511,7 +511,7 @@ namespace DirLinker.Tests
             folderContainer.Add(target, targetFolder);
 
             //Act
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(f => folderContainer[f],
+            DirLinker.Implemenation.DirLinker dirLinker = new DirLinker.Implemenation.DirLinker(f => folderContainer[f],
                                                                                                             null);
             dirLinker.CreateSymbolicLinkFolder(source, target, false, true);
 
@@ -539,7 +539,7 @@ namespace DirLinker.Tests
             folderContainer.Add(source, sourceFolder);
             folderContainer.Add(target, targetFolder);
 
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(f => folderContainer[f],
+            DirLinker.Implemenation.DirLinker dirLinker = new DirLinker.Implemenation.DirLinker(f => folderContainer[f],
                                                                                                             null);
             
             //Act
@@ -565,7 +565,7 @@ namespace DirLinker.Tests
             folderContainer.Add(source, sourceFolder);
 
             
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(f => GetFromMapOrDefault(folderContainer, f),
+            DirLinker.Implemenation.DirLinker dirLinker = new DirLinker.Implemenation.DirLinker(f => GetFromMapOrDefault(folderContainer, f),
                                                                                                             null);
 
             //Act
@@ -593,7 +593,7 @@ namespace DirLinker.Tests
 
             folderContainer.Add(@"c:\source", sourceFolder);
 
-            IDirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(f => GetFromMapOrDefault(folderContainer, f),
+            IDirLinker dirLinker = new DirLinker.Implemenation.DirLinker(f => GetFromMapOrDefault(folderContainer, f),
                                                                                null);
 
             dirLinker.UserMessage += (sender, args) =>
@@ -618,7 +618,7 @@ namespace DirLinker.Tests
             Dictionary<String, IFolder> folderContainer = new Dictionary<String, IFolder>();
             folderContainer.Add(@"c:\source", sourceFolder);
 
-            IDirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(f => GetFromMapOrDefault(folderContainer, f),
+            IDirLinker dirLinker = new DirLinker.Implemenation.DirLinker(f => GetFromMapOrDefault(folderContainer, f),
                                                                                null);
 
             dirLinker.UserMessage += (sender, args) =>
@@ -647,7 +647,7 @@ namespace DirLinker.Tests
             Dictionary<String, IFolder> folderContainer = new Dictionary<String, IFolder>();
             folderContainer.Add(@"c:\source", sourceFolder);
 
-            IDirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(f => GetFromMapOrDefault(folderContainer, f),
+            IDirLinker dirLinker = new DirLinker.Implemenation.DirLinker(f => GetFromMapOrDefault(folderContainer, f),
                                                                                null);
 
             dirLinker.UserMessage += (sender, args) =>
@@ -672,7 +672,7 @@ namespace DirLinker.Tests
             Dictionary<String, IFolder> folderContainer = new Dictionary<String, IFolder>();
             folderContainer.Add(@"c:\sourcePath", sourceFolder);
 
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(f => GetFromMapOrDefault(folderContainer, f) , null);
+            DirLinker.Implemenation.DirLinker dirLinker = new DirLinker.Implemenation.DirLinker(f => GetFromMapOrDefault(folderContainer, f) , null);
 
             using (mocks.Record())
             {
@@ -703,7 +703,7 @@ namespace DirLinker.Tests
             Dictionary<String, IFolder> folderContainer = new Dictionary<String, IFolder>();
             folderContainer.Add(@"c:\sourcePath", sourceFolder);
 
-            JunctionPointer.Implemenation.DirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(f => GetFromMapOrDefault(folderContainer, f),
+            DirLinker.Implemenation.DirLinker dirLinker = new DirLinker.Implemenation.DirLinker(f => GetFromMapOrDefault(folderContainer, f),
                                                                                                             null);
 
             using (mocks.Record())
@@ -728,7 +728,7 @@ namespace DirLinker.Tests
         public void CreateSymbolicLinkFolder_SourceTargetAreTheSame_ExceptionThrown()
         {
             String path = @"c:\testDir\";
-            JunctionPointer.Implemenation.DirLinker testLinker = new JunctionPointer.Implemenation.DirLinker(null, null);
+            DirLinker.Implemenation.DirLinker testLinker = new DirLinker.Implemenation.DirLinker(null, null);
 
             testLinker.CreateSymbolicLinkFolder(path, path, true, true);
         }
@@ -760,7 +760,7 @@ namespace DirLinker.Tests
 
 
             //Act
-            JunctionPointer.Implemenation.DirLinker testLinker = new JunctionPointer.Implemenation.DirLinker(f => folderContainer[f],
+            DirLinker.Implemenation.DirLinker testLinker = new DirLinker.Implemenation.DirLinker(f => folderContainer[f],
                                                                                                              f => fileContainer[f]);
             testLinker.CreateSymbolicLinkFolder(pathLink, pathTo, true, true);
 
@@ -793,7 +793,7 @@ namespace DirLinker.Tests
             folderContainer.Add(pathTo, new FakeFolder(pathTo));
 
             //Act
-            JunctionPointer.Implemenation.DirLinker testLinker = new JunctionPointer.Implemenation.DirLinker(f => folderContainer[f],
+            DirLinker.Implemenation.DirLinker testLinker = new DirLinker.Implemenation.DirLinker(f => folderContainer[f],
                                                                                                              f => fileContainer[f]);
             testLinker.CreateSymbolicLinkFolder(pathLink, pathTo, true, false);
 
@@ -833,7 +833,7 @@ namespace DirLinker.Tests
             
             //
             //Act
-            JunctionPointer.Implemenation.DirLinker testLinker = new JunctionPointer.Implemenation.DirLinker(null,
+            DirLinker.Implemenation.DirLinker testLinker = new DirLinker.Implemenation.DirLinker(null,
                                                                                                              f => fileContainer[f]);
             testLinker.CopyFolder(sourceFolder, targetFolder, true);
 
@@ -878,7 +878,7 @@ namespace DirLinker.Tests
 
             //
             //Act
-            IDirLinker testLinker = new JunctionPointer.Implemenation.DirLinker(f => folderContainer[f],
+            IDirLinker testLinker = new DirLinker.Implemenation.DirLinker(f => folderContainer[f],
                                                                                 null);
 
             testLinker.CopyFolder(sourceFolder, targetFolder, true);
@@ -939,7 +939,7 @@ namespace DirLinker.Tests
 
             //
             //Act
-            IDirLinker testLinker = new JunctionPointer.Implemenation.DirLinker(f => new FakeFolder(f), f => targetFileContainer[f]);
+            IDirLinker testLinker = new DirLinker.Implemenation.DirLinker(f => new FakeFolder(f), f => targetFileContainer[f]);
             testLinker.CopyFolder(sourceFolder, targetFolder, true);
 
             //
@@ -968,7 +968,7 @@ namespace DirLinker.Tests
             folderContainer.Add(target, targetFolder);
 
 
-            IDirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(f => folderContainer[f],
+            IDirLinker dirLinker = new DirLinker.Implemenation.DirLinker(f => folderContainer[f],
                                                                                null);
             //Act
             dirLinker.CreateSymbolicLinkFolder(source, target,  false, true);
@@ -999,7 +999,7 @@ namespace DirLinker.Tests
             folderContainer.Add(source, sourceFolder);
             folderContainer.Add(target, targetFolder);
 
-            IDirLinker dirLinker = new JunctionPointer.Implemenation.DirLinker(f => GetFromMapOrDefault(folderContainer, f),
+            IDirLinker dirLinker = new DirLinker.Implemenation.DirLinker(f => GetFromMapOrDefault(folderContainer, f),
                                                                                null);
 
             Boolean delegateCalled = false;
@@ -1024,7 +1024,7 @@ namespace DirLinker.Tests
             //Arrange
             IFolder dirManager = Helpers.CreateStubHelpers.GetIDirectoryManagerStub();
            
-            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker(f => dirManager,
+            IDirLinker controller = new DirLinker.Implemenation.DirLinker(f => dirManager,
                                                                                 null);
 
             //Act
@@ -1045,7 +1045,7 @@ namespace DirLinker.Tests
             ClassFactory container = new ClassFactory();
             container.RegisterType<IFolder>().AlwaysReturnObject(dirManager);
 
-            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker(f => dirManager,
+            IDirLinker controller = new DirLinker.Implemenation.DirLinker(f => dirManager,
                                                                                 null);
   
             //Act
@@ -1064,7 +1064,7 @@ namespace DirLinker.Tests
             //Arrange
             IFolder dirManager = Helpers.CreateStubHelpers.GetIDirectoryManagerStub();
             
-            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker(f => dirManager,
+            IDirLinker controller = new DirLinker.Implemenation.DirLinker(f => dirManager,
                                                                                 null);
 
             //Act
@@ -1082,7 +1082,7 @@ namespace DirLinker.Tests
             //Arrange
             IFolder dirManager = Helpers.CreateStubHelpers.GetIDirectoryManagerStub(1);
 
-            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker(f => dirManager,
+            IDirLinker controller = new DirLinker.Implemenation.DirLinker(f => dirManager,
                                                                                 null);
 
             String longPath = @"c:\testPathThatIsLongerTheDirManagerAllows";
@@ -1104,7 +1104,7 @@ namespace DirLinker.Tests
             //Arrange
             IFolder dirManager = Helpers.CreateStubHelpers.GetIDirectoryManagerStub(new Char[] { '|', '?', ':' });
 
-            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker(f => dirManager,
+            IDirLinker controller = new DirLinker.Implemenation.DirLinker(f => dirManager,
                                                                                null);
 
             //Act
@@ -1124,7 +1124,7 @@ namespace DirLinker.Tests
             //Arrange
             IFolder dirManager = Helpers.CreateStubHelpers.GetIDirectoryManagerStub(new Char[] { '|', '?', ':' });
 
-            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker(f => dirManager,
+            IDirLinker controller = new DirLinker.Implemenation.DirLinker(f => dirManager,
                                                                                 null);
 
             //Act
@@ -1143,7 +1143,7 @@ namespace DirLinker.Tests
             //Arrange
             IFolder dirManager = Helpers.CreateStubHelpers.GetIDirectoryManagerStub();
 
-            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker(f => dirManager,
+            IDirLinker controller = new DirLinker.Implemenation.DirLinker(f => dirManager,
                                                                                 null);
 
             //Act
@@ -1162,7 +1162,7 @@ namespace DirLinker.Tests
             //Arrange
             IFolder dirManager = Helpers.CreateStubHelpers.GetIDirectoryManagerStub();
 
-            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker(f => dirManager,
+            IDirLinker controller = new DirLinker.Implemenation.DirLinker(f => dirManager,
                                                                                null);
 
 
@@ -1182,7 +1182,7 @@ namespace DirLinker.Tests
             //Arrange
             IFolder dirManager = Helpers.CreateStubHelpers.GetIDirectoryManagerStub();
 
-            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker(f => dirManager,
+            IDirLinker controller = new DirLinker.Implemenation.DirLinker(f => dirManager,
                                                                                 null);
 
             //Act
@@ -1201,7 +1201,7 @@ namespace DirLinker.Tests
             //Arrange
             IFolder dirManager = Helpers.CreateStubHelpers.GetIDirectoryManagerStub();
 
-            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker(f => dirManager,
+            IDirLinker controller = new DirLinker.Implemenation.DirLinker(f => dirManager,
                                                                                 null);
             
             //Act
@@ -1219,7 +1219,7 @@ namespace DirLinker.Tests
             //Arrange
             IFolder dirManager = Helpers.CreateStubHelpers.GetIDirectoryManagerStub();
             
-            IDirLinker controller = new JunctionPointer.Implemenation.DirLinker(f => dirManager,
+            IDirLinker controller = new DirLinker.Implemenation.DirLinker(f => dirManager,
                                                                                null);
 
 

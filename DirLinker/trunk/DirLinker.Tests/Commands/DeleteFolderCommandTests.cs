@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using DirLinker.Tests.Helpers;
-using JunctionPointer.Interfaces;
-using JunctionPointer.Commands;
-using JunctionPointer.Exceptions;
+using DirLinker.Interfaces;
+using DirLinker.Commands;
+using DirLinker.Exceptions;
 
 namespace DirLinker.Tests.Commands
 {

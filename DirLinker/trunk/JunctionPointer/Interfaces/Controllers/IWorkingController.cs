@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace JunctionPointer.Interfaces.Controllers
+namespace DirLinker.Interfaces.Controllers
 {
     public interface IWorkingController
     {

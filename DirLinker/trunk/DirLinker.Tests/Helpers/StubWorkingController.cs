@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using JunctionPointer.Interfaces.Controllers;
+using DirLinker.Interfaces.Controllers;
 
 namespace DirLinker.Tests.Helpers
 {

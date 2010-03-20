@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using JunctionPointer.Interfaces;
+using DirLinker.Interfaces;
 
-namespace JunctionPointer.Commands
+namespace DirLinker.Commands
 {
     public interface ICommandFactory
     {

@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
-using JunctionPointer.Interfaces;
-using JunctionPointer.Commands;
+using DirLinker.Interfaces;
+using DirLinker.Commands;
 using Rhino.Mocks;
-using stupidNameClass = JunctionPointer.Commands.CommandDiscovery;
 
-namespace DirLinker.Tests.Commands.CommandDiscovery
+namespace DirLinker.Tests.Commands
 {
 
     public class MockCommand : ICommand
@@ -78,7 +77,7 @@ namespace DirLinker.Tests.Commands.CommandDiscovery
 
             IFolder linkFrom = MockRepository.GenerateMock<IFolder>();
 
-            ICommandDiscovery discoverer = new stupidNameClass.CommandDiscovery(factory);
+            ICommandDiscovery discoverer = new CommandDiscovery(factory);
             List<ICommand> taskList = discoverer.GetCommandListForTask(linkTo, linkFrom, false, false);
 
             Assert.IsTrue(taskList.Count() == 1, "There should be one item in the list");
@@ -94,7 +93,7 @@ namespace DirLinker.Tests.Commands.CommandDiscovery
 
             IFolder linkFrom = MockRepository.GenerateMock<IFolder>();
 
-            ICommandDiscovery discoverer = new stupidNameClass.CommandDiscovery(factory);
+            ICommandDiscovery discoverer = new CommandDiscovery(factory);
             List<ICommand> taskList = discoverer.GetCommandListForTask(linkTo, linkFrom, false, false);
 
             Assert.IsTrue(taskList.Count() == 2, "There should be two items in the list");
@@ -111,7 +110,7 @@ namespace DirLinker.Tests.Commands.CommandDiscovery
 
             IFolder linkFrom = MockRepository.GenerateMock<IFolder>();
 
-            ICommandDiscovery discoverer = new stupidNameClass.CommandDiscovery(factory);
+            ICommandDiscovery discoverer = new CommandDiscovery(factory);
             List<ICommand> taskList = discoverer.GetCommandListForTask(linkTo, linkFrom, true, false);
 
             Assert.IsTrue(taskList.Count() == 2, "There should be three items in the list");
@@ -132,7 +131,7 @@ namespace DirLinker.Tests.Commands.CommandDiscovery
 
             IFolder linkFrom = MockRepository.GenerateMock<IFolder>();
 
-            ICommandDiscovery discoverer = new stupidNameClass.CommandDiscovery(factory);
+            ICommandDiscovery discoverer = new CommandDiscovery(factory);
             List<ICommand> taskList = discoverer.GetCommandListForTask(linkTo, linkFrom, true, false);
 
             Assert.IsTrue(taskList.Count() == 3, "There should be three items in the list");

@@ -1,8 +1,8 @@
 ﻿using System;
 using NUnit.Framework;
-using JunctionPointer.Interfaces;
+using DirLinker.Interfaces;
 using DirLinker.Tests.Helpers;
-using JunctionPointer.Commands;
+using DirLinker.Commands;
 
 namespace DirLinker.Tests.Commands
 {

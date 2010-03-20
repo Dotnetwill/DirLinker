@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace JunctionPointer.Interfaces
+namespace DirLinker.Interfaces
 {
     public delegate DialogResult RequestUserReponse(String question, MessageBoxButtons options);
 

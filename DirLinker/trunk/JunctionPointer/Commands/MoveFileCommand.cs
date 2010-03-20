@@ -1,10 +1,10 @@
 using System;
-using JunctionPointer.Interfaces;
-using JunctionPointer.Exceptions;
+using DirLinker.Interfaces;
+using DirLinker.Exceptions;
 using System.IO;
 using System.Windows.Forms;
 
-namespace JunctionPointer.Commands
+namespace DirLinker.Commands
 {
     public delegate ICommand CopyFileCommandFactory(IFile folder);
 

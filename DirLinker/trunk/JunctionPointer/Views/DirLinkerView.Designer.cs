@@ -1,4 +1,4 @@
-﻿namespace JunctionPointer.Views
+﻿namespace DirLinker.Views
 {
     partial class DirLinkerView
     {

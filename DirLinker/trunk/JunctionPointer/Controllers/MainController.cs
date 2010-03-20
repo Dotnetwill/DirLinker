@@ -1,12 +1,12 @@
 ﻿using System;
-using JunctionPointer.Interfaces.Views;
-using JunctionPointer.Interfaces;
+using DirLinker.Interfaces.Views;
+using DirLinker.Interfaces;
 using System.Windows.Forms;
-using JunctionPointer.Interfaces.Controllers;
-using JunctionPointer.Helpers.Interfaces;
+using DirLinker.Interfaces.Controllers;
+using DirLinker.Helpers.Interfaces;
 using OCInject;
 
-namespace JunctionPointer.Controllers
+namespace DirLinker.Controllers
 {
     public class MainController : IMainController
     {

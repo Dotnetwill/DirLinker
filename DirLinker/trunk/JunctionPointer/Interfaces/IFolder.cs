@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace JunctionPointer.Interfaces
+namespace DirLinker.Interfaces
 {
     public enum SYMBOLIC_LINK_FLAG
     {

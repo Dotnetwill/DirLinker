@@ -1,9 +1,9 @@
 ﻿using System;
 
 using System.ComponentModel;
-using JunctionPointer.Interfaces;
+using DirLinker.Interfaces;
 
-namespace JunctionPointer.Implemenation
+namespace DirLinker.Implemenation
 {
     public class BackgroundWorkerImp : BackgroundWorker, IBackgroundWorker
     {

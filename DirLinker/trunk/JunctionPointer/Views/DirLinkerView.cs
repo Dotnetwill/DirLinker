@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
-using JunctionPointer.Interfaces.Views;
+using DirLinker.Interfaces.Views;
 
-namespace JunctionPointer.Views
+namespace DirLinker.Views
 {
     public partial class DirLinkerView : Form, ILinkerView
     {

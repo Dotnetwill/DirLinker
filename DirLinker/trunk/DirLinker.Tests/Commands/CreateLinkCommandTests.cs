@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
-using JunctionPointer.Commands;
-using JunctionPointer.Interfaces;
+using DirLinker.Commands;
+using DirLinker.Interfaces;
 using Rhino.Mocks;
-using JunctionPointer.Exceptions;
+using DirLinker.Exceptions;
 
 namespace DirLinker.Tests.Commands
 {

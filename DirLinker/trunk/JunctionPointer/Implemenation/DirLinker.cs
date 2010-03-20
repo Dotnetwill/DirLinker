@@ -1,7 +1,7 @@
 ﻿using System;
-using JunctionPointer.Interfaces;
+using DirLinker.Interfaces;
 using System.IO;
-using JunctionPointer.Exceptions;
+using DirLinker.Exceptions;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using OCInject;
 
-namespace JunctionPointer.Implemenation
+namespace DirLinker.Implemenation
 {
      public class DirLinker : IDirLinker
     {

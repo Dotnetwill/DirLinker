@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace JunctionPointer.Interfaces
+
+namespace DirLinker.Interfaces
 {
     
     public interface ICommandDiscovery

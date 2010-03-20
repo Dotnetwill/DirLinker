@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using JunctionPointer.Interfaces;
-using JunctionPointer.Exceptions;
+using DirLinker.Interfaces;
+using DirLinker.Exceptions;
 
-namespace JunctionPointer.Commands
+namespace DirLinker.Commands
 {
    
     public class CreateLinkCommand : ICommand

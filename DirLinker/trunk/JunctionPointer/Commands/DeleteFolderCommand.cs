@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
-using JunctionPointer.Interfaces;
-using JunctionPointer.Exceptions;
+using DirLinker.Interfaces;
+using DirLinker.Exceptions;
 using System.IO;
 
-namespace JunctionPointer.Commands
+namespace DirLinker.Commands
 {
     //I have considered having a seperate delete file command that is seperate or run as part of this
     //command but this pattern is being implemented to support undo and deleting a file is not something

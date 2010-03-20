@@ -1,11 +1,11 @@
 ﻿using System;
 
 using NUnit.Framework;
-using JunctionPointer.Interfaces.Views;
-using JunctionPointer.Controllers;
-using JunctionPointer.Interfaces;
+using DirLinker.Interfaces.Views;
+using DirLinker.Controllers;
+using DirLinker.Interfaces;
 using DirLinker.Tests.Helpers;
-using JunctionPointer.Interfaces.Controllers;
+using DirLinker.Interfaces.Controllers;
 using OCInject;
 
 namespace DirLinker.Tests.Controllers

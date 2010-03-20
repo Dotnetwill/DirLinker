@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace JunctionPointer.Interfaces.Views
+namespace DirLinker.Interfaces.Views
 {
     public interface IWorkingView : IWin32Window
     {

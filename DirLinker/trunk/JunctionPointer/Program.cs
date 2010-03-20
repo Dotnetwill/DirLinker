@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Windows.Forms;
-using JunctionPointer.Views;
-using JunctionPointer.Controllers;
-using JunctionPointer.Implemenation;
-using JunctionPointer.Interfaces;
-using JunctionPointer.Interfaces.Controllers;
-using JunctionPointer.Interfaces.Views;
-using JunctionPointer.Helpers.Interfaces;
+using DirLinker.Views;
+using DirLinker.Controllers;
+using DirLinker.Implemenation;
+using DirLinker.Interfaces;
+using DirLinker.Interfaces.Controllers;
+using DirLinker.Interfaces.Views;
 using OCInject;
 
-namespace JunctionPointer
+namespace DirLinker
+
 {
     static class Program
     {
@@ -32,7 +32,7 @@ namespace JunctionPointer
         private static void FillIoCContainer(ClassFactory classFactory)
         {
 
-            classFactory.RegisterType<IDirLinker, JunctionPointer.Implemenation.DirLinker>();
+            classFactory.RegisterType<IDirLinker, DirLinker.Implemenation.DirLinker>();
             classFactory.RegisterType<IWorkingController, WorkingDialogController>();
             classFactory.RegisterType<ILinkerView, DirLinkerView>();
             classFactory.RegisterType<IWorkingView, ProgessView>();

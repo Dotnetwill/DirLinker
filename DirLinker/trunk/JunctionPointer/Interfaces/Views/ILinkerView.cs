@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace JunctionPointer.Interfaces.Views
+namespace DirLinker.Interfaces.Views
 {
     public class ValidationArgs : EventArgs
     {

@@ -1,8 +1,8 @@
 ﻿using System;
-using JunctionPointer.Interfaces;
+using DirLinker.Interfaces;
 using System.IO;
 
-namespace JunctionPointer.Implemenation
+namespace DirLinker.Implemenation
 {
     class FileImp : IFile
     {

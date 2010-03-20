@@ -1,8 +1,8 @@
 ﻿using System;
 using NUnit.Framework;
-using JunctionPointer.Controllers;
+using DirLinker.Controllers;
 using DirLinker.Tests.Helpers;
-using JunctionPointer.Interfaces.Views;
+using DirLinker.Interfaces.Views;
 using Rhino.Mocks;
 
 namespace DirLinker.Tests.Controllers

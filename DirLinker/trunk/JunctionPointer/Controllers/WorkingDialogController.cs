@@ -1,11 +1,11 @@
 ﻿using System;
-using JunctionPointer.Interfaces.Controllers;
-using JunctionPointer.Interfaces.Views;
-using JunctionPointer.Interfaces;
+using DirLinker.Interfaces.Controllers;
+using DirLinker.Interfaces.Views;
+using DirLinker.Interfaces;
 using System.ComponentModel;
 using OCInject;
 
-namespace JunctionPointer.Controllers
+namespace DirLinker.Controllers
 {
     public class WorkingDialogController : IWorkingController
     {

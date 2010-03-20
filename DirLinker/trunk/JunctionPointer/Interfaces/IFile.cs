@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace JunctionPointer.Interfaces
+namespace DirLinker.Interfaces
 {
     public delegate IFile IFileFactoryForPath(String filePath);
     public interface IFile

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace JunctionPointer.Interfaces
+namespace DirLinker.Interfaces
 {
     public interface IBackgroundWorker
     {

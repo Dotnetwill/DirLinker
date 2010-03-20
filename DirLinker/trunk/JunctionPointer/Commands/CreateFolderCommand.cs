@@ -1,7 +1,7 @@
 ﻿using System;
-using JunctionPointer.Interfaces;
+using DirLinker.Interfaces;
 
-namespace JunctionPointer.Commands
+namespace DirLinker.Commands
 {
     public delegate ICommand CreateFolderCommandFactory(IFolder folder);
 

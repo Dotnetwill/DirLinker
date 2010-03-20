@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace JunctionPointer.Helpers.Interfaces
+namespace DirLinker.Helpers.Interfaces
 {
     public interface IClassFactory
     {

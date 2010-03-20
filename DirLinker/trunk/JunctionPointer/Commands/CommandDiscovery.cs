@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using JunctionPointer.Interfaces;
+using DirLinker.Interfaces;
 
-namespace JunctionPointer.Commands
-
+namespace DirLinker.Commands
+{
     public class CommandDiscovery : ICommandDiscovery
     {
         private ICommandFactory _factory;
@@ -21,15 +21,21 @@ namespace JunctionPointer.Commands
 
            if (linkTo.FolderExists())
            {
-               if (!copyBeforeDelete)
+               if (copyBeforeDelete)
                {
-                   commandList.Add(_factory.DeleteFolderCommand(linkTo));
+                   CreateFolderMoveOperations(linkTo, linkFrom, overwriteTargetFiles);
                }
+               commandList.Add(_factory.DeleteFolderCommand(linkTo));
            }
 
            commandList.Add(_factory.CreateLinkCommand(linkTo, linkFrom));
            
            return commandList;
+        }
+
+        private void CreateFolderMoveOperations(IFolder linkTo, IFolder linkFrom, bool overwriteTargetFiles)
+        {
+           
         }
 
     }
