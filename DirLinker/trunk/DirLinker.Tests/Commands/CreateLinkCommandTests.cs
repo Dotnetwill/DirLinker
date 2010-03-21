@@ -7,6 +7,7 @@ using DirLinker.Commands;
 using DirLinker.Interfaces;
 using Rhino.Mocks;
 using DirLinker.Exceptions;
+using DirLinker.Tests.Helpers;
 
 namespace DirLinker.Tests.Commands
 {
@@ -57,7 +58,9 @@ namespace DirLinker.Tests.Commands
         [Test]
         public void Status_returns_a_status_method()
         {
-            CreateLinkCommand command = new CreateLinkCommand(null, null);
+            IFolder target = new FakeFolder(@"c:\dest\");
+            IFolder source = new FakeFolder(@"c:\dest\");
+            CreateLinkCommand command = new CreateLinkCommand(target, source);
 
             Assert.IsNotEmpty(command.UserFeedback);
         }

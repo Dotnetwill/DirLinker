@@ -6,6 +6,7 @@ using NUnit.Framework;
 using DirLinker.Interfaces;
 using DirLinker.Commands;
 using Rhino.Mocks;
+using DirLinker.Tests.Helpers;
 
 namespace DirLinker.Tests.Commands
 {
@@ -77,7 +78,7 @@ namespace DirLinker.Tests.Commands
 
             IFolder linkFrom = MockRepository.GenerateMock<IFolder>();
 
-            ICommandDiscovery discoverer = new CommandDiscovery(factory);
+            ICommandDiscovery discoverer = new CommandDiscovery(factory, null);
             List<ICommand> taskList = discoverer.GetCommandListForTask(linkTo, linkFrom, false, false);
 
             Assert.IsTrue(taskList.Count() == 1, "There should be one item in the list");
@@ -93,7 +94,7 @@ namespace DirLinker.Tests.Commands
 
             IFolder linkFrom = MockRepository.GenerateMock<IFolder>();
 
-            ICommandDiscovery discoverer = new CommandDiscovery(factory);
+            ICommandDiscovery discoverer = new CommandDiscovery(factory, null);
             List<ICommand> taskList = discoverer.GetCommandListForTask(linkTo, linkFrom, false, false);
 
             Assert.IsTrue(taskList.Count() == 2, "There should be two items in the list");
@@ -107,10 +108,11 @@ namespace DirLinker.Tests.Commands
             ICommandFactory factory = new MockCommandFactory();
             IFolder linkTo = MockRepository.GenerateMock<IFolder>();
             linkTo.Stub(l => l.FolderExists()).Return(true);
+            linkTo.Stub(l => l.GetFileList()).Return(new List<IFile>());
 
-            IFolder linkFrom = MockRepository.GenerateMock<IFolder>();
+            IFolder linkFrom = new FakeFolder(@"c:\dest\");
 
-            ICommandDiscovery discoverer = new CommandDiscovery(factory);
+            ICommandDiscovery discoverer = new CommandDiscovery(factory, (s) => new FakeFile(s));
             List<ICommand> taskList = discoverer.GetCommandListForTask(linkTo, linkFrom, true, false);
 
             Assert.IsTrue(taskList.Count() == 2, "There should be three items in the list");
@@ -129,9 +131,9 @@ namespace DirLinker.Tests.Commands
                             Helpers.CreateStubHelpers.GetIFileStub("1.txt", @"c:\path") 
                         });
 
-            IFolder linkFrom = MockRepository.GenerateMock<IFolder>();
-
-            ICommandDiscovery discoverer = new CommandDiscovery(factory);
+            IFolder linkFrom = new FakeFolder(@"c:\dest\");
+            
+            ICommandDiscovery discoverer = new CommandDiscovery(factory, (f) => new FakeFile(f));
             List<ICommand> taskList = discoverer.GetCommandListForTask(linkTo, linkFrom, true, false);
 
             Assert.IsTrue(taskList.Count() == 3, "There should be three items in the list");
@@ -139,6 +141,7 @@ namespace DirLinker.Tests.Commands
             Assert.IsTrue(((MockCommand)taskList[1]).CommandName.Equals("DeleteFolderCommand"));
             Assert.IsTrue(((MockCommand)taskList[2]).CommandName.Equals("CreateLinkCommand"));
         }
+
 
     }
 }

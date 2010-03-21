@@ -13,8 +13,6 @@ namespace DirLinker.Commands
         private IFolder _linkTo;
         private IFolder _linkFrom;
 
-        Func<IFolder, IFolder, ICommand> DeleteCommandFactory;
-   
         public CreateLinkCommand(IFolder linkTo, IFolder linkFrom)
         {
             _linkTo = linkTo;
@@ -41,7 +39,7 @@ namespace DirLinker.Commands
 
         public string UserFeedback
         {
-            get { throw new NotImplementedException(); }
+            get { return String.Format("Creating symbolic link at {0}", _linkTo.FolderPath); }
         }
 
         public event RequestUserReponse AskUser;
