@@ -142,6 +142,21 @@ namespace DirLinker.Tests.Commands
             Assert.IsTrue(((MockCommand)taskList[2]).CommandName.Equals("CreateLinkCommand"));
         }
 
+        [Test]
+        public void GetCommandListForTask_SourceDoesNotExists_CreateFolderCommandIsFirst()
+        {
+            ICommandFactory factory = new MockCommandFactory();
+            IFolder linkTo = new FakeFolder(@"c:\target\");
+            FakeFolder linkFrom = new FakeFolder(@"c:\destination\");
+            linkFrom.FolderExistsReturnValue = false;
 
+            ICommandDiscovery discoverer = new CommandDiscovery(factory, (f) => new FakeFile(f));
+            List<ICommand> taskList = discoverer.GetCommandListForTask(linkTo, linkFrom, false, false);
+            
+            MockCommand mockCommand = (MockCommand)taskList[0];
+
+            Assert.AreEqual("CreateFolder", mockCommand.CommandName);
+            Assert.AreEqual(mockCommand.ctorParams[0], linkFrom);   
+        }
     }
 }

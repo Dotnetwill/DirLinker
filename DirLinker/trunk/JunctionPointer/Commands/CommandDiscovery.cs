@@ -22,6 +22,11 @@ namespace DirLinker.Commands
         {
            List<ICommand> commandList = new List<ICommand>();
 
+           if (!linkFrom.FolderExists())
+           {
+               commandList.Add(_factory.CreateFolder(linkFrom));
+           }
+
            if (linkTo.FolderExists())
            {
                if (copyBeforeDelete)
