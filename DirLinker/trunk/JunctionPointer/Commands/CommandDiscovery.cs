@@ -11,11 +11,15 @@ namespace DirLinker.Commands
     {
         private ICommandFactory _factory;
         private IFileFactoryForPath _fileFactory;
+        private IFolderFactoryForPath _folderFactory;
 
-        public CommandDiscovery(ICommandFactory factory, IFileFactoryForPath fileFactory)
+        public CommandDiscovery(ICommandFactory factory, 
+            IFileFactoryForPath fileFactory, 
+            IFolderFactoryForPath folderFactory)
         {
             _factory = factory;
             _fileFactory = fileFactory;
+            _folderFactory = folderFactory;
         }
 
         public List<ICommand> GetCommandListForTask(IFolder linkTo, IFolder linkFrom, bool copyBeforeDelete, bool overwriteTargetFiles)
@@ -41,13 +45,25 @@ namespace DirLinker.Commands
            return commandList;
         }
 
-        private List<ICommand> CreateFolderMoveOperations(IFolder linkTo, IFolder linkFrom, bool overwriteTargetFiles)
+        private List<ICommand> CreateFolderMoveOperations(IFolder source, IFolder target, bool overwriteTargetFiles)
         {
             var moveFolderStructureCommands = new List<ICommand>();
 
-            linkTo.GetFileList().ForEach(f => 
+            source.GetSubFolderList().ForEach(f =>
                 {
-                    IFile targetFile = _fileFactory(Path.Combine(linkFrom.FolderPath, f.FileName));
+                    String targetLocation = f.FolderPath.Replace(source.FolderPath, target.FolderPath);
+                    IFolder moveTarget = _folderFactory(targetLocation);
+                    if (!moveTarget.FolderExists())
+                    {
+                       moveFolderStructureCommands.Add(_factory.CreateFolder(moveTarget));
+                    }
+
+                   // moveFolderStructureCommands.AddRange()
+                });
+
+            source.GetFileList().ForEach(f => 
+                {
+                    IFile targetFile = _fileFactory(Path.Combine(target.FolderPath, f.FileName));
                     
                     ICommand moveFileCommand = _factory.MoveFileCommand(f, targetFile, overwriteTargetFiles);
                     moveFolderStructureCommands.Add(moveFileCommand);
