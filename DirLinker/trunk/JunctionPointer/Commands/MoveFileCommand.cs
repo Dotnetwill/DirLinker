@@ -77,6 +77,7 @@ namespace DirLinker.Commands
 
             return targetFileReadonly;
         }
+
         private DialogResult RequestUserRespone(String message)
         {
             RequestUserReponse ask = _AskUser;

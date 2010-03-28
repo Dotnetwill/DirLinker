@@ -58,7 +58,7 @@ namespace DirLinker.Commands
                        moveFolderStructureCommands.Add(_factory.CreateFolder(moveTarget));
                     }
 
-                   // moveFolderStructureCommands.AddRange()
+                    moveFolderStructureCommands.AddRange(CreateFolderMoveOperations(f, moveTarget, overwriteTargetFiles));
                 });
 
             source.GetFileList().ForEach(f => 

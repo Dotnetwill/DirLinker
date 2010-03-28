@@ -44,6 +44,7 @@ namespace DirLinker.Tests.Helpers
 
             file.Stub(f => f.FileName).Return(fileName);
             file.Stub(f => f.Folder).Return(path);
+            file.Stub(f => f.FullFilePath).Return(Path.Combine(path, fileName));
             file.Stub(f => f.GetAttributes()).Return(attr);
 
             return file;

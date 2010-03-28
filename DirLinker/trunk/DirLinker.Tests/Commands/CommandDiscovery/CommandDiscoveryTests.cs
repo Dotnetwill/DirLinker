@@ -178,5 +178,52 @@ namespace DirLinker.Tests.Commands
             factory.AssertWasCalled(f => f.CreateFolder(Arg<IFolder>.Matches(folder => folder.FolderPath.Equals(@"c:\destination\subfolder\"))));
             
         }
+
+
+        [Test]
+        public void GetCommandListForTask_TargetHasSubFolderWithOneWithNoOverwriteFile_SubfolderAndOneIsMovedCreatedInSource()
+        {
+            ICommandFactory factory = MockRepository.GenerateMock<ICommandFactory>();
+            FakeFolder subFolder = new FakeFolder(@"c:\target\subfolder\");
+            subFolder.FileList = new List<IFile> {  Helpers.CreateStubHelpers.GetIFileStub("1.txt", @"c:\target\subfolder\") };
+
+            FakeFolder linkTo = new FakeFolder(@"c:\target\") { FolderExistsReturnValue = true };
+            linkTo.SubFolderList = new List<IFolder> { subFolder };
+            
+            FakeFolder linkFrom = new FakeFolder(@"c:\destination\") { FolderExistsReturnValue = true };
+
+            ICommandDiscovery discoverer = new CommandDiscovery(factory, f => new FakeFile(f), f => new FakeFolder(f) { FolderExistsReturnValue = false });
+            discoverer.GetCommandListForTask(linkTo, linkFrom, true, false);
+
+            factory.AssertWasCalled(f => f.MoveFileCommand(
+                Arg<IFile>.Matches(source => source.FullFilePath.Equals(@"c:\target\subfolder\1.txt")),
+                Arg<IFile>.Matches(target => target.FullFilePath.Equals(@"c:\destination\subfolder\1.txt")),
+                Arg<Boolean>.Is.Equal(false)
+                ));
+            
+        }
+
+        [Test]
+        public void GetCommandListForTask_TargetHasSubFolderWithOneWithOverwriteFile_SubfolderAndOneIsMovedCreatedInSource()
+        {
+            ICommandFactory factory = MockRepository.GenerateMock<ICommandFactory>();
+            FakeFolder subFolder = new FakeFolder(@"c:\target\subfolder\");
+            subFolder.FileList = new List<IFile> { Helpers.CreateStubHelpers.GetIFileStub("1.txt", @"c:\target\subfolder\") };
+
+            FakeFolder linkTo = new FakeFolder(@"c:\target\") { FolderExistsReturnValue = true };
+            linkTo.SubFolderList = new List<IFolder> { subFolder };
+
+            FakeFolder linkFrom = new FakeFolder(@"c:\destination\") { FolderExistsReturnValue = true };
+
+            ICommandDiscovery discoverer = new CommandDiscovery(factory, f => new FakeFile(f), f => new FakeFolder(f) { FolderExistsReturnValue = false });
+            discoverer.GetCommandListForTask(linkTo, linkFrom, true, true);
+
+            factory.AssertWasCalled(f => f.MoveFileCommand(
+                Arg<IFile>.Matches(source => source.FullFilePath.Equals(@"c:\target\subfolder\1.txt")),
+                Arg<IFile>.Matches(target => target.FullFilePath.Equals(@"c:\destination\subfolder\1.txt")),
+                Arg<Boolean>.Is.Equal(true)
+                ));
+
+        }
     }
 }
