@@ -64,5 +64,24 @@ namespace DirLinker.Views
             progressBar1.MarqueeAnimationSpeed = 100;
             return base.ShowDialog(owner);
         }
+
+        #region IWorkingView Members
+
+        public void AddFeedBack(string feedback)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int PercentageComplete
+        {
+            set { throw new NotImplementedException(); }
+        }
+
+        public string CurrentUserTaskText
+        {
+            set { throw new NotImplementedException(); }
+        }
+
+        #endregion
     }
 }

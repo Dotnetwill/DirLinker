@@ -25,8 +25,8 @@ namespace DirLinker
             ClassFactory classFactory = new ClassFactory();
             FillIoCContainer(classFactory);
 
-            IMainController mainController = new MainController(classFactory);
-            Application.Run(mainController.Start());
+            //IMainController mainController = new MainController(classFactory);
+            //Application.Run(mainController.Start());
         }
 
         private static void FillIoCContainer(ClassFactory classFactory)

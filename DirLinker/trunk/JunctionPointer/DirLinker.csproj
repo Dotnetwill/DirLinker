@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{3EBCE70F-0A6B-4F50-B381-AE4E8743873B}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -57,6 +57,7 @@
     <Compile Include="Commands\CreateLinkCommand.cs" />
     <Compile Include="Commands\DeleteFolderCommand.cs" />
     <Compile Include="Commands\ICommandFactory.cs" />
+    <Compile Include="Controllers\ProgressController.cs" />
     <Compile Include="Exceptions\CommandRunnerException.cs" />
     <Compile Include="Helpers\ClassFactory\ClassFactory.cs" />
     <Compile Include="Helpers\Interfaces\IClassFactory.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="Exceptions\DirLinkerException.cs" />
     <Compile Include="Implemenation\FolderImp.cs" />
     <Compile Include="Implemenation\DirLinker.cs" />
+    <Compile Include="Interfaces\Controllers\IProgressController.cs" />
     <Compile Include="Interfaces\Controllers\IWorkingController.cs" />
     <Compile Include="Commands\MoveFileCommand.cs" />
     <Compile Include="Interfaces\IBackgroundWorker.cs" />
@@ -94,6 +96,9 @@
     <EmbeddedResource Include="Views\ProgessView.resx">
       <DependentUpon>ProgessView.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ProgressView.resx">
+      <DependentUpon>ProgressView.cs</DependentUpon>
     </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -122,6 +127,12 @@
     </Compile>
     <Compile Include="Views\ProgessView.Designer.cs">
       <DependentUpon>ProgessView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ProgressView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\ProgressView.Designer.cs">
+      <DependentUpon>ProgressView.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

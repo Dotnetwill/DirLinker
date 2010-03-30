@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{0139DC32-D96B-4FD6-8C0B-92352916A88D}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -60,6 +60,7 @@
     <Compile Include="Commands\CreateFolderCommandTests.cs" />
     <Compile Include="Commands\DeleteFolderCommandTests.cs" />
     <Compile Include="Controllers\MainControllerTests.cs" />
+    <Compile Include="Controllers\ProgressControllerTests.cs" />
     <Compile Include="Controllers\WorkDialogControllerTests.cs" />
     <Compile Include="DirLinkerTests.cs" />
     <Compile Include="Helpers\CreateStubHelpers.cs" />

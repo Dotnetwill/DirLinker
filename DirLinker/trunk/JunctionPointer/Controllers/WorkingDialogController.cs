@@ -58,8 +58,8 @@ namespace DirLinker.Controllers
 
         public void OnFeebackReported(object sender, FeedbackArgs e)
         {
-            m_View.FeedbackTitle = e.ProgressTitle;
-            m_View.FeedbackCaption = e.Progress;
+            //m_View.FeedbackTitle = e.ProgressTitle;
+            //m_View.FeedbackCaption = e.Progress;
         }
     }
 }

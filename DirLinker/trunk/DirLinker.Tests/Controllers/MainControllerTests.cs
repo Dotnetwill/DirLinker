@@ -32,8 +32,8 @@ namespace DirLinker.Tests.Controllers
             stubMainView.CopyBeforeDelete = true;
             stubMainView.OverWriteTargetFiles = true;
 
-            MainController controller = new MainController(classFactory);
-            controller.PerformOperation(new Object(), new EventArgs());
+            //MainController controller = new MainController(classFactory);
+            //controller.PerformOperation(new Object(), new EventArgs());
 
             Assert.AreEqual(stubMainView.LinkPoint, workingController.LinkPoint);
             Assert.AreEqual(stubMainView.LinkTo, workingController.LinkTo);
