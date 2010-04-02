@@ -1,54 +1,54 @@
 ﻿using System;
 using DirLinker.Interfaces.Views;
-using DirLinker.Interfaces;
 using System.Windows.Forms;
 using DirLinker.Interfaces.Controllers;
-using DirLinker.Helpers.Interfaces;
-using OCInject;
+using DirLinker.Interfaces;
+using DirLinker.Data;
 
 namespace DirLinker.Controllers
 {
     public class MainController : IMainController
     {
-        private Func<IProgressController> _progressFactory;
-        protected ILinkerView _View;
-        
-        public MainController(ILinkerView view, Func<IProgressController> progressFactory)
+        private readonly ILinkerService _linkerService;
+        private readonly IPathValidation _pathValidator;
+        private readonly ILinkerView _view;
+
+        protected LinkOperationData _operationData;
+
+        public MainController(ILinkerView view, IPathValidation pathValidator, ILinkerService linkerService)
         {
-            _View = view;
-            _progressFactory = progressFactory;
+            _view = view;
+            _pathValidator = pathValidator;
+            _linkerService = linkerService;
         }
 
         public Form Start()
         {
-           
-            _View.PerformOperation += PerformOperation;
-            _View.ValidatePath += ValidatePath;
-            _View.CopyBeforeDelete = true;
+            _operationData = new LinkOperationData();
+            
+            _view.SetOperationData(_operationData);
+            _view.ValidatePath += ValidatePath;
 
-            _View.Setup();
-
-            return _View.MainForm;
+            return _view.MainForm;
         }
 
         public void ValidatePath(object sender, ValidationArgs e)
         {
-            //String errorMessage;
-            //if (m_Linker.ValidDirectoryPath(e.PathToValidate, out errorMessage))
-            //{
-            //    e.Valid = true;
-            //}
-            //else
-            //{
-            //    e.Valid = false;
-            //    e.ErrorMessge = errorMessage;
-            //}
+            String errorMessage;
+            if (_pathValidator.ValidPath(e.PathToValidate, out errorMessage))
+            {
+                e.Valid = true;
+            }
+            else
+            {
+                e.Valid = false;
+                e.ErrorMessge = errorMessage;
+            }
         }
 
         public void PerformOperation(object sender, EventArgs e)
         {
-            var progressController = _progressFactory();
-            progressController.PerformLink(_View.LinkPoint, _View.LinkTo, _View.CopyBeforeDelete, _View.OverWriteTargetFiles);
+            _linkerService.PerformLinkOperation(_operationData);
         }
 
      

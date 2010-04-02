@@ -1,4 +1,5 @@
 ﻿using System;
+using DirLinker.Data;
 
 
 namespace DirLinker.Interfaces.Views
@@ -21,12 +22,9 @@ namespace DirLinker.Interfaces.Views
 
     public interface ILinkerView
     {
-        String LinkPoint { get; set; }
-        String LinkTo { get; set; }
-        Boolean CopyBeforeDelete { get; set; }
-        Boolean OverWriteTargetFiles { get; set; }
         System.Windows.Forms.Form MainForm { get; }
 
+        void SetOperationData(LinkOperationData data);
         void Setup();
 
         event PathValidater ValidatePath;

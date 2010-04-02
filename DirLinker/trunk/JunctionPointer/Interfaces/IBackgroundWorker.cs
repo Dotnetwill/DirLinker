@@ -8,5 +8,6 @@ namespace DirLinker.Interfaces
         event DoWorkEventHandler DoWork;
         event RunWorkerCompletedEventHandler RunWorkerCompleted;
         void RunWorkerAsync();
+        void RunWorkerAsync(Object param);
     }
 }

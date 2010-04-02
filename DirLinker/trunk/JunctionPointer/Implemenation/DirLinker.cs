@@ -12,11 +12,11 @@ using OCInject;
 
 namespace DirLinker.Implemenation
 {
-     public class DirLinker : IDirLinker
+     public class DirLinker /*: IDirLinker*/
     {
         protected event ReportProgress m_ReportFeedback;
         protected event UserMessage m_UserResponseRequired;
-        private readonly String regexForDrive = @"^([a-zA-Z]\:)";
+   
 
         protected IFolderFactoryForPath FolderFactoryForPath;
         protected IFileFactoryForPath FileFactoryForPath;
@@ -245,64 +245,7 @@ namespace DirLinker.Implemenation
             }
         }
 
-        public bool ValidDirectoryPath(String path, out String errorMessage)
-        {
-            errorMessage = String.Empty;
-            IFolder folder = FolderFactoryForPath(String.Empty);
 
-            if (!String.IsNullOrEmpty(path))
-            {
-                if (IsDriveLetter(path))
-                {
-                    errorMessage = "Only folder paths allowed";
-                    return false;
-                }
-
-                if (path.Length > folder.MaxPath())
-                {
-                    errorMessage = "Selected folder path is longer than the maximum allowable Windows path";
-                    return false;
-                }
-
-                String[] pathParts = path.Split('\\');
-                if (pathParts.Length == 0 || !Regex.IsMatch(pathParts[0], regexForDrive))
-                {
-                    errorMessage = "The folder path is not well formed";
-                    return false;
-                }
-                else if (pathParts.Length > 1)
-                {
-                    String pathWithoutDrive = path.Replace(pathParts[0], String.Empty);
-
-                    Int32 count = folder.GetIllegalPathChars().Count(c => pathWithoutDrive.Contains(c));
-
-                    if (count > 0)
-                    {
-                        errorMessage = "Folder path contains illegal characters";
-                        return false;
-                    }
-                }
-
-            }
-            else
-            {
-                
-                errorMessage = "Please enter a path";
-                return false;
-            }
-
-            return true;
-        }
-        
-         private bool IsDriveLetter(String path)
-        {
-            if (path.Length < 4 && Regex.IsMatch(path, regexForDrive))
-            {
-                return true;
-            }
-
-            return false;
-        }
         
          private void TraceOutException(Exception ex)
         {

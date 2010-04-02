@@ -2,43 +2,69 @@
 
 using NUnit.Framework;
 using DirLinker.Interfaces.Views;
-using DirLinker.Controllers;
 using DirLinker.Interfaces;
-using DirLinker.Tests.Helpers;
-using DirLinker.Interfaces.Controllers;
-using OCInject;
+using DirLinker.Controllers;
+using Rhino.Mocks;
+using DirLinker.Data;
 
 namespace DirLinker.Tests.Controllers
 {
     [TestFixture]
     public class MainControllerTests
     {
- 
+
         [Test]
-        public void PerformOperation_ValuesFromViewPassedToWorker_PassedCorrectly()
+        public void Start_CreatesNewLinkData_SetsToView()
         {
-            IDirLinker stubLinker = new StubDirLinker();
-            ILinkerView stubMainView = new StubMainView();
-            StubWorkingController workingController = new StubWorkingController();
+            ILinkerView view = MockRepository.GenerateMock<ILinkerView>();
+            MainController controller = new MainController(view, null, null);
 
-            ClassFactory classFactory = new ClassFactory();
-            classFactory.RegisterType<ILinkerView>().AlwaysReturnObject(stubMainView);
-            classFactory.RegisterType<IDirLinker>().AlwaysReturnObject(stubLinker);
-            classFactory.RegisterType<IWorkingController>().AlwaysReturnObject(workingController);
+            controller.Start();
 
+            view.AssertWasCalled(v => v.SetOperationData(Arg<LinkOperationData>.Is.NotNull));
+        }
 
-            stubMainView.LinkPoint = @"Link point";
-            stubMainView.LinkTo = @"Link to";
-            stubMainView.CopyBeforeDelete = true;
-            stubMainView.OverWriteTargetFiles = true;
+        [Test]
+        public void Start_RegisterValidatorPassedIn_ViewValidationDelegateIsRegistered()
+        {
+            ILinkerView view = MockRepository.GenerateMock<ILinkerView>();
+            IPathValidation validator = MockRepository.GenerateMock<IPathValidation>();
 
-            //MainController controller = new MainController(classFactory);
-            //controller.PerformOperation(new Object(), new EventArgs());
+            MainController controller = new MainController(view, validator, null);
 
-            Assert.AreEqual(stubMainView.LinkPoint, workingController.LinkPoint);
-            Assert.AreEqual(stubMainView.LinkTo, workingController.LinkTo);
-            Assert.AreEqual(stubMainView.CopyBeforeDelete, workingController.CopyBeforeDelete);
-            Assert.AreEqual(stubMainView.CopyBeforeDelete, workingController.OverWriteTargetFiles);
+            controller.Start();
+
+            view.AssertWasCalled(v => v.ValidatePath += Arg<PathValidater>.Is.NotNull);
+        }
+
+        [Test]
+        public void ValidatePath_ValidValidator_ValidatePathIsCalled()
+        {
+
+            ILinkerView view = MockRepository.GenerateMock<ILinkerView>();
+            IPathValidation validator = MockRepository.GenerateMock<IPathValidation>();
+            ValidationArgs args = new ValidationArgs("test");
+
+            MainController controller = new MainController(view, validator, null);
+            
+            controller.ValidatePath(view, args);
+
+            validator.AssertWasCalled(v => v.ValidPath(Arg<String>.Matches(s => s.Equals("test")), out Arg<String>.Out("").Dummy));   
+        }
+
+        [Test]
+        public void PerformLink_ValidLinkService_PerformOperationCalledWithData()
+        {
+            ILinkerView view = MockRepository.GenerateMock<ILinkerView>();
+            IPathValidation validator = MockRepository.GenerateMock<IPathValidation>();
+            ILinkerService linkerService = MockRepository.GenerateMock<ILinkerService>();
+
+            MainController controller = new MainController(view, validator, linkerService);
+
+            controller.Start();
+            controller.PerformOperation(view, new EventArgs());
+
+            linkerService.AssertWasCalled(l => l.PerformLinkOperation(Arg<LinkOperationData>.Is.NotNull));
         }
 
     }

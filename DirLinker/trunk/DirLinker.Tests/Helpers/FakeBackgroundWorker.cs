@@ -16,7 +16,12 @@ namespace DirLinker.Tests.Helpers
 #pragma warning restore 0067
         public void RunWorkerAsync()
         {
-            DoWork(this, new DoWorkEventArgs(null));
+            RunWorkerAsync(null);
+        }
+
+        public void RunWorkerAsync(Object args)
+        {
+            DoWork(this, new DoWorkEventArgs(args));
         }
 
     }

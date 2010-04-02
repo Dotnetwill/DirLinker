@@ -49,6 +49,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\CommandDiscovery.cs" />
@@ -57,7 +60,12 @@
     <Compile Include="Commands\CreateLinkCommand.cs" />
     <Compile Include="Commands\DeleteFolderCommand.cs" />
     <Compile Include="Commands\ICommandFactory.cs" />
-    <Compile Include="Controllers\ProgressController.cs" />
+    <Compile Include="Commands\ITransactionalCommandRunner.cs" />
+    <Compile Include="Commands\TransactionalCommandRunner.cs" />
+    <Compile Include="Commands\WorkReportGenerator.cs" />
+    <Compile Include="Interfaces\ILinkerService.cs" />
+    <Compile Include="Interfaces\IPathValidation.cs" />
+    <Compile Include="Data\LinkOperationData.cs" />
     <Compile Include="Exceptions\CommandRunnerException.cs" />
     <Compile Include="Helpers\ClassFactory\ClassFactory.cs" />
     <Compile Include="Helpers\Interfaces\IClassFactory.cs" />
@@ -65,14 +73,13 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Implemenation\FileImp.cs" />
+    <Compile Include="Implemenation\Locker.cs" />
+    <Compile Include="Implemenation\ThreadSafeQueue.cs" />
     <Compile Include="Interfaces\Controllers\IMainController.cs" />
     <Compile Include="Controllers\MainController.cs" />
-    <Compile Include="Controllers\WorkingDialogController.cs" />
     <Compile Include="Exceptions\DirLinkerException.cs" />
     <Compile Include="Implemenation\FolderImp.cs" />
     <Compile Include="Implemenation\DirLinker.cs" />
-    <Compile Include="Interfaces\Controllers\IProgressController.cs" />
-    <Compile Include="Interfaces\Controllers\IWorkingController.cs" />
     <Compile Include="Commands\MoveFileCommand.cs" />
     <Compile Include="Interfaces\IBackgroundWorker.cs" />
     <Compile Include="Interfaces\ICommand.cs" />
@@ -80,6 +87,8 @@
     <Compile Include="Interfaces\IFolder.cs" />
     <Compile Include="Interfaces\IDirLinker.cs" />
     <Compile Include="Interfaces\IFile.cs" />
+    <Compile Include="Interfaces\ILocker.cs" />
+    <Compile Include="Implemenation\PathValidation.cs" />
     <Compile Include="Interfaces\Views\ILinkerView.cs" />
     <Compile Include="Interfaces\Views\IWorkingView.cs" />
     <Compile Include="Program.cs" />
@@ -91,10 +100,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\DirLinkerView.resx">
       <DependentUpon>DirLinkerView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\ProgessView.resx">
-      <DependentUpon>ProgessView.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\ProgressView.resx">
@@ -121,12 +126,6 @@
     </Compile>
     <Compile Include="Views\DirLinkerView.Designer.cs">
       <DependentUpon>DirLinkerView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ProgessView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\ProgessView.Designer.cs">
-      <DependentUpon>ProgessView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\ProgressView.cs">
       <SubType>Form</SubType>

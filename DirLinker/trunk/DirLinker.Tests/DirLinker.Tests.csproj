@@ -60,8 +60,6 @@
     <Compile Include="Commands\CreateFolderCommandTests.cs" />
     <Compile Include="Commands\DeleteFolderCommandTests.cs" />
     <Compile Include="Controllers\MainControllerTests.cs" />
-    <Compile Include="Controllers\ProgressControllerTests.cs" />
-    <Compile Include="Controllers\WorkDialogControllerTests.cs" />
     <Compile Include="DirLinkerTests.cs" />
     <Compile Include="Helpers\CreateStubHelpers.cs" />
     <Compile Include="Helpers\FakeBackgroundWorker.cs" />
@@ -70,7 +68,6 @@
     <Compile Include="Helpers\StubDirLinker.cs" />
     <Compile Include="Helpers\StubDirManagerReturnSubFolderList.cs" />
     <Compile Include="Helpers\StubMainView.cs" />
-    <Compile Include="Helpers\StubWorkingController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

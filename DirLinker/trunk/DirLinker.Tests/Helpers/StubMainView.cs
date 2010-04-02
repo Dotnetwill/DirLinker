@@ -33,5 +33,12 @@ namespace DirLinker.Tests.Helpers
         public event PerformLink PerformOperation;
 #pragma warning restore 0067
         #endregion
+
+      
+        public void SetOperationData(DirLinker.Data.LinkOperationData data)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

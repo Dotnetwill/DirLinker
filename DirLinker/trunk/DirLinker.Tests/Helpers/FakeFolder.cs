@@ -107,6 +107,18 @@ namespace DirLinker.Tests.Helpers
             set;
         }
 
+        public override bool Equals(object obj)
+        {
+            if (obj is FakeFolder)
+            {
+                FakeFolder other = obj as FakeFolder;
+                return this.FolderPath.Equals(other.FolderPath, StringComparison.CurrentCultureIgnoreCase);
+            }
+            else
+            {
+                return base.Equals(obj);
+            }
+        }
         #endregion
     }
 }

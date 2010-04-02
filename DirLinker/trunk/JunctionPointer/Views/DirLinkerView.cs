@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Windows.Forms;
 using DirLinker.Interfaces.Views;
+using DirLinker.Data;
 
 namespace DirLinker.Views
 {
     public partial class DirLinkerView : Form, ILinkerView
     {
+        private LinkOperationData _linkOperationData;
         public DirLinkerView()
         {
             InitializeComponent();
@@ -61,19 +63,17 @@ namespace DirLinker.Views
 
         public void Setup()
         {
-            BindToFields();
+         
             RegisterHandlers();
         }
 
         private void BindToFields()
         {
-            LinkFrom.DataBindings.Add("Text", this, "LinkTo", false, DataSourceUpdateMode.OnPropertyChanged);
-            LinkPointEdit.DataBindings.Add("Text", this, "LinkPoint", false, DataSourceUpdateMode.OnPropertyChanged);
-            chkTargetFileOverwrite.DataBindings.Add("Checked", this, "OverWriteTargetFiles", false, DataSourceUpdateMode.OnPropertyChanged);
+            LinkFrom.DataBindings.Add("Text", _linkOperationData, "CreateLinkAt", false, DataSourceUpdateMode.OnPropertyChanged);
+            LinkPointEdit.DataBindings.Add("Text", _linkOperationData, "LinkTo", false, DataSourceUpdateMode.OnPropertyChanged);
+            chkTargetFileOverwrite.DataBindings.Add("Checked", _linkOperationData, "OverwriteExistingFiles", false, DataSourceUpdateMode.OnPropertyChanged);
 
-            CopyToTarget.CheckedChanged += (object sender, EventArgs e) => CopyBeforeDelete = CopyToTarget.Checked;
-            //DeleteIt.CheckedChanged 
-            
+            CopyToTarget.CheckedChanged += (object sender, EventArgs e) => _linkOperationData.CopyBeforeDelete = CopyToTarget.Checked;           
         }
 
 
@@ -163,6 +163,12 @@ namespace DirLinker.Views
                 System.Diagnostics.Trace.WriteLine("Delegate not registered to button or the textbox is specified.");
             }
         }
-      
+
+
+        public void SetOperationData(LinkOperationData data)
+        {
+            _linkOperationData = data;
+            BindToFields();
+        }
     }
 }

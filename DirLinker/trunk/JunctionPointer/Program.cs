@@ -32,10 +32,10 @@ namespace DirLinker
         private static void FillIoCContainer(ClassFactory classFactory)
         {
 
-            classFactory.RegisterType<IDirLinker, DirLinker.Implemenation.DirLinker>();
-            classFactory.RegisterType<IWorkingController, WorkingDialogController>();
+            //classFactory.RegisterType<IDirLinker, DirLinker.Implemenation.DirLinker>();
+           // classFactory.RegisterType<IWorkingController, WorkingDialogController>();
             classFactory.RegisterType<ILinkerView, DirLinkerView>();
-            classFactory.RegisterType<IWorkingView, ProgessView>();
+         //   classFactory.RegisterType<IWorkingView, ProgessView>();
             classFactory.RegisterType<IBackgroundWorker, BackgroundWorkerImp>();
             classFactory.RegisterType<IFolder, FolderImp>()
                 .WithFactory<IFolderFactoryForPath>();
