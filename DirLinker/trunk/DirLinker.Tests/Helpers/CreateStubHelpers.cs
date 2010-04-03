@@ -10,7 +10,7 @@ namespace DirLinker.Tests.Helpers
 {
     public static class CreateStubHelpers
     {
-        public static IFolder GetIDirectoryManagerStub()
+        public static IFolder GetIFolderStub()
         {
             return GetIDirectoryManagerStub(new Char[] { }, 254);
         }
