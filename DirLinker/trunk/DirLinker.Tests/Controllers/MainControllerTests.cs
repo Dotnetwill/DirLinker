@@ -53,19 +53,17 @@ namespace DirLinker.Tests.Controllers
         }
 
         [Test]
-        public void PerformLink_ValidLinkService_PerformOperationCalledWithData()
+        public void ShowWorker_ValidViewPassed_ViewIsPassedFeedbackData()
         {
-            ILinkerView view = MockRepository.GenerateMock<ILinkerView>();
-            IPathValidation validator = MockRepository.GenerateMock<IPathValidation>();
-            ILinkerService linkerService = MockRepository.GenerateMock<ILinkerService>();
-
-            MainController controller = new MainController(view, validator, linkerService);
-
-            controller.Start();
-            controller.PerformOperation(view, new EventArgs());
-
-            linkerService.AssertWasCalled(l => l.PerformLinkOperation(Arg<LinkOperationData>.Is.NotNull));
+            
         }
+
+        [Test]
+        public void ShowWorker_ValidViewPassed_SameFeedbackDataObjectIsPassedToViewAndLinkerService()
+        {
+
+        }
+
 
     }
 }

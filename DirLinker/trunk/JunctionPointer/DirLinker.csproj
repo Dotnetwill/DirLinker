@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{3EBCE70F-0A6B-4F50-B381-AE4E8743873B}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -63,6 +63,8 @@
     <Compile Include="Commands\ITransactionalCommandRunner.cs" />
     <Compile Include="Commands\TransactionalCommandRunner.cs" />
     <Compile Include="Commands\WorkReportGenerator.cs" />
+    <Compile Include="Controllers\WorkerController.cs" />
+    <Compile Include="Data\FeedbackData.cs" />
     <Compile Include="Interfaces\ILinkerService.cs" />
     <Compile Include="Interfaces\IPathValidation.cs" />
     <Compile Include="Data\LinkOperationData.cs" />
@@ -104,6 +106,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\ProgressView.resx">
       <DependentUpon>ProgressView.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

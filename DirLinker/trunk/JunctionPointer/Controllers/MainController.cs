@@ -48,7 +48,6 @@ namespace DirLinker.Controllers
 
         public void PerformOperation(object sender, EventArgs e)
         {
-            _linkerService.PerformLinkOperation(_operationData);
         }
 
      
