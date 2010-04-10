@@ -52,17 +52,7 @@ namespace DirLinker.Tests.Controllers
             validator.AssertWasCalled(v => v.ValidPath(Arg<String>.Matches(s => s.Equals("test")), out Arg<String>.Out("").Dummy));   
         }
 
-        [Test]
-        public void ShowWorker_ValidViewPassed_ViewIsPassedFeedbackData()
-        {
-            
-        }
-
-        [Test]
-        public void ShowWorker_ValidViewPassed_SameFeedbackDataObjectIsPassedToViewAndLinkerService()
-        {
-
-        }
+   
 
 
     }

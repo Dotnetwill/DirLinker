@@ -11,6 +11,7 @@ namespace DirLinker.Interfaces.Views
 
         DialogResult AskUser(String message, MessageBoxButtons options);
 
+        DirLinker.Data.FeedbackData FeedBack { get; set; }
         DialogResult ShowDialog(IWin32Window owner);
         void Close();
     }
