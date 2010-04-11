@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Windows.Forms;
+using DirLinker.Data;
 
 namespace DirLinker.Interfaces.Views
 {
     public interface IWorkingView : IWin32Window
     {
-        void AddFeedBack(String feedback);
-        Int32 PercentageComplete { set; }
-        String CurrentUserTaskText { set; }
-
+        FeedbackData Feedback { set; } 
         DialogResult AskUser(String message, MessageBoxButtons options);
 
-        DirLinker.Data.FeedbackData FeedBack { get; set; }
-        DialogResult ShowDialog(IWin32Window owner);
+        void Show(IWin32Window owner);
         void Close();
     }
 }
