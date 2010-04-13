@@ -86,6 +86,8 @@
     <Compile Include="Commands\WorkReportGenerator.cs" />
     <Compile Include="Controllers\WorkerController.cs" />
     <Compile Include="Data\FeedbackData.cs" />
+    <Compile Include="Implemenation\LinkerService.cs" />
+    <Compile Include="Implemenation\ThreadMessenger.cs" />
     <Compile Include="Interfaces\ILinkerService.cs" />
     <Compile Include="Interfaces\IPathValidation.cs" />
     <Compile Include="Data\LinkOperationData.cs" />

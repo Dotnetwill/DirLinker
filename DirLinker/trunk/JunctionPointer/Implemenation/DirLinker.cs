@@ -15,7 +15,7 @@ namespace DirLinker.Implemenation
      public class DirLinker /*: IDirLinker*/
     {
         protected event ReportProgress m_ReportFeedback;
-        protected event UserMessage m_UserResponseRequired;
+        //protected event UserMessage m_UserResponseRequired;
    
 
         protected IFolderFactoryForPath FolderFactoryForPath;
@@ -55,42 +55,25 @@ namespace DirLinker.Implemenation
                                                 DirLinkerStage.CreatingDirectoryLink);
                 }
 
-                ReportSuccessToUser();
+                //ReportSuccessToUser();
                 
             }
             catch (Exception ex)
             {
                 TraceOutException(ex);
-                ReportExceptionErrorToUser(ex);
+              //  ReportExceptionErrorToUser(ex);
             }
         }
 
-        private void ReportSuccessToUser()
-        {
-            AskUserQuestion("Operation Success!", MessageBoxButtons.OK);
-        }
+        //private void ReportSuccessToUser()
+        //{
+        //    AskUserQuestion("Operation Success!", MessageBoxButtons.OK);
+        //}
 
-        private void ReportExceptionErrorToUser(Exception dirEx)
-        {
-            AskUserQuestion(String.Format("Operation Failed: {0}", dirEx.Message), MessageBoxButtons.OK);
-        }
-
-        private DialogResult AskUserQuestion(String message, MessageBoxButtons buttons)
-        {
-            if (m_UserResponseRequired != null)
-            {
-                UserMessageArgs args = new UserMessageArgs()
-                {
-                    Message = message,
-                    ResponseOptions = buttons
-                };
-
-                m_UserResponseRequired(this, args);
-                return args.Response;
-            }
-
-            return DialogResult.OK;
-        }
+        //private void ReportExceptionErrorToUser(Exception dirEx)
+        //{
+        //    AskUserQuestion(String.Format("Operation Failed: {0}", dirEx.Message), MessageBoxButtons.OK);
+        //}
 
         protected void CopyAndDeleteFolder(IFolder sourceFolder, IFolder targetFolder,  Boolean overwriteTargetFiles, Boolean copyFilesToTarget)
         {
@@ -149,26 +132,26 @@ namespace DirLinker.Implemenation
         {
             if ((targetFile.GetAttributes() & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
             {
-                String userQuestion = String.Format("File \"{0}\" is readonly.  Would you like to overwrite it?", targetFile.FullFilePath);
-                MessageBoxButtons options = MessageBoxButtons.YesNoCancel;
-                DialogResult result = AskUserQuestion(userQuestion, options);
+                //String userQuestion = String.Format("File \"{0}\" is readonly.  Would you like to overwrite it?", targetFile.FullFilePath);
+                //MessageBoxButtons options = MessageBoxButtons.YesNoCancel;
+                //DialogResult result = AskUserQuestion(userQuestion, options);
                 
-                if (result == DialogResult.Yes)
-                {
-                    targetFile.SetAttributes(FileAttributes.Normal);
-                }
-                else if (result == DialogResult.No)
-                {
-                    return false;
-                }
-                else if (result == DialogResult.Cancel)
-                {
-                    throw new DirLinkerException("User cancelled operation", DirLinkerStage.Unknown);
-                }
-                else
-                {
-                    throw new Exception("Unknown dialog result");
-                }
+                //if (result == DialogResult.Yes)
+                //{
+                //    targetFile.SetAttributes(FileAttributes.Normal);
+                //}
+                //else if (result == DialogResult.No)
+                //{
+                //    return false;
+                //}
+                //else if (result == DialogResult.Cancel)
+                //{
+                //    throw new DirLinkerException("User cancelled operation", DirLinkerStage.Unknown);
+                //}
+                //else
+                //{
+                //    throw new Exception("Unknown dialog result");
+                //}
             }
             return true;
         }
@@ -224,11 +207,11 @@ namespace DirLinker.Implemenation
             return true;
         }
 
-        public event UserMessage UserMessage
-        {
-            add { m_UserResponseRequired += value; }
-            remove { m_UserResponseRequired -= value; }
-        }
+        //public event UserMessage UserMessage
+        //{
+        //    add { m_UserResponseRequired += value; }
+        //    remove { m_UserResponseRequired -= value; }
+        //}
 
         public event ReportProgress ReportFeedback
         {

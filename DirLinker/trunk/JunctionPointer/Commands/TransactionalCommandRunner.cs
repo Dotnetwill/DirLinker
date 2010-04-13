@@ -4,6 +4,8 @@ using System.Windows.Threading;
 using System.ComponentModel;
 using DirLinker.Interfaces;
 using DirLinker.Implementation;
+using System.Windows.Forms;
+using DirLinker.Data;
 
 namespace DirLinker.Commands
 {
@@ -15,35 +17,10 @@ namespace DirLinker.Commands
     /// <summary>
     /// 
     /// </summary>
-    public class TransactionalCommandRunner : INotifyPropertyChanged, ITransactionalCommandRunner
+    public class TransactionalCommandRunner :  ITransactionalCommandRunner
     {
 
-        /// <summary>
-        /// Safely marshalls messages across threads
-        /// </summary>
-        public class ThreadMessenger
-        {
-            private Dispatcher _Dispatcher;
-            private Action<String, Int32> _DispatchMessage;
-
-            public ThreadMessenger(Dispatcher dispatch, Action<String, Int32> dispatchMethod)
-            {
-                _Dispatcher = dispatch;
-                _DispatchMessage = dispatchMethod;
-            }
-
-            public void StatusUpdate(String message, Int32 percentageComplete)
-            {
-                _Dispatcher.BeginInvoke((Action)delegate { _DispatchMessage(message, percentageComplete); });
-            }
-
-            //public DialogResult RequestUserFeedback(String message, MessageBoxButtons options)
-            //{
-            //    _Dispatcher.BeginInvoke()
-            //    return DialogResult.Cancel;            
-            //}
-        }
-
+      
         private Stack<ICommand> _undoStack;
         private ThreadSafeQueue<ICommand> _commandQueue;
         private IBackgroundWorker _bgWorker;
@@ -124,9 +101,9 @@ namespace DirLinker.Commands
 
             _bgWorker.RunWorkerCompleted += NotifyWorkCompleted;
 
-            ThreadMessenger messenger = new ThreadMessenger(Dispatcher.CurrentDispatcher, (Action<string, int>)StatusUpdateDelegate);
+           // ThreadMessenger messenger = new ThreadMessenger(Dispatcher.CurrentDispatcher, (Action<string, int>)StatusUpdateDelegate);
 
-            _bgWorker.RunWorkerAsync(messenger); 
+           // _bgWorker.RunWorkerAsync(messenger); 
         }
 
 
