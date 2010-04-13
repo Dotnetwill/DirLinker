@@ -169,22 +169,5 @@ namespace DirLinker.Commands
             //up outside of this run
             _undoStack.Clear();
         }
-
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void StatusUpdateDelegate(String message, Int32 percentcomplete)
-        {
-            CurrentStatus = message;
-            PercentageComplete = percentcomplete;
-            PropertyChangedEventHandler handler = PropertyChanged;
-
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs("CurrentStatus"));
-                handler(this, new PropertyChangedEventArgs("PercentageComplete"));
-            }
-        }
-        #endregion 
     }
 }

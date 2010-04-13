@@ -79,6 +79,75 @@ namespace DirLinker.Tests.Controllers
             link.AssertWasCalled(l => l.PerformOperation());
         }
 
-        
+        [Test]
+        public void ShowWorker_CancelIsPressedWhenViewIsShown_LinkerServiceIsRequestedToCancel()
+        {
+            FeedbackData data = new FeedbackData();
+            var link = MockRepository.GenerateMock<ILinkerService>();
+            link.Stub(l => l.GetStatusData(Arg<Dispatcher>.Is.Anything)).Return(data);
+            
+            var view = MockRepository.GenerateMock<IWorkingView>();
+            view.Stub(v => v.Show(Arg<IWin32Window>.Is.Anything))
+                                                    .Do((Action<IWin32Window>)delegate(IWin32Window owner) 
+                                                    {
+                                                        view.GetEventRaiser(v => v.CancelPress += null).Raise(null, null);
+                                                    });
+
+            var controller = new WorkerController(link, view);
+            controller.ShowWorker(null);
+
+            link.AssertWasCalled(l => l.CancelOperation());
+        }
+
+
+        [Test]
+        public void ShowWorker_ViewIsShown_CancelButtonTextIsSetToCancel()
+        {
+            FeedbackData data = new FeedbackData();
+            var link = MockRepository.GenerateMock<ILinkerService>();
+            link.Stub(l => l.GetStatusData(Arg<Dispatcher>.Is.Anything)).Return(data);
+
+            var view = MockRepository.GenerateMock<IWorkingView>();
+
+            var controller = new WorkerController(link, view);
+            controller.ShowWorker(null);
+
+            view.AssertWasCalled(v => v.CancelButtonText = "Cancel");
+            
+        }
+
+        [Test]
+        public void ShowWorker_OperationIsComplele_CancelButtonTextIsSetToFinish()
+        {
+            FeedbackData data = new FeedbackData();
+            var link = MockRepository.GenerateMock<ILinkerService>();
+            link.Stub(l => l.GetStatusData(Arg<Dispatcher>.Is.Anything)).Return(data);
+
+            var view = MockRepository.GenerateMock<IWorkingView>();
+
+            var controller = new WorkerController(link, view);
+            controller.ShowWorker(null);
+
+            view.AssertWasCalled(v => v.CancelButtonText = "Finish");
+
+        }
+
+        [Test]
+        public void ShowWorker_OperationIsCompleleCancelButtonPressed_NoCancelIsCalledOnServiceViewIsClosed()
+        {
+            FeedbackData data = new FeedbackData();
+            var link = MockRepository.GenerateMock<ILinkerService>();
+            link.Stub(l => l.GetStatusData(Arg<Dispatcher>.Is.Anything)).Return(data);
+
+            var view = MockRepository.GenerateMock<IWorkingView>();
+
+            var controller = new WorkerController(link, view);
+            controller.ShowWorker(null);
+
+            view.GetEventRaiser(v => v.CancelPress += null).Raise(null, null);
+
+            link.AssertWasNotCalled(l => l.CancelOperation());
+            view.AssertWasCalled(v => v.Close());
+        }
     }
 }

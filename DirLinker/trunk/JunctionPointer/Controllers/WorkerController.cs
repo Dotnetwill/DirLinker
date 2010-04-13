@@ -25,8 +25,20 @@ namespace DirLinker.Controllers
         public void ShowWorker(IWin32Window owner)
         {
             SetupFeedback();
+            SetupCancel();
             _view.Show(owner);
             _linker.PerformOperation();
+        }
+
+        private void SetupCancel()
+        {
+            _view.CancelButtonText = "Cancel";
+            _view.CancelPress += CancelOperation;
+        }
+
+        void CancelOperation(object sender, EventArgs e)
+        {
+            _linker.CancelOperation();
         }
 
         private void SetupFeedback()
