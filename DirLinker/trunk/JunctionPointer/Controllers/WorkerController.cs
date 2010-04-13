@@ -27,7 +27,16 @@ namespace DirLinker.Controllers
             SetupFeedback();
             SetupCancel();
             _view.Show(owner);
-            _linker.PerformOperation();
+            _linker.PerformOperation(); 
+
+            FinishOperation();
+        }
+
+        private void FinishOperation()
+        {
+            _view.CancelButtonText = "Finish";
+            _view.CancelPress -= CancelOperation;
+            _view.CancelPress += (s, ea) => _view.Close();
         }
 
         private void SetupCancel()

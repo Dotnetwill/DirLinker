@@ -6,6 +6,7 @@ namespace DirLinker.Interfaces
 {
     public interface ILinkerService
     {
+        void SetOperationData(LinkOperationData linkData);
         FeedbackData GetStatusData(Dispatcher dispatcher);
         void PerformOperation();
         void CancelOperation();

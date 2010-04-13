@@ -10,11 +10,21 @@ namespace DirLinker.Implemenation
 {
     public class LinkerService : ILinkerService
     {
-        #region ILinkerService Members
+        private FeedbackData _feedback;
 
         public FeedbackData GetStatusData(Dispatcher dispatcher)
         {
-            return null;
+            if (dispatcher == null)
+            {
+                throw new ArgumentNullException("dispatcher");
+            }
+
+            if (_feedback == null)
+            {
+                _feedback = new FeedbackData();
+            }
+
+            return _feedback;
         }
 
         public void PerformOperation()
@@ -25,6 +35,9 @@ namespace DirLinker.Implemenation
         {
         }
 
-        #endregion
+        public void SetOperationData(LinkOperationData linkData)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
