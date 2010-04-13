@@ -11,6 +11,15 @@ namespace DirLinker.Implemenation
     public class LinkerService : ILinkerService
     {
         private FeedbackData _feedback;
+        private ICommandDiscovery _commandDiscovery;
+        private IFolderFactoryForPath _folderFactory;
+        private LinkOperationData _operationData;
+
+        public LinkerService(ICommandDiscovery commandDiscovery, IFolderFactoryForPath folderFactory)
+        {
+            _commandDiscovery = commandDiscovery;
+            _folderFactory = folderFactory;
+        }
 
         public FeedbackData GetStatusData(Dispatcher dispatcher)
         {
@@ -29,15 +38,30 @@ namespace DirLinker.Implemenation
 
         public void PerformOperation()
         {
+            QueueCommands();
         }
 
+        
         public void CancelOperation()
         {
         }
 
         public void SetOperationData(LinkOperationData linkData)
         {
-            throw new NotImplementedException();
+            _operationData = linkData;
         }
+
+        private void QueueCommands()
+        {
+            IFolder linkTo = _folderFactory(_operationData.LinkTo);
+            IFolder linkFrom = _folderFactory(_operationData.CreateLinkAt);
+
+            _commandDiscovery.GetCommandListForTask(
+                            linkTo, 
+                            linkFrom, 
+                            overwriteTargetFiles: _operationData.OverwriteExistingFiles, 
+                            copyBeforeDelete: _operationData.CopyBeforeDelete); 
+        }
+
     }
 }
