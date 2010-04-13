@@ -43,13 +43,21 @@ namespace DirLinker.Views
                
         }
 
-        #region IWin32Window Members
-
         public IntPtr Handle
         {
             get { return this.Handle; }
         }
 
-        #endregion
+        public string CancelButtonText
+        {
+            set { cancelBtn.Text = value; }
+        }
+
+        public event EventHandler CancelPress
+        {
+            add { cancelBtn.Click += value; }
+            remove { cancelBtn.Click -= value; }
+        }
+
     }
 }

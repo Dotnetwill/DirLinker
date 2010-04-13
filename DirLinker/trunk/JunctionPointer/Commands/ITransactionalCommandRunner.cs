@@ -16,16 +16,6 @@ namespace DirLinker.Commands
         /// </summary>
         Int32 CommandQueueCount { get; }
         /// <summary>
-        /// What the current command is doing.
-        /// **Thread safe and bindable**
-        /// </summary>
-        String CurrentStatus { get; }
-        /// <summary>
-        /// Percentage out of a 100 the current operation is at
-        /// **Thread safe and bindable**
-        /// </summary>
-        Int32 PercentageComplete { get; }
-        /// <summary>
         /// Adds a command to the queue to be run
         /// </summary>
         /// <param name="command">a class that implements ICommand</param>
@@ -34,7 +24,7 @@ namespace DirLinker.Commands
         /// Starts a background thread and runs the current command queue.
         /// When finished The WorkCompleted event will be raised.
         /// </summary>
-        void RunAsync();
+        void RunAsync(IMessenger messenger);
         /// <summary>
         /// Requests the work is cancelled.  The cancel flag is only checked between running commands.
         /// </summary>

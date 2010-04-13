@@ -60,17 +60,6 @@ namespace DirLinker.Commands
                 return _commandQueue.Count;
             }
         }
-        /// <summary>
-        /// What the current command is doing.
-        /// **Thread safe and bindable**
-        /// </summary>
-        public String CurrentStatus { get; private set; }
-
-        /// <summary>
-        /// Percentage out of a 100 the current operation is at
-        /// **Thread safe and bindable**
-        /// </summary>
-        public Int32 PercentageComplete { get; private set; }
 
         /// <summary>
         /// Adds a command to the queue to be run
@@ -95,15 +84,12 @@ namespace DirLinker.Commands
         /// Starts a background thread and runs the current command queue.
         /// When finished The WorkCompleted event will be raised.
         /// </summary>
-        public void RunAsync()
+        public void RunAsync(IMessenger messenger)
         {
-            _bgWorker.DoWork += (sender, args) => RunCommandQueue(args.Argument as ThreadMessenger);
+            _bgWorker.DoWork += (sender, args) => RunCommandQueue(args.Argument as IMessenger);
 
             _bgWorker.RunWorkerCompleted += NotifyWorkCompleted;
-
-           // ThreadMessenger messenger = new ThreadMessenger(Dispatcher.CurrentDispatcher, (Action<string, int>)StatusUpdateDelegate);
-
-           // _bgWorker.RunWorkerAsync(messenger); 
+            _bgWorker.RunWorkerAsync(messenger); 
         }
 
 
@@ -117,7 +103,7 @@ namespace DirLinker.Commands
             _workReportCreator.UserCancelledRequested();
         }
         
-        private void RunCommandQueue(ThreadMessenger messenger)
+        private void RunCommandQueue(IMessenger messenger)
         {
             try
             {
@@ -145,7 +131,7 @@ namespace DirLinker.Commands
             }
         }
 
-        private void ProcessUndoStack(ThreadMessenger messenger)
+        private void ProcessUndoStack(IMessenger messenger)
         {
             try
             {

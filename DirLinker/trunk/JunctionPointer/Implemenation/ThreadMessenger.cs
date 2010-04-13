@@ -5,13 +5,14 @@ using System.Text;
 using System.Windows.Threading;
 using DirLinker.Data;
 using System.Windows.Forms;
+using DirLinker.Interfaces;
 
 namespace DirLinker.Implemenation
 {
     /// <summary>
     /// Safely marshalls messages across threads
     /// </summary>
-    public class ThreadMessenger
+    public class ThreadMessenger : IMessenger
     {
         private Dispatcher _Dispatcher;
         private FeedbackData _data;

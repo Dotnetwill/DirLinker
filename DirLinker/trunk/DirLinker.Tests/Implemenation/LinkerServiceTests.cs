@@ -10,6 +10,7 @@ namespace DirLinker.Tests.Implemenation
     class LinkerServiceTests
     {
         [Test]
-
+        public void test()
+        { }
     }
 }
