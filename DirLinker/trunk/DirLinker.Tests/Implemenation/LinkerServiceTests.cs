@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
-using DirLinker.Implemenation;
+using DirLinker.Implementation;
 using DirLinker.Data;
 using System.Windows.Threading;
 using Rhino.Mocks;
 using DirLinker.Interfaces;
 using DirLinker.Tests.Helpers;
+using DirLinker.Commands;
+using System.Collections.Generic;
 
-namespace DirLinker.Tests.Implemenation
+namespace DirLinker.Tests.Implementation
 {
     [TestFixture]
     class LinkerServiceTests
@@ -39,13 +38,9 @@ namespace DirLinker.Tests.Implemenation
             String linkFrom = "Test1";
 
             var commandDiscovery = MockRepository.GenerateMock<ICommandDiscovery>();
-            var linker = GetLinkerService(commandDiscovery, f => new FakeFolder(f));
+            var linker = GetLinkerService(commandDiscovery);
 
-            LinkOperationData data = new LinkOperationData();
-            data.CopyBeforeDelete = true;
-            data.CreateLinkAt = linkFrom;
-            data.LinkTo = linkTo;
-            data.OverwriteExistingFiles = true;
+            LinkOperationData data = new LinkOperationData { CopyBeforeDelete = true, CreateLinkAt = linkFrom, LinkTo = linkTo, OverwriteExistingFiles = true };
 
             linker.SetOperationData(data);
 
@@ -54,8 +49,8 @@ namespace DirLinker.Tests.Implemenation
             commandDiscovery.AssertWasCalled(d => d.GetCommandListForTask(
                                                   Arg<IFolder>.Matches(f => f.FolderPath.Equals(linkTo)),
                                                   Arg<IFolder>.Matches(f => f.FolderPath.Equals(linkFrom)), 
-                                                  data.CopyBeforeDelete, 
-                                                  data.OverwriteExistingFiles));
+                                                  Arg<Boolean>.Matches(b => data.CopyBeforeDelete),
+                                                  Arg<Boolean>.Matches(b => data.OverwriteExistingFiles)));
 
         }
 
@@ -63,25 +58,96 @@ namespace DirLinker.Tests.Implemenation
         [Test]
         public void PerformOperation_ValidDataAndDispatcher_StatusSetToCommandDiscoveryRunning()
         {
-            Assert.Fail();
+            var commandDiscovery = MockRepository.GenerateMock<ICommandDiscovery>();
+            var runner = MockRepository.GenerateMock<ITransactionalCommandRunner>();
+                       
+            var linker = GetLinkerService(commandDiscovery, runner);
+            var statusData = linker.GetStatusData(Dispatcher.CurrentDispatcher);
+            LinkOperationData data = new LinkOperationData { CopyBeforeDelete = true, CreateLinkAt = "", LinkTo = "", OverwriteExistingFiles = true };
+
+            linker.SetOperationData(data);
+
+            Boolean statusSet = false;
+            statusData.PropertyChanged += (s, ea) => statusSet |= ea.PropertyName.Equals("Message") && statusData.Message.Equals("Building Task List");
+
+            linker.PerformOperation();
+
+            Assert.IsTrue(statusSet);
         }
 
         [Test]
         public void PerformOperation_ValidData_CommandsQueuedInCommandRunnerFromCommandDiscovery()
         {
-            Assert.Fail();
+            List<ICommand> commandList = new List<ICommand>();
+            var commandDiscovery = MockRepository.GenerateMock<ICommandDiscovery>();
+            commandDiscovery.Stub(c => c.GetCommandListForTask(Arg<IFolder>.Is.Anything, Arg<IFolder>.Is.Anything, Arg<Boolean>.Is.Anything, Arg<Boolean>.Is.Anything))
+                .Return(commandList);
+
+            var runner = MockRepository.GenerateMock<ITransactionalCommandRunner>();
+            var linker = GetLinkerService(commandDiscovery, runner);
+
+            LinkOperationData data = new LinkOperationData { CopyBeforeDelete = true, CreateLinkAt = "", LinkTo = "", OverwriteExistingFiles = true };
+
+            linker.SetOperationData(data);
+
+            linker.PerformOperation();
+
+            runner.AssertWasCalled(r => r.QueueRange(commandList));
         }
 
-        [Test]
-        public void PerformOperation_ValidData_CommandRunnerStarted()
-        {
-            Assert.Fail();
-        }
-
+        
         [Test]
         public void PerformOperation_ValidData_CommandRunnerStartedWithValidThreadMessenger()
         {
-            Assert.Fail();
+            var runner = MockRepository.GenerateMock<ITransactionalCommandRunner>();
+            var linker = GetLinkerService(runner);
+
+            linker.SetOperationData(new LinkOperationData());
+            linker.PerformOperation();
+
+            runner.AssertWasCalled(r => r.RunAsync(Arg<IMessenger>.Is.NotNull));
+        }
+
+        [Test]
+        public void PerformOperation_ValidData_CompletedCallBackIsRegistered()
+        {
+            var runner = MockRepository.GenerateMock<ITransactionalCommandRunner>();
+            var linker = GetLinkerService(runner);
+
+            linker.SetOperationData(new LinkOperationData());
+            linker.PerformOperation();
+
+            runner.AssertWasCalled(r => r.WorkCompleted += Arg<WorkCompletedCallBack>.Is.Anything);
+        }
+
+        [Test]
+        public void CancelOperation_CancelRequested_CancelPassedToTestRunner()
+        {
+            var runner = MockRepository.GenerateMock<ITransactionalCommandRunner>();
+            var linker = GetLinkerService(runner);
+
+            linker.CancelOperation();
+            
+            runner.AssertWasCalled(r => r.RequestCancel());
+        }
+
+
+        [Test]
+        public void OperationComplete_CallBackRegistered_ReportForwarded()
+        {
+            WorkReport report = new WorkReport(WorkStatus.NotSet);
+
+            var runner = MockRepository.GenerateMock<ITransactionalCommandRunner>();
+            var linker = GetLinkerService(runner);
+            runner.Stub(r => r.RunAsync(Arg<IMessenger>.Is.Anything)).Do((Action<IMessenger>)delegate(IMessenger m) { runner.GetEventRaiser(r => r.WorkCompleted += null).Raise(report); });
+
+            Boolean matches = false;
+            linker.OperationComplete = (wr) => matches = wr.Equals(report);
+
+            linker.SetOperationData(new LinkOperationData());
+            linker.PerformOperation();
+
+            Assert.IsTrue(matches);
         }
 
         private LinkerService GetLinkerService()
@@ -90,14 +156,26 @@ namespace DirLinker.Tests.Implemenation
             return GetLinkerService(commandDiscovery);
         }
 
-        private LinkerService GetLinkerService(ICommandDiscovery commandDiscovery)
+        private LinkerService GetLinkerService(ICommandDiscovery commandDiscovery, ITransactionalCommandRunner runner)
         {
-            return GetLinkerService(commandDiscovery, f => new FakeFolder(f));
+            return GetLinkerService(commandDiscovery, runner, f => new FakeFolder(f));
         }
 
-        private LinkerService GetLinkerService(ICommandDiscovery commandDiscovery, IFolderFactoryForPath folderFactory)
+        private LinkerService GetLinkerService(ICommandDiscovery commandDiscovery)
         {
-            return new LinkerService(commandDiscovery, folderFactory);
+            var runner = MockRepository.GenerateStub<ITransactionalCommandRunner>();
+            return GetLinkerService(commandDiscovery, runner, f => new FakeFolder(f));
+        }
+
+        private LinkerService GetLinkerService(ITransactionalCommandRunner runner)
+        {
+            var commandDiscovery = MockRepository.GenerateStub<ICommandDiscovery>();
+            return GetLinkerService(commandDiscovery, runner, f => new FakeFolder(f));
+        }
+
+        private LinkerService GetLinkerService(ICommandDiscovery commandDiscovery,  ITransactionalCommandRunner runner, IFolderFactoryForPath folderFactory)
+        {
+            return new LinkerService(commandDiscovery, runner, folderFactory, (d, fd) => MockRepository.GenerateStub<IMessenger>());
         }
 
     }

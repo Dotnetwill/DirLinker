@@ -87,25 +87,25 @@
     <Compile Include="Controllers\WorkerController.cs" />
     <Compile Include="Data\FeedbackData.cs" />
     <Compile Include="Interfaces\IMessenger.cs" />
-    <Compile Include="Implemenation\LinkerService.cs" />
-    <Compile Include="Implemenation\ThreadMessenger.cs" />
+    <Compile Include="Implementation\LinkerService.cs" />
+    <Compile Include="Implementation\ThreadMessenger.cs" />
     <Compile Include="Interfaces\ILinkerService.cs" />
     <Compile Include="Interfaces\IPathValidation.cs" />
     <Compile Include="Data\LinkOperationData.cs" />
     <Compile Include="Exceptions\CommandRunnerException.cs" />
     <Compile Include="Helpers\ClassFactory\ClassFactory.cs" />
     <Compile Include="Helpers\Interfaces\IClassFactory.cs" />
-    <Compile Include="Implemenation\BackgroundWorkerImp.cs">
+    <Compile Include="Implementation\BackgroundWorkerImp.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Implemenation\FileImp.cs" />
-    <Compile Include="Implemenation\Locker.cs" />
-    <Compile Include="Implemenation\ThreadSafeQueue.cs" />
+    <Compile Include="Implementation\FileImp.cs" />
+    <Compile Include="Implementation\Locker.cs" />
+    <Compile Include="Implementation\ThreadSafeQueue.cs" />
     <Compile Include="Interfaces\Controllers\IMainController.cs" />
     <Compile Include="Controllers\MainController.cs" />
     <Compile Include="Exceptions\DirLinkerException.cs" />
-    <Compile Include="Implemenation\FolderImp.cs" />
-    <Compile Include="Implemenation\DirLinker.cs" />
+    <Compile Include="Implementation\FolderImp.cs" />
+    <Compile Include="Implementation\DirLinker.cs" />
     <Compile Include="Commands\MoveFileCommand.cs" />
     <Compile Include="Interfaces\IBackgroundWorker.cs" />
     <Compile Include="Interfaces\ICommand.cs" />
@@ -114,7 +114,7 @@
     <Compile Include="Interfaces\IDirLinker.cs" />
     <Compile Include="Interfaces\IFile.cs" />
     <Compile Include="Interfaces\ILocker.cs" />
-    <Compile Include="Implemenation\PathValidation.cs" />
+    <Compile Include="Implementation\PathValidation.cs" />
     <Compile Include="Interfaces\Views\ILinkerView.cs" />
     <Compile Include="Interfaces\Views\IWorkingView.cs" />
     <Compile Include="Program.cs" />

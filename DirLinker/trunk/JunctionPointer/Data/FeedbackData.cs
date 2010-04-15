@@ -62,7 +62,7 @@ namespace DirLinker.Data
 
         public event PropertyChangedEventHandler PropertyChanged
         {
-            add { _propertyChanged -= value; }
+            add { _propertyChanged += value; }
             remove { _propertyChanged -= value; }
         }
 
