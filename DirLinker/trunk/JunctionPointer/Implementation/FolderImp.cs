@@ -6,7 +6,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using OCInject;
 
-namespace DirLinker.Implemenation
+namespace DirLinker.Implementation
 {
     class FolderImp : IFolder
     {

@@ -3,7 +3,7 @@
 using System.ComponentModel;
 using DirLinker.Interfaces;
 
-namespace DirLinker.Implemenation
+namespace DirLinker.Implementation
 {
     public class BackgroundWorkerImp : BackgroundWorker, IBackgroundWorker
     {

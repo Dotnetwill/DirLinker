@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using OCInject;
 
-namespace DirLinker.Implemenation
+namespace DirLinker.Implementation
 {
      public class DirLinker /*: IDirLinker*/
     {

@@ -7,8 +7,9 @@ using DirLinker.Data;
 using System.Windows.Forms;
 using DirLinker.Interfaces;
 
-namespace DirLinker.Implemenation
+namespace DirLinker.Implementation
 {
+
     /// <summary>
     /// Safely marshalls messages across threads
     /// </summary>

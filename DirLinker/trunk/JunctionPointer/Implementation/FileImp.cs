@@ -2,7 +2,7 @@
 using DirLinker.Interfaces;
 using System.IO;
 
-namespace DirLinker.Implemenation
+namespace DirLinker.Implementation
 {
     class FileImp : IFile
     {

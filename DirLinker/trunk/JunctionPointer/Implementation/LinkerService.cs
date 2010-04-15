@@ -5,22 +5,29 @@ using System.Text;
 using DirLinker.Interfaces;
 using DirLinker.Data;
 using System.Windows.Threading;
+using DirLinker.Commands;
+using System.Threading;
 
-namespace DirLinker.Implemenation
+namespace DirLinker.Implementation
 {
     public class LinkerService : ILinkerService
     {
+        private ITransactionalCommandRunner _commandRunner;
+        private Action<WorkReport> _completeCallBack;
         private FeedbackData _feedback;
         private ICommandDiscovery _commandDiscovery;
         private IFolderFactoryForPath _folderFactory;
+        private ThreadMessengerFactory _messengerFactory;
         private LinkOperationData _operationData;
 
-        public LinkerService(ICommandDiscovery commandDiscovery, IFolderFactoryForPath folderFactory)
+        public LinkerService(ICommandDiscovery commandDiscovery, ITransactionalCommandRunner runner, IFolderFactoryForPath folderFactory, ThreadMessengerFactory messengerFactory)
         {
             _commandDiscovery = commandDiscovery;
+            _commandRunner = runner;
             _folderFactory = folderFactory;
+            _messengerFactory = messengerFactory;
         }
-
+    
         public FeedbackData GetStatusData(Dispatcher dispatcher)
         {
             if (dispatcher == null)
@@ -36,14 +43,18 @@ namespace DirLinker.Implemenation
             return _feedback;
         }
 
+        
         public void PerformOperation()
         {
             QueueCommands();
+
+            RunCommandRunner();
         }
 
         
         public void CancelOperation()
         {
+            _commandRunner.RequestCancel();
         }
 
         public void SetOperationData(LinkOperationData linkData)
@@ -56,11 +67,48 @@ namespace DirLinker.Implemenation
             IFolder linkTo = _folderFactory(_operationData.LinkTo);
             IFolder linkFrom = _folderFactory(_operationData.CreateLinkAt);
 
-            _commandDiscovery.GetCommandListForTask(
+            UpdateFeedBack("Building Task List");
+
+            var commandList = _commandDiscovery.GetCommandListForTask(
                             linkTo, 
                             linkFrom, 
                             overwriteTargetFiles: _operationData.OverwriteExistingFiles, 
-                            copyBeforeDelete: _operationData.CopyBeforeDelete); 
+                            copyBeforeDelete: _operationData.CopyBeforeDelete);
+
+            _commandRunner.QueueRange(commandList);
+    
+        }
+
+        private void RunCommandRunner()
+        {
+            _commandRunner.WorkCompleted += (wr) =>
+            {
+                if (_completeCallBack != null)
+                {
+                    _completeCallBack(wr);
+                }
+            };
+
+            _commandRunner.RunAsync(_messengerFactory(Dispatcher.CurrentDispatcher, _feedback));
+
+        }
+
+
+        private void UpdateFeedBack(String message)
+        {
+            if (_feedback != null)
+            {
+                _feedback.Message = message;
+            }
+        }
+
+
+
+
+        
+        public Action<WorkReport> OperationComplete
+        {
+            set { _completeCallBack = value; }
         }
 
     }

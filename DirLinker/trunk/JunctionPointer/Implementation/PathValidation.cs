@@ -3,7 +3,7 @@ using System.Linq;
 using DirLinker.Interfaces;
 using System.Text.RegularExpressions;
 
-namespace DirLinker.Implemenation
+namespace DirLinker.Implementation
 {
     public class PathValidation : IPathValidation
     {
