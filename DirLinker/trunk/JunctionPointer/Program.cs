@@ -7,6 +7,7 @@ using DirLinker.Interfaces;
 using DirLinker.Interfaces.Controllers;
 using DirLinker.Interfaces.Views;
 using OCInject;
+using DirLinker.Commands;
 
 namespace DirLinker
 
@@ -25,18 +26,27 @@ namespace DirLinker
             ClassFactory classFactory = new ClassFactory();
             FillIoCContainer(classFactory);
 
-            //IMainController mainController = new MainController(classFactory);
-            //Application.Run(mainController.Start());
+            IMainController mainController = classFactory.ManufactureType<IMainController>();
+            Application.Run(mainController.Start());
         }
 
         private static void FillIoCContainer(ClassFactory classFactory)
         {
 
-            //classFactory.RegisterType<IDirLinker, DirLinker.Implemenation.DirLinker>();
-           // classFactory.RegisterType<IWorkingController, WorkingDialogController>();
+            classFactory.RegisterType<IPathValidation, PathValidation>().AsSingleton();
+            classFactory.RegisterType<IMainController, MainController>();
+            classFactory.RegisterType<ILinkerService, LinkerService>();
+            classFactory.RegisterType<ICommandDiscovery, CommandDiscovery>().AsSingleton();
+            classFactory.RegisterType<ICommandFactory, CommandFactory>().AsSingleton();
+            classFactory.RegisterType<ITransactionalCommandRunner, TransactionalCommandRunner>();
+            classFactory.RegisterType<IWorkingView, ProgressView>();
+            classFactory.RegisterType<ILocker, Locker>();
             classFactory.RegisterType<ILinkerView, DirLinkerView>();
-         //   classFactory.RegisterType<IWorkingView, ProgessView>();
             classFactory.RegisterType<IBackgroundWorker, BackgroundWorkerImp>();
+            classFactory.RegisterType<ThreadSafeQueue<ICommand>>();
+            classFactory.RegisterType<IMessenger, ThreadMessenger>()
+                .WithFactory<ThreadMessengerFactory>();
+
             classFactory.RegisterType<IFolder, FolderImp>()
                 .WithFactory<IFolderFactoryForPath>();
 
