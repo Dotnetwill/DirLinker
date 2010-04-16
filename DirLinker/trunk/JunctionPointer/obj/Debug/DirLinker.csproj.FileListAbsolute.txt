@@ -19,3 +19,6 @@ C:\source2\dirlinker\DirLinker\trunk\JunctionPointer\obj\Debug\GenerateResource-
 C:\source2\dirlinker\DirLinker\trunk\JunctionPointer\obj\Debug\GenerateResource-ResGen.write.1.tlog
 C:\source2\dirlinker\DirLinker\trunk\JunctionPointer\obj\Debug\DirLinker.exe
 C:\source2\dirlinker\DirLinker\trunk\JunctionPointer\obj\Debug\DirLinker.pdb
+D:\source\dirlinker\DirLinker\trunk\JunctionPointer\bin\Debug\DirLinker.exe.config
+D:\source\dirlinker\DirLinker\trunk\JunctionPointer\obj\Debug\DirLinker.exe
+D:\source\dirlinker\DirLinker\trunk\JunctionPointer\obj\Debug\DirLinker.pdb

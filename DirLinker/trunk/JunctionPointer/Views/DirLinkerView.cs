@@ -11,6 +11,7 @@ namespace DirLinker.Views
         public DirLinkerView()
         {
             InitializeComponent();
+            RegisterHandlers();
         }
 
         protected event PathValidater m_ValidatePath;
@@ -61,11 +62,7 @@ namespace DirLinker.Views
             get { return this; }
         }
 
-        public void Setup()
-        {
-         
-            RegisterHandlers();
-        }
+
 
         private void BindToFields()
         {

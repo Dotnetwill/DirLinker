@@ -17,7 +17,7 @@ namespace DirLinker.Tests.Controllers
         public void Start_CreatesNewLinkData_SetsToView()
         {
             ILinkerView view = MockRepository.GenerateMock<ILinkerView>();
-            MainController controller = new MainController(view, null, null);
+            MainController controller = new MainController(view, null, null, null);
 
             controller.Start();
 
@@ -30,7 +30,7 @@ namespace DirLinker.Tests.Controllers
             ILinkerView view = MockRepository.GenerateMock<ILinkerView>();
             IPathValidation validator = MockRepository.GenerateMock<IPathValidation>();
 
-            MainController controller = new MainController(view, validator, null);
+            MainController controller = new MainController(view, validator, null, null);
 
             controller.Start();
 
@@ -45,7 +45,7 @@ namespace DirLinker.Tests.Controllers
             IPathValidation validator = MockRepository.GenerateMock<IPathValidation>();
             ValidationArgs args = new ValidationArgs("test");
 
-            MainController controller = new MainController(view, validator, null);
+            MainController controller = new MainController(view, validator, null, null);
             
             controller.ValidatePath(view, args);
 

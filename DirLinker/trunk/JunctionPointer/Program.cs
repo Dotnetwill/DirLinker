@@ -34,16 +34,20 @@ namespace DirLinker
         {
 
             classFactory.RegisterType<IPathValidation, PathValidation>().AsSingleton();
-            classFactory.RegisterType<IMainController, MainController>();
-            classFactory.RegisterType<ILinkerService, LinkerService>();
+            classFactory.RegisterType<IMainController, MainController>().AsSingleton();
+            classFactory.RegisterType<ILinkerService, LinkerService>().AsSingleton();
             classFactory.RegisterType<ICommandDiscovery, CommandDiscovery>().AsSingleton();
             classFactory.RegisterType<ICommandFactory, CommandFactory>().AsSingleton();
             classFactory.RegisterType<ITransactionalCommandRunner, TransactionalCommandRunner>();
+
             classFactory.RegisterType<IWorkingView, ProgressView>();
             classFactory.RegisterType<ILocker, Locker>();
             classFactory.RegisterType<ILinkerView, DirLinkerView>();
             classFactory.RegisterType<IBackgroundWorker, BackgroundWorkerImp>();
             classFactory.RegisterType<ThreadSafeQueue<ICommand>>();
+            
+            classFactory.RegisterType<WorkerController>();
+
             classFactory.RegisterType<IMessenger, ThreadMessenger>()
                 .WithFactory<ThreadMessengerFactory>();
 

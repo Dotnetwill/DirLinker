@@ -25,8 +25,7 @@ namespace DirLinker.Interfaces.Views
         System.Windows.Forms.Form MainForm { get; }
 
         void SetOperationData(LinkOperationData data);
-        void Setup();
-
+        
         event PathValidater ValidatePath;
         event PerformLink PerformOperation;
     }

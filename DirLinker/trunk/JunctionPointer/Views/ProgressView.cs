@@ -36,7 +36,7 @@ namespace DirLinker.Views
             _data.PropertyChanged += (s, ea) =>
                                         {
                                             if (ea.PropertyName.Equals("Message"))
-                                                textBox1.AppendText(_data.Message);
+                                                textBox1.AppendText(_data.Message + Environment.NewLine);
                                         };
 
             _data.AskUser = (m) =>  MessageBox.Show(this, m.Message, "DirLinker", m.ResponseOptions);
