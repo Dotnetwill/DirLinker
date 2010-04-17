@@ -94,7 +94,6 @@
     <Compile Include="Data\LinkOperationData.cs" />
     <Compile Include="Exceptions\CommandRunnerException.cs" />
     <Compile Include="Helpers\ClassFactory\ClassFactory.cs" />
-    <Compile Include="Helpers\Interfaces\IClassFactory.cs" />
     <Compile Include="Implementation\BackgroundWorkerImp.cs">
       <SubType>Component</SubType>
     </Compile>

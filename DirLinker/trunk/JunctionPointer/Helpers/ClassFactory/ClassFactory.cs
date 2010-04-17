@@ -13,7 +13,7 @@ namespace OCInject
         { }
     }
 
-    public class ClassFactory /*: IClassFactory*/
+    public class ClassFactory
     {
         public class TypeOptions<TRegisteredClass> where TRegisteredClass : class
         {

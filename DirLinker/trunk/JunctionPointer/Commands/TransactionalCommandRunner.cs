@@ -124,8 +124,7 @@ namespace DirLinker.Commands
             catch(Exception ex)
             {
                 _workReportCreator.ProcessException(ex, WorkAction.Execute);
-                AttemptRollBack(messenger, String.Format("An error occured: {0}", ex.Message));
-               
+                AttemptRollBack(messenger, String.Format("An error occured: {0}", ex.Message));  
             }
         }
 
