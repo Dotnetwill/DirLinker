@@ -111,12 +111,12 @@ namespace DirLinker.Commands
                 {
                     if (_cancelRequested)
                     {
-                        ProcessUndoStack(messenger);
+                        AttemptRollBack(messenger, "User requested cancel");
                         break;
                     }
 
                     messenger.StatusUpdate(command.UserFeedback, 0);
-                    
+                    command.AskUser += messenger.RequestUserFeedback;
                     command.Execute();
                     _undoStack.Push(command);
                 }
@@ -124,10 +124,20 @@ namespace DirLinker.Commands
             catch(Exception ex)
             {
                 _workReportCreator.ProcessException(ex, WorkAction.Execute);
+                AttemptRollBack(messenger, String.Format("An error occured: {0}", ex.Message));
+               
+            }
+        }
 
+        private void AttemptRollBack(IMessenger messenger, String reason)
+        {
+            var res = messenger.RequestUserFeedback( String.Format("{0}. Do you want to undo any changes made?", reason), MessageBoxButtons.YesNo);
+
+            if (res == DialogResult.Yes)
+            {
                 messenger.StatusUpdate("An Error occured, attemping to rollback changes", 0);
 
-                ProcessUndoStack(messenger); 
+                ProcessUndoStack(messenger);
             }
         }
 

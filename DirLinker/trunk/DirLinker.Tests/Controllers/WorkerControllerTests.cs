@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Rhino.Mocks;
 using NUnit.Framework;
 using DirLinker.Interfaces;
-using Rhino.Mocks;
 using DirLinker.Controllers;
 using DirLinker.Interfaces.Views;
 using System.Windows.Threading;
@@ -21,7 +18,7 @@ namespace DirLinker.Tests.Controllers
         {
             var link = MockRepository.GenerateMock<ILinkerService>();
             var view = MockRepository.GenerateMock<IWorkingView>();
-
+            
             var workerController = new WorkerController(link, view);
 
             workerController.ShowWorker(null);
