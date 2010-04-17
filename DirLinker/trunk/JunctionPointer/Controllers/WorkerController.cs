@@ -27,9 +27,10 @@ namespace DirLinker.Controllers
             SetupFeedback();
             SetupCancel();
             _view.Show(owner);
+
+            _linker.OperationComplete = (wr) => FinishOperation();
             _linker.PerformOperation(); 
 
-            FinishOperation();
         }
 
         private void FinishOperation()

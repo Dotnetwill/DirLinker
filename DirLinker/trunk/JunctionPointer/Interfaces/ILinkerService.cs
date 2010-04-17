@@ -13,6 +13,6 @@ namespace DirLinker.Interfaces
         void PerformOperation();
         void CancelOperation();
 
-        Action<WorkReport> OperationComplete { set; }
+        Action<WorkReport> OperationComplete { set; get; }
     }
 }

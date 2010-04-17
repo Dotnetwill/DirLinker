@@ -109,6 +109,10 @@ namespace DirLinker.Implementation
         public Action<WorkReport> OperationComplete
         {
             set { _completeCallBack = value; }
+            get
+            {
+                return _completeCallBack;
+            }
         }
 
     }

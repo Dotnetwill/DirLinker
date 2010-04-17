@@ -7,6 +7,7 @@ using DirLinker.Interfaces.Views;
 using System.Windows.Threading;
 using DirLinker.Data;
 using System.Windows.Forms;
+using DirLinker.Commands;
 
 namespace DirLinker.Tests.Controllers
 {
@@ -114,11 +115,17 @@ namespace DirLinker.Tests.Controllers
         }
 
         [Test]
-        public void ShowWorker_OperationIsComplele_CancelButtonTextIsSetToFinish()
+        public void ShowWorker_OperationCompleteCallBackMade_CancelButtonTextIsSetToFinish()
         {
             FeedbackData data = new FeedbackData();
             var link = MockRepository.GenerateMock<ILinkerService>();
             link.Stub(l => l.GetStatusData(Arg<Dispatcher>.Is.Anything)).Return(data);
+            link.Stub(l => l.OperationComplete = null).PropertyBehavior();
+            link.Stub(l => l.PerformOperation())
+                .Do((Action)delegate
+                {
+                    link.OperationComplete(new WorkReport(WorkStatus.NotSet));
+                });
 
             var view = MockRepository.GenerateMock<IWorkingView>();
 
@@ -130,11 +137,35 @@ namespace DirLinker.Tests.Controllers
         }
 
         [Test]
+        public void ShowWorker_OperationCompleleCallBackNotMade_CancelButtonTextIsNotSetToFinish()
+        {
+            FeedbackData data = new FeedbackData();
+            var link = MockRepository.GenerateMock<ILinkerService>();
+            link.Stub(l => l.GetStatusData(Arg<Dispatcher>.Is.Anything)).Return(data);
+            link.Stub(l => l.OperationComplete = null).PropertyBehavior();
+     
+
+            var view = MockRepository.GenerateMock<IWorkingView>();
+
+            var controller = new WorkerController(link, view);
+            controller.ShowWorker(null);
+
+            view.AssertWasNotCalled(v => v.CancelButtonText = "Finish");
+
+        }
+
+        [Test]
         public void ShowWorker_OperationIsCompleleCancelButtonPressed_NoCancelIsCalledOnServiceViewIsClosed()
         {
             FeedbackData data = new FeedbackData();
             var link = MockRepository.GenerateMock<ILinkerService>();
             link.Stub(l => l.GetStatusData(Arg<Dispatcher>.Is.Anything)).Return(data);
+            link.Stub(l => l.OperationComplete = null).PropertyBehavior();
+            link.Stub(l => l.PerformOperation())
+             .Do((Action)delegate
+             {
+                 link.OperationComplete(new WorkReport(WorkStatus.NotSet));
+             });
 
             var view = MockRepository.GenerateMock<IWorkingView>();
 

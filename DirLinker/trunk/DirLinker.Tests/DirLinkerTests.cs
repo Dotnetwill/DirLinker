@@ -7,7 +7,7 @@ using DirLinker.Tests.Helpers;
 using OCInject;
 using System.IO;
 using System.Windows.Forms;
-using DirLinker.Helpers.Interfaces;
+
 
 namespace DirLinker.Tests
 {
