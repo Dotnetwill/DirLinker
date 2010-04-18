@@ -104,7 +104,6 @@
     <Compile Include="Controllers\MainController.cs" />
     <Compile Include="Exceptions\DirLinkerException.cs" />
     <Compile Include="Implementation\FolderImp.cs" />
-    <Compile Include="Implementation\DirLinker.cs" />
     <Compile Include="Commands\MoveFileCommand.cs" />
     <Compile Include="Interfaces\IBackgroundWorker.cs" />
     <Compile Include="Interfaces\ICommand.cs" />

@@ -85,7 +85,6 @@
     <Compile Include="Commands\DeleteFolderCommandTests.cs" />
     <Compile Include="Controllers\MainControllerTests.cs" />
     <Compile Include="Controllers\WorkerControllerTests.cs" />
-    <Compile Include="DirLinkerTests.cs" />
     <Compile Include="Helpers\CreateStubHelpers.cs" />
     <Compile Include="Helpers\FakeBackgroundWorker.cs" />
     <Compile Include="Helpers\FakeFile.cs" />

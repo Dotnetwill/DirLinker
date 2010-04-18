@@ -69,7 +69,7 @@ namespace DirLinker.Implementation
 
             UpdateFeedBack("Building Task List");
 
-            var commandList = _commandDiscovery.GetCommandListForTask(
+            var commandList = _commandDiscovery.GetCommandListForFolderTask(
                             linkTo, 
                             linkFrom, 
                             overwriteTargetFiles: _operationData.OverwriteExistingFiles, 
@@ -122,10 +122,6 @@ namespace DirLinker.Implementation
             }
         }
 
-
-
-
-        
         public Action OperationComplete
         {
             set { _completeCallBack = value; }

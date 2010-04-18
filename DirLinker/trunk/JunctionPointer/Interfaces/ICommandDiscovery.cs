@@ -7,6 +7,6 @@ namespace DirLinker.Interfaces
     
     public interface ICommandDiscovery
     {
-        List<ICommand> GetCommandListForTask(IFolder linkTo, IFolder linkFrom, Boolean copyBeforeDelete, Boolean overwriteTargetFiles);
+        List<ICommand> GetCommandListForFolderTask(IFolder linkTo, IFolder linkFrom, Boolean copyBeforeDelete, Boolean overwriteTargetFiles);
     }
 }

@@ -70,7 +70,7 @@ namespace DirLinker.Tests.Commands
     {
 
         [Test]
-        public void GetCommandListForTask_TargetDoesNotExist_JustCreateLinkCommandReturned()
+        public void GetCommandListForFolderTask_TargetDoesNotExist_JustCreateLinkCommandReturned()
         {
             ICommandFactory factory = new MockCommandFactory();
             IFolder linkTo = MockRepository.GenerateMock<IFolder>();
@@ -80,14 +80,14 @@ namespace DirLinker.Tests.Commands
             linkFrom.Stub(l => l.FolderExists()).Return(true);
 
             ICommandDiscovery discoverer = new CommandDiscovery(factory, null, null);
-            List<ICommand> taskList = discoverer.GetCommandListForTask(linkTo, linkFrom, false, false);
+            List<ICommand> taskList = discoverer.GetCommandListForFolderTask(linkTo, linkFrom, false, false);
 
             Assert.IsTrue(taskList.Count() == 1, "There should be one item in the list");
             Assert.IsTrue(((MockCommand)taskList[0]).CommandName.Equals("CreateLinkCommand"));
         }
 
         [Test]
-        public void GetCommandListForTask_TargetExist_DeleteFolderThenCreateLinkReturned()
+        public void GetCommandListForFolderTask_TargetExist_DeleteFolderThenCreateLinkReturned()
         {
             ICommandFactory factory = new MockCommandFactory();
             IFolder linkTo = MockRepository.GenerateMock<IFolder>();
@@ -97,7 +97,7 @@ namespace DirLinker.Tests.Commands
             linkFrom.Stub(l => l.FolderExists()).Return(true);
 
             ICommandDiscovery discoverer = new CommandDiscovery(factory, null, null);
-            List<ICommand> taskList = discoverer.GetCommandListForTask(linkTo, linkFrom, false, false);
+            List<ICommand> taskList = discoverer.GetCommandListForFolderTask(linkTo, linkFrom, false, false);
 
             Assert.IsTrue(taskList.Count() == 2, "There should be two items in the list");
             Assert.IsTrue(((MockCommand)taskList[0]).CommandName.Equals("DeleteFolderCommand"));
@@ -105,7 +105,7 @@ namespace DirLinker.Tests.Commands
         }
 
         [Test]
-        public void GetCommandListForTask_TargetExistsNoFiles_DeleteFolderThenCreateLinkReturned()
+        public void GetCommandListForFolderTask_TargetExistsNoFiles_DeleteFolderThenCreateLinkReturned()
         {
             ICommandFactory factory = new MockCommandFactory();
             FakeFolder linkTo = new FakeFolder() { FolderExistsReturnValue = true };
@@ -114,7 +114,7 @@ namespace DirLinker.Tests.Commands
             linkFrom.FolderExistsReturnValue = true;
 
             ICommandDiscovery discoverer = new CommandDiscovery(factory, s => new FakeFile(s), f => new FakeFolder(f));
-            List<ICommand> taskList = discoverer.GetCommandListForTask(linkTo, linkFrom, true, false);
+            List<ICommand> taskList = discoverer.GetCommandListForFolderTask(linkTo, linkFrom, true, false);
 
             Assert.IsTrue(taskList.Count() == 2, "There should be three items in the list");
             Assert.IsTrue(((MockCommand)taskList[0]).CommandName.Equals("DeleteFolderCommand"));
@@ -122,7 +122,7 @@ namespace DirLinker.Tests.Commands
         }
 
         [Test]
-        public void GetCommandListForTask_TargetExistsOneFiles_MoveFileThenDeleteFolderThenCreateLinkReturned()
+        public void GetCommandListForFolderTask_TargetExistsOneFiles_MoveFileThenDeleteFolderThenCreateLinkReturned()
         {
             ICommandFactory factory = new MockCommandFactory();
             FakeFolder linkTo = new FakeFolder();
@@ -133,7 +133,7 @@ namespace DirLinker.Tests.Commands
             linkFrom.FolderExistsReturnValue = true;
 
             ICommandDiscovery discoverer = new CommandDiscovery(factory, (f) => new FakeFile(f), f => new FakeFolder(f));
-            List<ICommand> taskList = discoverer.GetCommandListForTask(linkTo, linkFrom, true, false);
+            List<ICommand> taskList = discoverer.GetCommandListForFolderTask(linkTo, linkFrom, true, false);
 
             Assert.IsTrue(taskList.Count() == 3, "There should be three items in the list");
             Assert.IsTrue(((MockCommand)taskList[0]).CommandName.Equals("MoveFileCommand"));
@@ -142,7 +142,7 @@ namespace DirLinker.Tests.Commands
         }
 
         [Test]
-        public void GetCommandListForTask_SourceDoesNotExists_CreateFolderCommandIsFirst()
+        public void GetCommandListForFolderTask_SourceDoesNotExists_CreateFolderCommandIsFirst()
         {
             ICommandFactory factory = new MockCommandFactory();
             IFolder linkTo = new FakeFolder(@"c:\target\");
@@ -151,7 +151,7 @@ namespace DirLinker.Tests.Commands
             linkFrom.FolderExistsReturnValue = false;
 
             ICommandDiscovery discoverer = new CommandDiscovery(factory, (f) => new FakeFile(f), f => new FakeFolder(f));
-            List<ICommand> taskList = discoverer.GetCommandListForTask(linkTo, linkFrom, false, false);
+            List<ICommand> taskList = discoverer.GetCommandListForFolderTask(linkTo, linkFrom, false, false);
             
             MockCommand mockCommand = (MockCommand)taskList[0];
 
@@ -160,7 +160,7 @@ namespace DirLinker.Tests.Commands
         }
 
         [Test]
-        public void GetCommandListForTask_TargetHasEmptySubFolder_SubfolderCreatedInSource()
+        public void GetCommandListForFolderTask_TargetHasEmptySubFolder_SubfolderCreatedInSource()
         {
             ICommandFactory factory = MockRepository.GenerateMock<ICommandFactory>();
 
@@ -173,7 +173,7 @@ namespace DirLinker.Tests.Commands
             FakeFolder linkFrom = new FakeFolder(@"c:\destination\") { FolderExistsReturnValue = true };
 
             ICommandDiscovery discoverer = new CommandDiscovery(factory, f => new FakeFile(f), f => new FakeFolder(f) { FolderExistsReturnValue = false });
-            List<ICommand> taskList = discoverer.GetCommandListForTask(linkTo, linkFrom, true, false);
+            List<ICommand> taskList = discoverer.GetCommandListForFolderTask(linkTo, linkFrom, true, false);
 
             factory.AssertWasCalled(f => f.CreateFolder(Arg<IFolder>.Matches(folder => folder.FolderPath.Equals(@"c:\destination\subfolder\"))));
             
@@ -181,7 +181,7 @@ namespace DirLinker.Tests.Commands
 
 
         [Test]
-        public void GetCommandListForTask_TargetHasSubFolderWithOneWithNoOverwriteFile_SubfolderAndOneIsMovedCreatedInSource()
+        public void GetCommandListForFolderTask_TargetHasSubFolderWithOneWithNoOverwriteFile_SubfolderAndOneIsMovedCreatedInSource()
         {
             ICommandFactory factory = MockRepository.GenerateMock<ICommandFactory>();
             FakeFolder subFolder = new FakeFolder(@"c:\target\subfolder\");
@@ -193,7 +193,7 @@ namespace DirLinker.Tests.Commands
             FakeFolder linkFrom = new FakeFolder(@"c:\destination\") { FolderExistsReturnValue = true };
 
             ICommandDiscovery discoverer = new CommandDiscovery(factory, f => new FakeFile(f), f => new FakeFolder(f) { FolderExistsReturnValue = false });
-            discoverer.GetCommandListForTask(linkTo, linkFrom, true, false);
+            discoverer.GetCommandListForFolderTask(linkTo, linkFrom, true, false);
 
             factory.AssertWasCalled(f => f.MoveFileCommand(
                 Arg<IFile>.Matches(source => source.FullFilePath.Equals(@"c:\target\subfolder\1.txt")),
@@ -204,7 +204,7 @@ namespace DirLinker.Tests.Commands
         }
 
         [Test]
-        public void GetCommandListForTask_TargetHasSubFolderWithOneWithOverwriteFile_SubfolderAndOneIsMovedCreatedInSource()
+        public void GetCommandListForFolderTask_TargetHasSubFolderWithOneWithOverwriteFile_SubfolderAndOneIsMovedCreatedInSource()
         {
             ICommandFactory factory = MockRepository.GenerateMock<ICommandFactory>();
             FakeFolder subFolder = new FakeFolder(@"c:\target\subfolder\");
@@ -216,7 +216,7 @@ namespace DirLinker.Tests.Commands
             FakeFolder linkFrom = new FakeFolder(@"c:\destination\") { FolderExistsReturnValue = true };
 
             ICommandDiscovery discoverer = new CommandDiscovery(factory, f => new FakeFile(f), f => new FakeFolder(f) { FolderExistsReturnValue = false });
-            discoverer.GetCommandListForTask(linkTo, linkFrom, true, true);
+            discoverer.GetCommandListForFolderTask(linkTo, linkFrom, true, true);
 
             factory.AssertWasCalled(f => f.MoveFileCommand(
                 Arg<IFile>.Matches(source => source.FullFilePath.Equals(@"c:\target\subfolder\1.txt")),
