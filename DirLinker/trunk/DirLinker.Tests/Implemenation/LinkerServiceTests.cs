@@ -133,21 +133,19 @@ namespace DirLinker.Tests.Implementation
 
 
         [Test]
-        public void OperationComplete_CallBackRegistered_ReportForwarded()
+        public void OperationComplete_CallBackRegistered_CallecWhenComplete()
         {
-            WorkReport report = new WorkReport(WorkStatus.NotSet);
-
             var runner = MockRepository.GenerateMock<ITransactionalCommandRunner>();
             var linker = GetLinkerService(runner);
-            runner.Stub(r => r.RunAsync(Arg<IMessenger>.Is.Anything)).Do((Action<IMessenger>)delegate(IMessenger m) { runner.GetEventRaiser(r => r.WorkCompleted += null).Raise(report); });
+            runner.Stub(r => r.RunAsync(Arg<IMessenger>.Is.Anything)).Do((Action<IMessenger>)delegate(IMessenger m) { runner.GetEventRaiser(r => r.WorkCompleted += null).Raise(new WorkReport(WorkStatus.NotSet)); });
 
-            Boolean matches = false;
-            linker.OperationComplete = (wr) => matches = wr.Equals(report);
+            Boolean called = false;
+            linker.OperationComplete = () => called = true;
 
             linker.SetOperationData(new LinkOperationData());
             linker.PerformOperation();
 
-            Assert.IsTrue(matches);
+            Assert.IsTrue(called);
         }
 
         private LinkerService GetLinkerService()

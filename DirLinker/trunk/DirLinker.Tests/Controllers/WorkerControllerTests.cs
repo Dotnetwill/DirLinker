@@ -124,7 +124,7 @@ namespace DirLinker.Tests.Controllers
             link.Stub(l => l.PerformOperation())
                 .Do((Action)delegate
                 {
-                    link.OperationComplete(new WorkReport(WorkStatus.NotSet));
+                    link.OperationComplete();
                 });
 
             var view = MockRepository.GenerateMock<IWorkingView>();
@@ -164,7 +164,7 @@ namespace DirLinker.Tests.Controllers
             link.Stub(l => l.PerformOperation())
              .Do((Action)delegate
              {
-                 link.OperationComplete(new WorkReport(WorkStatus.NotSet));
+                 link.OperationComplete();
              });
 
             var view = MockRepository.GenerateMock<IWorkingView>();

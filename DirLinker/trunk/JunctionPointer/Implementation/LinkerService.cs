@@ -13,7 +13,7 @@ namespace DirLinker.Implementation
     public class LinkerService : ILinkerService
     {
         private ITransactionalCommandRunner _commandRunner;
-        private Action<WorkReport> _completeCallBack;
+        private Action _completeCallBack;
         private FeedbackData _feedback;
         private ICommandDiscovery _commandDiscovery;
         private IFolderFactoryForPath _folderFactory;
@@ -85,7 +85,7 @@ namespace DirLinker.Implementation
             {
                 if (_completeCallBack != null)
                 {
-                    _completeCallBack(wr);
+                    _completeCallBack();
                 }
             };
 
@@ -106,7 +106,7 @@ namespace DirLinker.Implementation
 
 
         
-        public Action<WorkReport> OperationComplete
+        public Action OperationComplete
         {
             set { _completeCallBack = value; }
             get

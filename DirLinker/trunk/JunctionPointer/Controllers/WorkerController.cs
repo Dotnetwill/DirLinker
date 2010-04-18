@@ -28,7 +28,7 @@ namespace DirLinker.Controllers
             SetupCancel();
             _view.Show(owner);
 
-            _linker.OperationComplete = (wr) => FinishOperation();
+            _linker.OperationComplete = () => FinishOperation();
             _linker.PerformOperation(); 
 
         }
