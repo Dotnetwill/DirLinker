@@ -19,8 +19,6 @@ namespace DirLinker.Commands
     /// </summary>
     public class TransactionalCommandRunner :  ITransactionalCommandRunner
     {
-
-      
         private Stack<ICommand> _undoStack;
         private ThreadSafeQueue<ICommand> _commandQueue;
         private IBackgroundWorker _bgWorker;
@@ -107,6 +105,7 @@ namespace DirLinker.Commands
         {
             try
             {
+                Int32 commandsExe = 0;
                 foreach (ICommand command in _commandQueue.ProcessQueue())
                 {
                     if (_cancelRequested)
@@ -115,10 +114,13 @@ namespace DirLinker.Commands
                         break;
                     }
 
-                    messenger.StatusUpdate(command.UserFeedback, 0);
+                    messenger.StatusUpdate(command.UserFeedback, (100 / _commandQueue.Count) * commandsExe);
+
                     command.AskUser += messenger.RequestUserFeedback;
                     command.Execute();
                     _undoStack.Push(command);
+
+                   commandsExe++;
                 }
             }
             catch(Exception ex)

@@ -133,11 +133,12 @@ namespace DirLinker.Tests.Implementation
 
 
         [Test]
-        public void OperationComplete_CallBackRegistered_CallecWhenComplete()
+        public void OperationComplete_CallBackRegistered_CalledWhenComplete()
         {
             var runner = MockRepository.GenerateMock<ITransactionalCommandRunner>();
             var linker = GetLinkerService(runner);
-            runner.Stub(r => r.RunAsync(Arg<IMessenger>.Is.Anything)).Do((Action<IMessenger>)delegate(IMessenger m) { runner.GetEventRaiser(r => r.WorkCompleted += null).Raise(new WorkReport(WorkStatus.NotSet)); });
+            runner.Stub(r => r.RunAsync(Arg<IMessenger>.Is.Anything)).Do((Action<IMessenger>)delegate(IMessenger m) { runner.GetEventRaiser(r => r.WorkCompleted += null).Raise(new WorkReport(WorkStatus.NotSet));
+            });
 
             Boolean called = false;
             linker.OperationComplete = () => called = true;
@@ -146,6 +147,77 @@ namespace DirLinker.Tests.Implementation
             linker.PerformOperation();
 
             Assert.IsTrue(called);
+        }
+
+        [Test]
+        public void OperationComplete_WorkReportSuccess_StatusSetToCompleteSuccess()
+        {
+            var runner = MockRepository.GenerateMock<ITransactionalCommandRunner>();
+            var linker = GetLinkerService(runner);
+            runner.Stub(r => r.RunAsync(Arg<IMessenger>.Is.Anything)).Do((Action<IMessenger>)delegate(IMessenger m)
+            {
+                runner.GetEventRaiser(r => r.WorkCompleted += null).Raise(new WorkReport(WorkStatus.Success));
+            });
+            
+            var status = linker.GetStatusData(Dispatcher.CurrentDispatcher);
+            linker.SetOperationData(new LinkOperationData());
+            linker.PerformOperation();
+
+            StringAssert.Contains("Completed", status.Message);
+            StringAssert.Contains("success", status.Message);
+        }
+
+        [Test]
+        public void OperationComplete_WorkReportCancel_StatusSetToUserCancel()
+        {
+            var runner = MockRepository.GenerateMock<ITransactionalCommandRunner>();
+            var linker = GetLinkerService(runner);
+            runner.Stub(r => r.RunAsync(Arg<IMessenger>.Is.Anything)).Do((Action<IMessenger>)delegate(IMessenger m)
+            {
+                runner.GetEventRaiser(r => r.WorkCompleted += null).Raise(new WorkReport(WorkStatus.UserCancelled));
+            });
+
+            var status = linker.GetStatusData(Dispatcher.CurrentDispatcher);
+            linker.SetOperationData(new LinkOperationData());
+            linker.PerformOperation();
+
+            StringAssert.Contains("User", status.Message);
+            StringAssert.Contains("cancel", status.Message);
+        }
+
+        [Test]
+        public void OperationComplete_WorkReportCommandFailed_StatusSetToFailed()
+        {
+            var runner = MockRepository.GenerateMock<ITransactionalCommandRunner>();
+            var linker = GetLinkerService(runner);
+            runner.Stub(r => r.RunAsync(Arg<IMessenger>.Is.Anything)).Do((Action<IMessenger>)delegate(IMessenger m)
+            {
+                runner.GetEventRaiser(r => r.WorkCompleted += null).Raise(new WorkReport(WorkStatus.CommandFailWithException));
+            });
+
+            var status = linker.GetStatusData(Dispatcher.CurrentDispatcher);
+            linker.SetOperationData(new LinkOperationData());
+            linker.PerformOperation();
+
+            StringAssert.Contains("failed", status.Message);
+        }
+
+        [Test]
+        public void OperationComplete_WorkReportUndoFailed_StatusSetToUnoFailed()
+        {
+            var runner = MockRepository.GenerateMock<ITransactionalCommandRunner>();
+            var linker = GetLinkerService(runner);
+            runner.Stub(r => r.RunAsync(Arg<IMessenger>.Is.Anything)).Do((Action<IMessenger>)delegate(IMessenger m)
+            {
+                runner.GetEventRaiser(r => r.WorkCompleted += null).Raise(new WorkReport(WorkStatus.UndoFailWithException));
+            });
+
+            var status = linker.GetStatusData(Dispatcher.CurrentDispatcher);
+            linker.SetOperationData(new LinkOperationData());
+            linker.PerformOperation();
+
+            StringAssert.Contains("Undo", status.Message);
+            StringAssert.Contains("failed", status.Message);
         }
 
         private LinkerService GetLinkerService()

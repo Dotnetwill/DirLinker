@@ -83,6 +83,7 @@ namespace DirLinker.Implementation
         {
             _commandRunner.WorkCompleted += (wr) =>
             {
+                UpstatusFromReport(wr);
                 if (_completeCallBack != null)
                 {
                     _completeCallBack();
@@ -93,6 +94,25 @@ namespace DirLinker.Implementation
 
         }
 
+
+        private void UpstatusFromReport(WorkReport wr)
+        {
+            switch (wr.Status)
+            {
+                case WorkStatus.Success:
+                    UpdateFeedBack("Completed successfully");
+                    break;
+                case WorkStatus.UserCancelled:
+                    UpdateFeedBack("User cancelled");
+                    break;
+                case WorkStatus.CommandFailWithException:
+                    UpdateFeedBack("Operation failed");
+                    break;
+                case WorkStatus.UndoFailWithException:
+                    UpdateFeedBack("Undo failed");
+                    break;
+            }
+        }
 
         private void UpdateFeedBack(String message)
         {
