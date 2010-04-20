@@ -225,5 +225,29 @@ namespace DirLinker.Tests.Commands
                 ));
 
         }
+
+        [Test]
+        public void GetCommandListTask_File_ReturnedCommandListContainsFileLink()
+        {
+            Assert.Fail();   
+        }
+
+        [Test]
+        public void GetCommandListTask_Folder_ReturnedCommandListContainsFolderLink()
+        {
+            Assert.Fail();
+        }
+
+        [Test]
+        public void GetCommandListTask_File_TargetIsFolderFileNameIsAppended()
+        {
+            Assert.Fail();
+        }
+
+        [Test]
+        public void GetCommandListTask_Folder_TargetIsFileExceptionThrown()
+        {
+            Assert.Fail();
+        }
     }
 }

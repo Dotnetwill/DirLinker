@@ -21,7 +21,17 @@ namespace DirLinker.Commands
             _fileFactory = fileFactory;
             _folderFactory = folderFactory;
         }
+        public List<ICommand> GetCommandListForFileTask(IFile linkTo, IFile linkFrom, bool copyBeforeDelete, bool overwriteTargetFiles)
+        {
+            return null;
+        }
 
+        public List<ICommand> GetCommandListTask(String linkTo, IFolder String, bool copyBeforeDelete, bool overwriteTargetFiles)
+        {
+            return null;
+        }
+        
+        
         public List<ICommand> GetCommandListForFolderTask(IFolder linkTo, IFolder linkFrom, bool copyBeforeDelete, bool overwriteTargetFiles)
         {
            List<ICommand> commandList = new List<ICommand>();
