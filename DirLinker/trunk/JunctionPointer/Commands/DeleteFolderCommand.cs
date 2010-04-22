@@ -61,7 +61,9 @@ namespace DirLinker.Commands
             get { return String.Format("Deleting folder {0}", _Folder.FolderPath); }
         }
 
+#pragma warning disable 00067
         public event RequestUserReponse AskUser;
+#pragma warning restore 00067
 
     }
 }

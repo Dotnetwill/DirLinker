@@ -100,7 +100,7 @@ namespace DirLinker.Commands
             _cancelRequested = true;
             _workReportCreator.UserCancelledRequested();
         }
-        
+
         private void RunCommandQueue(IMessenger messenger)
         {
             try
@@ -117,16 +117,19 @@ namespace DirLinker.Commands
                     messenger.StatusUpdate(command.UserFeedback, (100 / _commandQueue.Count) * commandsExe);
 
                     command.AskUser += messenger.RequestUserFeedback;
+
                     command.Execute();
                     _undoStack.Push(command);
 
-                   commandsExe++;
+                    command.AskUser -= messenger.RequestUserFeedback;
+
+                    commandsExe++;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _workReportCreator.ProcessException(ex, WorkAction.Execute);
-                AttemptRollBack(messenger, String.Format("An error occured: {0}", ex.Message));  
+                AttemptRollBack(messenger, String.Format("An error occured: {0}", ex.Message));
             }
         }
 

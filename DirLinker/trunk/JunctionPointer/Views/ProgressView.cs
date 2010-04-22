@@ -37,11 +37,6 @@ namespace DirLinker.Views
                
         }
 
-        public IntPtr Handle
-        {
-            get { return this.Handle; }
-        }
-
         public string CancelButtonText
         {
             set { cancelBtn.Text = value; }

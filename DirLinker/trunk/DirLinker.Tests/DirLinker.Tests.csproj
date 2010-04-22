@@ -79,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\CommandDiscovery\CommandDiscoveryTests.cs" />
+    <Compile Include="Commands\CreateFileLinkCommandTests.cs" />
     <Compile Include="Commands\CreateLinkCommandTests.cs" />
     <Compile Include="Commands\MoveFileCommandTests.cs" />
     <Compile Include="Commands\CreateFolderCommandTests.cs" />

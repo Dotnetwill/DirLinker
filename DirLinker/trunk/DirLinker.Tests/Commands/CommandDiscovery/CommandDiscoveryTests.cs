@@ -37,8 +37,10 @@ namespace DirLinker.Tests.Commands
         {
             get { throw new NotImplementedException(); }
         }
+#pragma warning disable 00067
 
         public event RequestUserReponse AskUser;
+#pragma warning restore 00067
 
         #endregion
     }

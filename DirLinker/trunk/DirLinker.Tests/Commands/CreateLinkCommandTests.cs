@@ -25,7 +25,7 @@ namespace DirLinker.Tests.Commands
             IFolder linkFrom = MockRepository.GenerateMock<IFolder>();
             linkTo.Stub(f => f.FolderExists()).Return(true);
 
-            CreateLinkCommand command = new CreateLinkCommand(linkTo, linkFrom);
+            CreateFolderLinkCommand command = new CreateFolderLinkCommand(linkTo, linkFrom);
 
             command.Execute();
 
@@ -42,7 +42,7 @@ namespace DirLinker.Tests.Commands
             IFolder linkFrom = MockRepository.GenerateMock<IFolder>();
             linkTo.Stub(f => f.FolderExists()).Return(true);
 
-            CreateLinkCommand command = new CreateLinkCommand(linkTo, linkFrom);
+            CreateFolderLinkCommand command = new CreateFolderLinkCommand(linkTo, linkFrom);
 
             Assert.Throws<DirLinkerException>( () => command.Execute());
         }
@@ -50,7 +50,7 @@ namespace DirLinker.Tests.Commands
         [Test]
         public void Undo_throws_not_supported_exception()
         {
-            CreateLinkCommand command = new CreateLinkCommand(null, null);
+            CreateFolderLinkCommand command = new CreateFolderLinkCommand(null, null);
 
             Assert.Throws<NotSupportedException>(() => command.Undo());
         }
@@ -60,7 +60,7 @@ namespace DirLinker.Tests.Commands
         {
             IFolder target = new FakeFolder(@"c:\dest\");
             IFolder source = new FakeFolder(@"c:\dest\");
-            CreateLinkCommand command = new CreateLinkCommand(target, source);
+            CreateFolderLinkCommand command = new CreateFolderLinkCommand(target, source);
 
             Assert.IsNotEmpty(command.UserFeedback);
         }

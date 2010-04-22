@@ -10,7 +10,7 @@ namespace DirLinker.Commands
     {
         public ICommand CreateLinkCommand(IFolder linkTo, IFolder linkFrom)
         {
-            return new CreateLinkCommand(linkTo, linkFrom);
+            return new CreateFolderLinkCommand(linkTo, linkFrom);
         }
 
         public ICommand DeleteFolderCommand(IFolder folder)

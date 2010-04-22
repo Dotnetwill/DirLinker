@@ -6,6 +6,7 @@ namespace DirLinker.Interfaces
     public interface IFile
     {
 
+        bool CreateLinkToFileAt(String linkToBeCreated);
         void MoveFile(IFile target);
 
         String FileName { get; }
