@@ -80,6 +80,7 @@
     <Compile Include="Commands\CreateFileLinkCommand.cs" />
     <Compile Include="Commands\CreateFolderCommand.cs" />
     <Compile Include="Commands\CreateFolderLinkCommand.cs" />
+    <Compile Include="Commands\DeleteFileCommand.cs" />
     <Compile Include="Commands\DeleteFolderCommand.cs" />
     <Compile Include="Commands\ICommandFactory.cs" />
     <Compile Include="Commands\ITransactionalCommandRunner.cs" />
