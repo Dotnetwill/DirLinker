@@ -60,9 +60,14 @@ namespace DirLinker.Tests.Commands
         {
             return new MockCommand(folder) { CommandName = "DeleteFolderCommand" };
         }
-        public ICommand CreateLinkCommand(IFolder linkTo, IFolder linkFrom)
+        public ICommand CreateFolderLinkCommand(IFolder linkTo, IFolder linkFrom)
         {
             return new MockCommand(linkTo, linkFrom) { CommandName = "CreateLinkCommand" };
+        }
+
+        public ICommand CreateFileLinkCommand(IFile linkTo, IFile linkFrom)
+        {
+            throw new NotImplementedException();
         }
 
     }
@@ -231,7 +236,13 @@ namespace DirLinker.Tests.Commands
         [Test]
         public void GetCommandListTask_File_ReturnedCommandListContainsFileLink()
         {
-            Assert.Fail();   
+          
+            var factory = MockRepository.GenerateMock<ICommandFactory>();
+            var commandDiscovery = new CommandDiscovery(factory, f => new FakeFile(f) { ExistsReturnValue = true}, f => new FakeFolder(f));
+
+            commandDiscovery.GetCommandListTask("testFile", "", false, false);
+
+            factory.AssertWasCalled(f => f.CreateFileLinkCommand(Arg<IFile>.Matches(file => file.FullFilePath.Equals("testFile")), Arg<IFile>.Is.Anything));
         }
 
         [Test]

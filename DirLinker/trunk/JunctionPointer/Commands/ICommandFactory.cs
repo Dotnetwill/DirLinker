@@ -11,6 +11,7 @@ namespace DirLinker.Commands
         ICommand MoveFileCommand(IFile source, IFile target, Boolean overwriteTarget);
         ICommand CreateFolder(IFolder folder);
         ICommand DeleteFolderCommand(IFolder folder);
-        ICommand CreateLinkCommand(IFolder linkTo, IFolder linkFrom);
+        ICommand CreateFolderLinkCommand(IFolder linkTo, IFolder linkFrom);
+        ICommand CreateFileLinkCommand(IFile linkTo, IFile linkFrom);
     }
 }

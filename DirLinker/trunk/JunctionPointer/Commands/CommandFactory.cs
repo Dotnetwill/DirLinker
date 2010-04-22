@@ -8,7 +8,7 @@ namespace DirLinker.Commands
 {
     public class CommandFactory : ICommandFactory
     {
-        public ICommand CreateLinkCommand(IFolder linkTo, IFolder linkFrom)
+        public ICommand CreateFolderLinkCommand(IFolder linkTo, IFolder linkFrom)
         {
             return new CreateFolderLinkCommand(linkTo, linkFrom);
         }
@@ -27,5 +27,13 @@ namespace DirLinker.Commands
         {
             return new MoveFileCommand(source, target, overwriteTarget);
         }
+
+
+        public ICommand CreateFileLinkCommand(IFile linkTo, IFile linkFrom)
+        {
+            throw new NotImplementedException();
+        }
+
+     
     }
 }

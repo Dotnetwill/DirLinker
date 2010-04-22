@@ -26,7 +26,7 @@ namespace DirLinker.Commands
             return null;
         }
 
-        public List<ICommand> GetCommandListTask(String linkTo, IFolder String, bool copyBeforeDelete, bool overwriteTargetFiles)
+        public List<ICommand> GetCommandListTask(String linkTo, string linkFrom, bool copyBeforeDelete, bool overwriteTargetFiles)
         {
             return null;
         }
@@ -50,7 +50,7 @@ namespace DirLinker.Commands
                commandList.Add(_factory.DeleteFolderCommand(linkTo));
            }
 
-           commandList.Add(_factory.CreateLinkCommand(linkTo, linkFrom));
+           commandList.Add(_factory.CreateFolderLinkCommand(linkTo, linkFrom));
            
            return commandList;
         }
