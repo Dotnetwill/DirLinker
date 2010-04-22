@@ -258,13 +258,18 @@ namespace DirLinker.Tests.Commands
         [Test]
         public void GetCommandListTask_Folder_ReturnedCommandListContainsFolderLink()
         {
-            Assert.Fail();
+            var factory = MockRepository.GenerateMock<ICommandFactory>();
+            var commandDiscovery = new CommandDiscovery(factory, f => new FakeFile(f) { ExistsReturnValue = true }, f => new FakeFolder(f));
+
+            commandDiscovery.GetCommandListTask("testFile", "", false, false);
+
+            factory.AssertWasCalled(f => f.CreateFolderLinkCommand(Arg<IFolder>.Matches(f => f.FolderPath.Equals("testFile")), Arg<IFolder>.Is.Anything));
         }
 
         [Test]
         public void GetCommandListTask_File_TargetIsFolderFileNameIsAppended()
         {
-            Assert.Fail(); ;
+            Assert.Fail(); 
         }
 
         [Test]
