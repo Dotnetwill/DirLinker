@@ -67,9 +67,19 @@ namespace DirLinker.Tests.Commands
 
         public ICommand CreateFileLinkCommand(IFile linkTo, IFile linkFrom)
         {
+            return new MockCommand(linkTo, linkFrom) { CommandName = "CreateFileLinkCommand" };
+        }
+
+
+        #region ICommandFactory Members
+
+
+        public ICommand DeleteFileCommand(IFile file)
+        {
             throw new NotImplementedException();
         }
 
+        #endregion
     }
 
     [TestFixture]
@@ -254,13 +264,92 @@ namespace DirLinker.Tests.Commands
         [Test]
         public void GetCommandListTask_File_TargetIsFolderFileNameIsAppended()
         {
-            Assert.Fail();
+            Assert.Fail(); ;
         }
 
         [Test]
         public void GetCommandListTask_Folder_TargetIsFileExceptionThrown()
         {
             Assert.Fail();
+        }
+
+        [Test]
+        public void GetCommandListForFileTask_LinkToDoesntExist_CreateLinkOnly()
+        {
+            FakeFile linkTo = new FakeFile("LinkTo");
+            FakeFile linkFrom = new FakeFile("LinkFrom");
+
+            var commandFactory = MockRepository.GenerateMock<ICommandFactory>();
+
+            var commandDiscovery = new CommandDiscovery(commandFactory, f => new FakeFile(f), f => new FakeFolder(f));
+            var commandList = commandDiscovery.GetCommandListForFileTask(linkTo, linkFrom, false, false);
+
+            Assert.AreEqual(1, commandList.Count);
+            commandFactory.AssertWasCalled(cf => cf.CreateFileLinkCommand(Arg<IFile>.Is.Equal(linkTo),
+                                                                          Arg<IFile>.Is.Equal(linkFrom)));
+        }
+        
+        [Test]
+        public void GetCommandListForFileTask_LinkToExists_DeleteThenCreateLinkOnly()
+        {
+            FakeFile linkTo = new FakeFile("LinkTo");
+            linkTo.ExistsReturnValue = true;
+            FakeFile linkFrom = new FakeFile("LinkFrom");
+
+            var commandFactory = MockRepository.GenerateMock<ICommandFactory>();
+
+            var commandDiscovery = new CommandDiscovery(commandFactory, f => new FakeFile(f), f => new FakeFolder(f));
+            var commandList = commandDiscovery.GetCommandListForFileTask(linkTo, linkFrom, false, false);
+
+            Assert.AreEqual(2, commandList.Count);
+            commandFactory.AssertWasCalled(cf => cf.DeleteFileCommand(Arg<IFile>.Is.Equal(linkTo)));
+
+            commandFactory.AssertWasCalled(cf => cf.CreateFileLinkCommand(Arg<IFile>.Is.Equal(linkTo),
+                                                                          Arg<IFile>.Is.Equal(linkFrom)));
+        }
+
+        [Test]
+        public void GetCommandListForFileTask_LinkToExistsMoveFileOverWrite_MoveFileCommandAdded()
+        {
+            FakeFile linkTo = new FakeFile("LinkTo");
+            linkTo.ExistsReturnValue = true;
+            FakeFile linkFrom = new FakeFile("LinkFrom");
+
+            var commandFactory = MockRepository.GenerateMock<ICommandFactory>();
+
+            var commandDiscovery = new CommandDiscovery(commandFactory, f => new FakeFile(f), f => new FakeFolder(f));
+            var commandList = commandDiscovery.GetCommandListForFileTask(linkTo, linkFrom, true, true);
+
+            Assert.AreEqual(2, commandList.Count);
+            commandFactory.AssertWasCalled(cf => cf.MoveFileCommand(Arg<IFile>.Is.Equal(linkTo), 
+                                                                    Arg<IFile>.Is.Equal(linkFrom),
+                                                                    Arg<Boolean>.Is.Equal(true)));
+
+            commandFactory.AssertWasCalled(cf => cf.CreateFileLinkCommand(Arg<IFile>.Is.Equal(linkTo),
+                                                                          Arg<IFile>.Is.Equal(linkFrom)));
+        
+        }
+
+        [Test]
+        public void GetCommandListForFileTask_LinkToExistsMoveFileNoOverWrite_MoveFileCommandAdded()
+        {
+            FakeFile linkTo = new FakeFile("LinkTo");
+            linkTo.ExistsReturnValue = true;
+            FakeFile linkFrom = new FakeFile("LinkFrom");
+
+            var commandFactory = MockRepository.GenerateMock<ICommandFactory>();
+
+            var commandDiscovery = new CommandDiscovery(commandFactory, f => new FakeFile(f), f => new FakeFolder(f));
+            var commandList = commandDiscovery.GetCommandListForFileTask(linkTo, linkFrom, true, false);
+
+            Assert.AreEqual(2, commandList.Count);
+            commandFactory.AssertWasCalled(cf => cf.MoveFileCommand(Arg<IFile>.Is.Equal(linkTo), 
+                                                                    Arg<IFile>.Is.Equal(linkFrom),
+                                                                    Arg<Boolean>.Is.Equal(false)));
+
+            commandFactory.AssertWasCalled(cf => cf.CreateFileLinkCommand(Arg<IFile>.Is.Equal(linkTo),
+                                                                          Arg<IFile>.Is.Equal(linkFrom)));
+        
         }
     }
 }

@@ -23,7 +23,25 @@ namespace DirLinker.Commands
         }
         public List<ICommand> GetCommandListForFileTask(IFile linkTo, IFile linkFrom, bool copyBeforeDelete, bool overwriteTargetFiles)
         {
-            return null;
+            var commandList = new List<ICommand>();
+
+            if (linkTo.Exists())
+            {
+                if (copyBeforeDelete)
+                {
+                    var moveFileCommand = _factory.MoveFileCommand(linkTo, linkFrom, overwriteTargetFiles);
+                    commandList.Add(moveFileCommand);
+                }
+                else
+                {
+                    var delFileCommand = _factory.DeleteFileCommand(linkTo);
+                    commandList.Add(delFileCommand);
+                }
+            }
+
+            commandList.Add(_factory.CreateFileLinkCommand(linkTo, linkFrom));
+
+            return commandList;
         }
 
         public List<ICommand> GetCommandListTask(String linkTo, string linkFrom, bool copyBeforeDelete, bool overwriteTargetFiles)

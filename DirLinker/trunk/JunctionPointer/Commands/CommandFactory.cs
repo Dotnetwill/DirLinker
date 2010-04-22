@@ -31,9 +31,13 @@ namespace DirLinker.Commands
 
         public ICommand CreateFileLinkCommand(IFile linkTo, IFile linkFrom)
         {
-            throw new NotImplementedException();
+            return new CreateFileLinkCommand(linkTo, linkFrom);
         }
 
+        public ICommand DeleteFileCommand(IFile file)
+        {
+            return new DeleteFileCommand(file);
+        }
      
     }
 }
