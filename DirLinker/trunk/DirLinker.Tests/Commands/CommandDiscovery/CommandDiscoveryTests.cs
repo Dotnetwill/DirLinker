@@ -263,17 +263,42 @@ namespace DirLinker.Tests.Commands
 
             commandDiscovery.GetCommandListTask("testFile", "", false, false);
 
-            factory.AssertWasCalled(f => f.CreateFolderLinkCommand(Arg<IFolder>.Matches(f => f.FolderPath.Equals("testFile")), Arg<IFolder>.Is.Anything));
+            factory.AssertWasCalled(f => f.CreateFolderLinkCommand(Arg<IFolder>.Matches(folder => folder.FolderPath.Equals("testFile")), Arg<IFolder>.Is.Anything));
         }
 
         [Test]
         public void GetCommandListTask_File_TargetIsFolderFileNameIsAppended()
         {
-            Assert.Fail(); 
+            String linkToFile = "testFile";
+            String folderTarget = @"c:\testFolder";
+            String expectedTarget = @"c:\testFolder\testFile";
+
+            var fileFactory = GetFileFactoryThatReturnsExistsFor(linkToFile);
+            var folderFactory = GetFolderFactoryThatReturnsExistsFor(folderTarget);
+
+            var factory = MockRepository.GenerateMock<ICommandFactory>();
+            var commandDiscovery = new CommandDiscovery(factory, fileFactory, folderFactory);
+
+            commandDiscovery.GetCommandListTask(linkToFile, folderTarget, false, false);
+
+            factory.AssertWasCalled(f => f.CreateFileLinkCommand(Arg<IFile>.Matches(linkTo => linkTo.FullFilePath.Equals(linkToFile)),
+                                                                 Arg<IFile>.Matches(linkFrom => linkFrom.FullFilePath.Equals(expectedTarget))));
         }
 
         [Test]
         public void GetCommandListTask_Folder_TargetIsFileExceptionThrown()
+        {
+            Assert.Fail();
+        }
+
+        [Test]
+        public void GetCommandListTask_TargetDoesNotExistSourceIsFolder_FolderLinkCreated()
+        {
+            Assert.Fail();
+        }
+
+        [Test]
+        public void GetCommandListTask_TargetDoesNotExistSourceIsFile_FileLinkCreated()
         {
             Assert.Fail();
         }
@@ -355,6 +380,35 @@ namespace DirLinker.Tests.Commands
             commandFactory.AssertWasCalled(cf => cf.CreateFileLinkCommand(Arg<IFile>.Is.Equal(linkTo),
                                                                           Arg<IFile>.Is.Equal(linkFrom)));
         
+        }
+
+
+        private IFileFactoryForPath GetFileFactoryThatReturnsExistsFor(String fileToReturnTrueFor)
+        {
+           IFileFactoryForPath fileFactory = (f) =>
+            {
+                var fileToReturn = new FakeFile(f);
+
+                fileToReturn.ExistsReturnValue = f.Equals(fileToReturnTrueFor);
+
+                return fileToReturn;
+            };
+
+            return fileFactory;
+        }
+
+        private IFolderFactoryForPath GetFolderFactoryThatReturnsExistsFor(String folderToReturnTrueFor)
+        {
+            IFolderFactoryForPath folderFactory = (f) =>
+            {
+                var folderToReturn = new FakeFolder(f);
+
+                folderToReturn.FolderExistsReturnValue = f.Equals(folderToReturnTrueFor);
+
+                return folderToReturn;
+            };
+
+            return folderFactory;
         }
     }
 }
