@@ -258,7 +258,7 @@ namespace DirLinker.Tests.Commands
         public void GetCommandListTask_Folder_ReturnedCommandListContainsFolderLink()
         {
             var factory = MockRepository.GenerateMock<ICommandFactory>();
-            var commandDiscovery = new CommandDiscovery(factory, f => new FakeFile(f) { ExistsReturnValue = true }, f => new FakeFolder(f));
+            var commandDiscovery = new CommandDiscovery(factory, f => new FakeFile(f), f => new FakeFolder(f));
 
             commandDiscovery.GetCommandListTask("testFile", "", false, false);
 
@@ -285,7 +285,7 @@ namespace DirLinker.Tests.Commands
         }
 
         [Test]
-        public void GetCommandListTask_Folder_TargetIsFileExceptionThrown()
+        public void GetCommandListTask_LinkAtIsFolder_TargetIsFileExceptionThrown()
         {
             String linkToFile = "testFile";
             String folderTarget = @"c:\testFolder";
@@ -297,8 +297,21 @@ namespace DirLinker.Tests.Commands
             var commandDiscovery = new CommandDiscovery(factory, fileFactory, folderFactory);
 
             Assert.Throws<InvalidOperationException>(() => commandDiscovery.GetCommandListTask(folderTarget, linkToFile, false, false));
+        }
 
-            
+        [Test]
+        public void GetCommandListTask_LinkAtIsFile_TargetIsFolderExceptionThrown()
+        {
+            String linkToFile = "testFile";
+            String folderTarget = @"c:\testFolder";
+
+            var fileFactory = GetFileFactoryThatReturnsExistsFor(linkToFile);
+            var folderFactory = GetFolderFactoryThatReturnsExistsFor(folderTarget);
+
+            var factory = MockRepository.GenerateMock<ICommandFactory>();
+            var commandDiscovery = new CommandDiscovery(factory, fileFactory, folderFactory);
+
+            Assert.Throws<InvalidOperationException>(() => commandDiscovery.GetCommandListTask(linkToFile, folderTarget, false, false));
         }
 
         [Test]

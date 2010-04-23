@@ -9,9 +9,9 @@ namespace DirLinker.Commands
 {
     public class CommandDiscovery : ICommandDiscovery
     {
-        private ICommandFactory _factory;
-        private IFileFactoryForPath _fileFactory;
-        private IFolderFactoryForPath _folderFactory;
+        private readonly ICommandFactory _factory;
+        private readonly IFileFactoryForPath _fileFactory;
+        private readonly IFolderFactoryForPath _folderFactory;
 
         public CommandDiscovery(ICommandFactory factory, 
             IFileFactoryForPath fileFactory, 
@@ -45,12 +45,69 @@ namespace DirLinker.Commands
             return commandList;
         }
 
-        public List<ICommand> GetCommandListTask(String linkTo, string linkFrom, bool copyBeforeDelete, bool overwriteTargetFiles)
+        public List<ICommand> GetCommandListTask(String linkTo, String linkFrom, bool copyBeforeDelete, bool overwriteTargetFiles)
         {
-            return null;
+            if (IsFileLink(linkTo, linkFrom))
+            {
+                IFile targetFile = GetTargetFile(linkTo, linkFrom);
+                return GetCommandListForFileTask(_fileFactory(linkTo), targetFile, copyBeforeDelete, overwriteTargetFiles);
+            }
+            else
+            {
+                if (ValidFolderLocation(linkTo))
+                {
+                    return GetCommandListForFolderTask(_folderFactory(linkTo), _folderFactory(linkFrom),
+                                      copyBeforeDelete, overwriteTargetFiles);
+                }
+                else
+                {
+                    throw new InvalidOperationException("A file can not be linked to a folder");       
+                }
+            }
         }
-        
-        
+
+        private bool ValidFolderLocation(String linkTo)
+        {
+            var file = _fileFactory(linkTo);
+            return !file.Exists();
+        }
+
+        private IFile GetTargetFile(String linkTo, String linkFrom)
+        {
+            if (ValidFileLocation(linkTo))
+            {
+                var targetAsFile = _fileFactory(linkFrom);
+                var targetAsFolder = _folderFactory(linkFrom);
+
+                if (targetAsFolder.FolderExists() || linkFrom.EndsWith(@"\"))
+                {
+                    var finalFileName = Path.Combine(linkFrom, Path.GetFileName(linkTo));
+                    return _fileFactory(finalFileName);
+                }
+
+                return targetAsFile;
+            }
+            else
+            {
+                throw new InvalidOperationException("A folder can not be linked to a file");
+            }
+        }
+
+        private bool ValidFileLocation(String linkTo)
+        {
+            var folder = _folderFactory(linkTo);
+            return !folder.FolderExists();
+        }
+
+        private bool IsFileLink(String linkTo, String linkFrom)
+        {
+            var linkToAsFile = _fileFactory(linkTo);
+            var linkFromAsFile = _fileFactory(linkFrom);
+
+            return linkToAsFile.Exists() || linkFromAsFile.Exists();
+        }
+
+
         public List<ICommand> GetCommandListForFolderTask(IFolder linkTo, IFolder linkFrom, bool copyBeforeDelete, bool overwriteTargetFiles)
         {
            var commandList = new List<ICommand>();
