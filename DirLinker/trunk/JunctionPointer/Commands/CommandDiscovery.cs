@@ -47,12 +47,13 @@ namespace DirLinker.Commands
 
         public List<ICommand> GetCommandListTask(String linkTo, string linkFrom, bool copyBeforeDelete, bool overwriteTargetFiles)
         {
+            return null;
         }
         
         
         public List<ICommand> GetCommandListForFolderTask(IFolder linkTo, IFolder linkFrom, bool copyBeforeDelete, bool overwriteTargetFiles)
         {
-           List<ICommand> commandList = new List<ICommand>();
+           var commandList = new List<ICommand>();
 
            if (!linkFrom.FolderExists())
            {

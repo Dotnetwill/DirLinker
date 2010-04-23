@@ -7,7 +7,7 @@ namespace DirLinker.Implementation
 {
     public class PathValidation : IPathValidation
     {
-        private IFolderFactoryForPath _folderFactory;
+        private readonly IFolderFactoryForPath _folderFactory;
         private readonly String regexForDrive = @"^([a-zA-Z]\:)";
 
         public PathValidation(IFolderFactoryForPath folderFactory)

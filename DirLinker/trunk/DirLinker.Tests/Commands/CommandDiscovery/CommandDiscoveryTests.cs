@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NUnit.Framework;
 using DirLinker.Interfaces;
 using DirLinker.Commands;
@@ -288,19 +287,53 @@ namespace DirLinker.Tests.Commands
         [Test]
         public void GetCommandListTask_Folder_TargetIsFileExceptionThrown()
         {
-            Assert.Fail();
+            String linkToFile = "testFile";
+            String folderTarget = @"c:\testFolder";
+            
+            var fileFactory = GetFileFactoryThatReturnsExistsFor(linkToFile);
+            var folderFactory = GetFolderFactoryThatReturnsExistsFor(folderTarget);
+
+            var factory = MockRepository.GenerateMock<ICommandFactory>();
+            var commandDiscovery = new CommandDiscovery(factory, fileFactory, folderFactory);
+
+            Assert.Throws<InvalidOperationException>(() => commandDiscovery.GetCommandListTask(folderTarget, linkToFile, false, false));
+
+            
         }
 
         [Test]
         public void GetCommandListTask_TargetDoesNotExistSourceIsFolder_FolderLinkCreated()
         {
-            Assert.Fail();
+            String nonExistentPath = "testFile";
+            String folderTarget = @"c:\testFolder";
+
+            IFileFactoryForPath fileFactory = (s) => new FakeFile(s);
+            var folderFactory = GetFolderFactoryThatReturnsExistsFor(folderTarget);
+
+            var factory = MockRepository.GenerateMock<ICommandFactory>();
+            var commandDiscovery = new CommandDiscovery(factory, fileFactory, folderFactory);
+
+            commandDiscovery.GetCommandListTask(nonExistentPath, folderTarget, false, false);
+            factory.AssertWasCalled(f => f.CreateFolderLinkCommand(Arg<IFolder>.Matches(folder => folder.FolderPath.Equals(nonExistentPath)),
+                                                                   Arg<IFolder>.Matches(folder => folder.FolderPath.Equals(folderTarget))));
         }
 
         [Test]
         public void GetCommandListTask_TargetDoesNotExistSourceIsFile_FileLinkCreated()
         {
-            Assert.Fail();
+            String nonExistentPath = "testFile";
+            String targetPath = "target";
+
+            IFileFactoryForPath fileFactory = GetFileFactoryThatReturnsExistsFor(targetPath);
+            IFolderFactoryForPath folderFactory = (s) => new FakeFolder(s);
+
+            var factory = MockRepository.GenerateMock<ICommandFactory>();
+            var commandDiscovery = new CommandDiscovery(factory, fileFactory, folderFactory);
+
+            commandDiscovery.GetCommandListTask(nonExistentPath, targetPath, false, false);
+
+            factory.AssertWasCalled(f => f.CreateFileLinkCommand(Arg<IFile>.Matches(file => file.FullFilePath.Equals(nonExistentPath)),
+                                                                 Arg<IFile>.Matches(file => file.FullFilePath.Equals(targetPath))));
         }
 
         [Test]
