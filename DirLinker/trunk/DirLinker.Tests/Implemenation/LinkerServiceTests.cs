@@ -46,9 +46,9 @@ namespace DirLinker.Tests.Implementation
 
             linker.PerformOperation();
 
-            commandDiscovery.AssertWasCalled(d => d.GetCommandListForFolderTask(
-                                                  Arg<IFolder>.Matches(f => f.FolderPath.Equals(linkTo)),
-                                                  Arg<IFolder>.Matches(f => f.FolderPath.Equals(linkFrom)), 
+            commandDiscovery.AssertWasCalled(d => d.GetCommandListTask(
+                                                  Arg<String>.Is.Equal(linkTo),
+                                                  Arg<String>.Is.Equal(linkFrom), 
                                                   Arg<Boolean>.Matches(b => data.CopyBeforeDelete),
                                                   Arg<Boolean>.Matches(b => data.OverwriteExistingFiles)));
 
@@ -80,7 +80,7 @@ namespace DirLinker.Tests.Implementation
         {
             List<ICommand> commandList = new List<ICommand>();
             var commandDiscovery = MockRepository.GenerateMock<ICommandDiscovery>();
-            commandDiscovery.Stub(c => c.GetCommandListForFolderTask(Arg<IFolder>.Is.Anything, Arg<IFolder>.Is.Anything, Arg<Boolean>.Is.Anything, Arg<Boolean>.Is.Anything))
+            commandDiscovery.Stub(c => c.GetCommandListTask(Arg<String>.Is.Anything, Arg<String>.Is.Anything, Arg<Boolean>.Is.Anything, Arg<Boolean>.Is.Anything))
                 .Return(commandList);
 
             var runner = MockRepository.GenerateMock<ITransactionalCommandRunner>();

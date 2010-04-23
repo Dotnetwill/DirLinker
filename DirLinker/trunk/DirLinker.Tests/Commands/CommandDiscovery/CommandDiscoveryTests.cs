@@ -305,8 +305,8 @@ namespace DirLinker.Tests.Commands
             String linkToFile = "testFile";
             String folderTarget = @"c:\testFolder";
 
-            var fileFactory = GetFileFactoryThatReturnsExistsFor(linkToFile);
-            var folderFactory = GetFolderFactoryThatReturnsExistsFor(folderTarget);
+            var folderFactory = GetFolderFactoryThatReturnsExistsFor(linkToFile);
+            var fileFactory = GetFileFactoryThatReturnsExistsFor(folderTarget);
 
             var factory = MockRepository.GenerateMock<ICommandFactory>();
             var commandDiscovery = new CommandDiscovery(factory, fileFactory, folderFactory);

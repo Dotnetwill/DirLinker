@@ -64,14 +64,11 @@ namespace DirLinker.Implementation
 
         private void QueueCommands()
         {
-            IFolder linkTo = _folderFactory(_operationData.LinkTo);
-            IFolder linkFrom = _folderFactory(_operationData.CreateLinkAt);
-
             UpdateFeedBack("Building Task List");
 
-            var commandList = _commandDiscovery.GetCommandListForFolderTask(
-                            linkTo, 
-                            linkFrom, 
+            var commandList = _commandDiscovery.GetCommandListTask(
+                            _operationData.LinkTo,
+                            _operationData.CreateLinkAt, 
                             overwriteTargetFiles: _operationData.OverwriteExistingFiles, 
                             copyBeforeDelete: _operationData.CopyBeforeDelete);
 
