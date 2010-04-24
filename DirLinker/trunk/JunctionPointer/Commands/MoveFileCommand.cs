@@ -58,9 +58,10 @@ namespace DirLinker.Commands
         private Boolean TargetFileReadOnly()
         {
             Boolean targetFileReadonly = false;
-            DialogResult res = RequestUserRespone(String.Format("{0} is read only.  Would you like to overwrite it?", _Target.FullFilePath));
             if ((_Target.GetAttributes() & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
             {
+                DialogResult res = RequestUserRespone(String.Format("{0} is read only.  Would you like to overwrite it?", _Target.FullFilePath));
+           
                 if (res == DialogResult.Yes)
                 {
                     _Target.SetAttributes(FileAttributes.Normal);

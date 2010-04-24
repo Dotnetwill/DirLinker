@@ -35,9 +35,9 @@ namespace DirLinker.Implementation
 
         public DialogResult RequestUserFeedback(String message, MessageBoxButtons options)
         {
-            return (DialogResult)_Dispatcher.Invoke((Action<DialogResult>)delegate
+            return (DialogResult)_Dispatcher.Invoke((Func<DialogResult>)delegate
             {
-                _data.AskUser(new FeedbackData.UserMessage()
+                return _data.AskUser(new FeedbackData.UserMessage()
                 {
                     Message = message,
                     ResponseOptions = options
