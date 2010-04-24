@@ -26,7 +26,7 @@ namespace DirLinker.Implementation
 
         public void StatusUpdate(String message, Int32 percentageComplete)
         {
-            _Dispatcher.BeginInvoke((Action)delegate
+            _Dispatcher.Invoke((Action)delegate
             {
                 _data.Message = message;
                 _data.PercentageComplete = percentageComplete;

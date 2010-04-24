@@ -50,5 +50,10 @@ namespace DirLinker.Implementation
                 yield return Dequeue();
             }
         }
+
+        public void Clear()
+        {
+            _interalQueue.Clear();
+        }
     }
 }

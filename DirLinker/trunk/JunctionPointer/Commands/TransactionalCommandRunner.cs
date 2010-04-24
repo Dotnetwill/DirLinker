@@ -106,6 +106,7 @@ namespace DirLinker.Commands
             try
             {
                 Int32 commandsExe = 1;
+                Int32 totalNumber = _commandQueue.Count;
                 foreach (ICommand command in _commandQueue.ProcessQueue())
                 {
                     if (_cancelRequested)
@@ -114,7 +115,7 @@ namespace DirLinker.Commands
                         break;
                     }
 
-                    messenger.StatusUpdate(command.UserFeedback, (_commandQueue.Count / 100) * commandsExe);
+                    messenger.StatusUpdate(command.UserFeedback, ((commandsExe / totalNumber) * 100));
 
                     command.AskUser += messenger.RequestUserFeedback;
 
@@ -149,13 +150,17 @@ namespace DirLinker.Commands
         {
             try
             {
+                Int32 commandsExe = 1;
+                Int32 totalNumber = _undoStack.Count;
+
                 while (_undoStack.Count > 0)
                 {
                     ICommand command = _undoStack.Pop();
 
-                    messenger.StatusUpdate(command.UserFeedback, 0);
+                    messenger.StatusUpdate(command.UserFeedback, (commandsExe / totalNumber) * 100);
 
                     command.Undo();
+                    commandsExe++;
                 }
             }
             catch (Exception ex)
@@ -169,7 +174,6 @@ namespace DirLinker.Commands
 
         private void NotifyWorkCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-
             WorkCompletedCallBack workCompletedCopy = _workCompleted;
             if (workCompletedCopy != null)
             {
@@ -178,10 +182,8 @@ namespace DirLinker.Commands
 
             _bgWorker.RunWorkerCompleted -= NotifyWorkCompleted;
             
-            //Reset the undo stack in case we are called again without being disposed
-            //We don't want to clear the command queue in case the user has been queuing 
-            //up outside of this run
             _undoStack.Clear();
+            _commandQueue.Clear();
         }
     }
 }

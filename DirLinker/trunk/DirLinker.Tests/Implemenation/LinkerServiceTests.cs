@@ -245,7 +245,7 @@ namespace DirLinker.Tests.Implementation
 
         private LinkerService GetLinkerService(ICommandDiscovery commandDiscovery,  ITransactionalCommandRunner runner, IFolderFactoryForPath folderFactory)
         {
-            return new LinkerService(commandDiscovery, runner, folderFactory, (d, fd) => MockRepository.GenerateStub<IMessenger>());
+            return new LinkerService(commandDiscovery, runner, (d, fd) => MockRepository.GenerateStub<IMessenger>());
         }
 
     }

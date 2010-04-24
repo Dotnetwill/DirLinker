@@ -115,6 +115,7 @@ namespace DirLinker.Implementation
             if (_feedback != null)
             {
                 _feedback.Message = message;
+                _feedback.PercentageComplete = 100;
             }
         }
 
