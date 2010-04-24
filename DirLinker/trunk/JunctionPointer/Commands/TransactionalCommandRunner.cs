@@ -115,7 +115,7 @@ namespace DirLinker.Commands
                         break;
                     }
 
-                    messenger.StatusUpdate(command.UserFeedback, ((commandsExe / totalNumber) * 100));
+                    messenger.StatusUpdate(command.UserFeedback, PercentageComplete(commandsExe, totalNumber));
 
                     command.AskUser += messenger.RequestUserFeedback;
 
@@ -132,6 +132,12 @@ namespace DirLinker.Commands
                 _workReportCreator.ProcessException(ex, WorkAction.Execute);
                 AttemptRollBack(messenger, String.Format("An error occured: {0}", ex.Message));
             }
+        }
+
+        private Int32 PercentageComplete(int commandsExe, int totalNumber)
+        {
+            Int32 percentage = (commandsExe * 100) / totalNumber;
+            return percentage;
         }
 
         private void AttemptRollBack(IMessenger messenger, String reason)
@@ -157,7 +163,7 @@ namespace DirLinker.Commands
                 {
                     ICommand command = _undoStack.Pop();
 
-                    messenger.StatusUpdate(command.UserFeedback, (commandsExe / totalNumber) * 100);
+                    messenger.StatusUpdate(command.UserFeedback, PercentageComplete(commandsExe, totalNumber));
 
                     command.Undo();
                     commandsExe++;
