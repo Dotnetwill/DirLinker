@@ -105,7 +105,7 @@ namespace DirLinker.Commands
         {
             try
             {
-                Int32 commandsExe = 0;
+                Int32 commandsExe = 1;
                 foreach (ICommand command in _commandQueue.ProcessQueue())
                 {
                     if (_cancelRequested)
@@ -114,7 +114,7 @@ namespace DirLinker.Commands
                         break;
                     }
 
-                    messenger.StatusUpdate(command.UserFeedback, (100 / _commandQueue.Count) * commandsExe);
+                    messenger.StatusUpdate(command.UserFeedback, (_commandQueue.Count / 100) * commandsExe);
 
                     command.AskUser += messenger.RequestUserFeedback;
 

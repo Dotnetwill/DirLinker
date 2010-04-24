@@ -16,15 +16,13 @@ namespace DirLinker.Implementation
         private Action _completeCallBack;
         private FeedbackData _feedback;
         private ICommandDiscovery _commandDiscovery;
-        private IFolderFactoryForPath _folderFactory;
         private ThreadMessengerFactory _messengerFactory;
         private LinkOperationData _operationData;
 
-        public LinkerService(ICommandDiscovery commandDiscovery, ITransactionalCommandRunner runner, IFolderFactoryForPath folderFactory, ThreadMessengerFactory messengerFactory)
+        public LinkerService(ICommandDiscovery commandDiscovery, ITransactionalCommandRunner runner, ThreadMessengerFactory messengerFactory)
         {
             _commandDiscovery = commandDiscovery;
             _commandRunner = runner;
-            _folderFactory = folderFactory;
             _messengerFactory = messengerFactory;
         }
     
@@ -35,11 +33,8 @@ namespace DirLinker.Implementation
                 throw new ArgumentNullException("dispatcher");
             }
 
-            if (_feedback == null)
-            {
-                _feedback = new FeedbackData();
-            }
 
+            _feedback = new FeedbackData();
             return _feedback;
         }
 
@@ -78,17 +73,21 @@ namespace DirLinker.Implementation
 
         private void RunCommandRunner()
         {
-            _commandRunner.WorkCompleted += (wr) =>
-            {
-                UpstatusFromReport(wr);
-                if (_completeCallBack != null)
-                {
-                    _completeCallBack();
-                }
-            };
+            _commandRunner.WorkCompleted += OnCommandRunnerOnWorkCompleted;
 
             _commandRunner.RunAsync(_messengerFactory(Dispatcher.CurrentDispatcher, _feedback));
 
+        }
+
+        private void OnCommandRunnerOnWorkCompleted(WorkReport wr)
+        {
+            UpstatusFromReport(wr);
+            if (_completeCallBack != null)
+            {
+                _completeCallBack();
+            }
+
+            _commandRunner.WorkCompleted -= OnCommandRunnerOnWorkCompleted;
         }
 
 

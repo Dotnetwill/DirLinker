@@ -38,6 +38,7 @@ namespace DirLinker.Controllers
             _view.CancelButtonText = "Finish";
             _view.CancelPress -= CancelOperation;
             _view.CancelPress += (s, ea) => _view.Close();
+            _linker.OperationComplete = null;
         }
 
         private void SetupCancel()

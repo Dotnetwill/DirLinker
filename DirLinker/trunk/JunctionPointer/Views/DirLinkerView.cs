@@ -80,7 +80,7 @@ namespace DirLinker.Views
             RegisterFolderBrowser(BrowseTarget, LinkFrom);
             
             Go.Click += Go_Click;
-
+            
             CopyToTarget.CheckedChanged += (sender, e) => chkTargetFileOverwrite.Enabled = !chkTargetFileOverwrite.Enabled;
             CloseBtn.Click += (sender, e) => Application.Exit();
 
@@ -166,6 +166,9 @@ namespace DirLinker.Views
         {
             _linkOperationData = data;
             BindToFields();
+
+            //Set up defaults
+            _linkOperationData.CopyBeforeDelete = true;
         }
     }
 }
