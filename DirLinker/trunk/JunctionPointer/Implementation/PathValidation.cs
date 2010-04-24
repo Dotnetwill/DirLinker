@@ -25,20 +25,20 @@ namespace DirLinker.Implementation
             {
                 if (IsDriveLetter(path))
                 {
-                    errorMessage = "Only folder paths allowed";
+                    errorMessage = "Only file or folder paths allowed";
                     return false;
                 }
 
                 if (path.Length > folder.MaxPath())
                 {
-                    errorMessage = "Selected folder path is longer than the maximum allowable Windows path";
+                    errorMessage = "Selected path is longer than the maximum allowable Windows path";
                     return false;
                 }
 
                 String[] pathParts = path.Split('\\');
                 if (pathParts.Length == 0 || !Regex.IsMatch(pathParts[0], regexForDrive))
                 {
-                    errorMessage = "The folder path is not well formed";
+                    errorMessage = "The path is not well formed";
                     return false;
                 }
                 else if (pathParts.Length > 1)
@@ -49,7 +49,7 @@ namespace DirLinker.Implementation
 
                     if (count > 0)
                     {
-                        errorMessage = "Folder path contains illegal characters";
+                        errorMessage = "Path contains illegal characters";
                         return false;
                     }
                 }
