@@ -59,5 +59,19 @@ namespace DirLinker.Properties {
                 resourceCulture = value;
             }
         }
+        
+        internal static System.Drawing.Bitmap _1272101321_old_edit_find {
+            get {
+                object obj = ResourceManager.GetObject("_1272101321_old_edit_find", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap _1272101353_folder_horizontal_open {
+            get {
+                object obj = ResourceManager.GetObject("_1272101353_folder_horizontal_open", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

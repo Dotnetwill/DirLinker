@@ -63,9 +63,9 @@ namespace DirLinker.Implementation
 
             var commandList = _commandDiscovery.GetCommandListTask(
                             _operationData.LinkTo,
-                            _operationData.CreateLinkAt, 
-                            overwriteTargetFiles: _operationData.OverwriteExistingFiles, 
-                            copyBeforeDelete: _operationData.CopyBeforeDelete);
+                            _operationData.CreateLinkAt,  
+                            _operationData.CopyBeforeDelete,
+                            _operationData.OverwriteExistingFiles);
 
             _commandRunner.QueueRange(commandList);
     

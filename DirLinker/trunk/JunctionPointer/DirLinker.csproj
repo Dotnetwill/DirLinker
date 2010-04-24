@@ -163,6 +163,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="1263649341_forward.ico" />
+    <None Include="Resources\1272101353_folder_horizontal_open.png" />
+    <None Include="Resources\1272101321_old-edit-find.png" />
     <None Include="Resources\1263649341_forward.ico" />
     <None Include="Resources\icon.ico" />
   </ItemGroup>

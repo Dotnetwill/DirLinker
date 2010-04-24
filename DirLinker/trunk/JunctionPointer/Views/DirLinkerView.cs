@@ -78,12 +78,44 @@ namespace DirLinker.Views
         {
             RegisterFolderBrowser(BrowsePoint, LinkPointEdit);
             RegisterFolderBrowser(BrowseTarget, LinkFrom);
-            
+            RegisterFileBrowser(BrowseFilePoint, LinkPointEdit);
+            RegisterFileBrowser(BrowseFileTarget, LinkFrom);
+
             Go.Click += Go_Click;
             
             CopyToTarget.CheckedChanged += (sender, e) => chkTargetFileOverwrite.Enabled = !chkTargetFileOverwrite.Enabled;
             CloseBtn.Click += (sender, e) => Application.Exit();
 
+        }
+
+        private void RegisterFileBrowser(Button browseFilePoint, TextBox linkPointEdit)
+        {
+            browseFilePoint.Tag = linkPointEdit;
+            browseFilePoint.Click += BrowseForFile;
+        }
+
+        void BrowseForFile(object sender, EventArgs e)
+        {
+            Button button = sender as Button;
+            TextBox textBox = button.Tag as TextBox;
+            if(textBox != null)
+            {
+                using (OpenFileDialog browser = new OpenFileDialog())
+                {
+                    browser.CheckFileExists = false;
+                    browser.DereferenceLinks = false;
+
+                    if (textBox.Text.Trim() != String.Empty)
+                    {
+                        browser.InitialDirectory = textBox.Text;
+                    }
+
+                    if (browser.ShowDialog() == DialogResult.OK)
+                    {
+                        textBox.Text = browser.FileName;
+                    }
+                }
+            }
         }
 
         private void RegisterFolderBrowser(Button button, TextBox textbox)
