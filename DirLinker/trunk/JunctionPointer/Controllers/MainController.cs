@@ -13,15 +13,17 @@ namespace DirLinker.Controllers
         private readonly IPathValidation _pathValidator;
         private readonly ILinkerView _view;
         private Func<WorkerController> _workerFactory;
+        private readonly IOperationValidation _operationValidation;
 
         private LinkOperationData _operationData;
         
-        public MainController(ILinkerView view, IPathValidation pathValidator, ILinkerService linkerService, Func<WorkerController> workerFactory)
+        public MainController(ILinkerView view, IPathValidation pathValidator, ILinkerService linkerService, Func<WorkerController> workerFactory, IOperationValidation operationValidation)
         {
             _view = view;
             _pathValidator = pathValidator;
             _linkerService = linkerService;
             _workerFactory = workerFactory;
+            _operationValidation = operationValidation;
         }
 
         public Form Start()
@@ -31,6 +33,7 @@ namespace DirLinker.Controllers
             _view.SetOperationData(_operationData);
             _view.ValidatePath += ValidatePath;
             _view.PerformOperation += PerformOperation;
+            _view.ValidOperation = ValidateOperationData;
             return _view.MainForm;
         }
 
@@ -56,5 +59,17 @@ namespace DirLinker.Controllers
             worker.ShowWorker(_view.MainForm);
         }
 
+        private Boolean ValidateOperationData()
+        {
+            String message;
+
+            if (!_operationValidation.ValidOperation(_operationData, out message))
+            {
+                _view.ShowMesage(message);
+                return false;
+            }
+
+            return true;
+        }
     }
 }

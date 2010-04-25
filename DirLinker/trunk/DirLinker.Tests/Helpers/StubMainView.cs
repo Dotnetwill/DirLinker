@@ -57,5 +57,15 @@ namespace DirLinker.Tests.Helpers
         }
 
         #endregion
+
+        #region ILinkerView Members
+
+
+        public void ShowMesage(string message)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

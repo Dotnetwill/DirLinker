@@ -126,7 +126,7 @@ namespace DirLinker.Views
 
         void Go_Click(object sender, EventArgs e)
         {
-            if (FormValid())
+            if (FormValid() && ValidOperation())
             {
                 CallPerformOperation(new EventArgs());
             }
@@ -204,6 +204,11 @@ namespace DirLinker.Views
         }
 
         public Func<Boolean> ValidOperation { get; set; }
+
+        public void ShowMesage(string message)
+        {
+            MessageBox.Show(this, message, "Directory Linker");
+        }
 
     }
 }

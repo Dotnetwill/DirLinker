@@ -34,12 +34,13 @@ namespace DirLinker
         {
 
             classFactory.RegisterType<IPathValidation, PathValidation>().AsSingleton();
+            classFactory.RegisterType<IOperationValidation, OperationValidation>().AsSingleton();
             classFactory.RegisterType<IMainController, MainController>().AsSingleton();
             classFactory.RegisterType<ILinkerService, LinkerService>().AsSingleton();
             classFactory.RegisterType<ICommandDiscovery, CommandDiscovery>().AsSingleton();
             classFactory.RegisterType<ICommandFactory, CommandFactory>().AsSingleton();
-            classFactory.RegisterType<ITransactionalCommandRunner, TransactionalCommandRunner>();
 
+            classFactory.RegisterType<ITransactionalCommandRunner, TransactionalCommandRunner>();
             classFactory.RegisterType<IWorkingView, ProgressView>();
             classFactory.RegisterType<ILocker, Locker>();
             classFactory.RegisterType<ILinkerView, DirLinkerView>();
