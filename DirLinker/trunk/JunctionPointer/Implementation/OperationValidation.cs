@@ -39,9 +39,9 @@ namespace DirLinker.Implementation
             IFile createLinkAtFile = _fileFactory(linkData.CreateLinkAt);
             IFile linkToFile = _fileFactory(linkData.LinkTo);
 
-            if(createLinkAtFile.Exists())
+            if (linkToFile.Exists())
             {
-                return linkToFile.Exists() || linkData.CopyBeforeDelete;
+                return createLinkAtFile.Exists() || linkData.CopyBeforeDelete;
             }
 
             return true;

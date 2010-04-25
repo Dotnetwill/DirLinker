@@ -18,7 +18,7 @@ namespace DirLinker.Tests.Implemenation
         {
             var validator = new OperationValidation(f => new FakeFile(f));
 
-            var data = new LinkOperationData() { CreateLinkAt = "test1", LinkTo = "test2" };
+            var data = new LinkOperationData() { LinkTo = "test1", CreateLinkAt = "test2" };
 
             String errorMessage;
             Boolean valid = validator.ValidOperation(data, out errorMessage);
@@ -31,7 +31,7 @@ namespace DirLinker.Tests.Implemenation
         {
             var validator = new OperationValidation(f => new FakeFile(f));
 
-            var data = new LinkOperationData() {CreateLinkAt = "test", LinkTo = "test"};
+            var data = new LinkOperationData() { LinkTo = "test", CreateLinkAt = "test" };
             String errorMessage;
             Boolean valid = validator.ValidOperation(data, out errorMessage);
 
@@ -46,9 +46,9 @@ namespace DirLinker.Tests.Implemenation
             String linkTo = "linkTo";
             var fileFactory = GetFileFactoryThatReturnsExistsFor(createLinkAt);
             var validator = new OperationValidation(fileFactory);
-            
 
-            var data = new LinkOperationData() { CreateLinkAt = createLinkAt, LinkTo = linkTo, CopyBeforeDelete =  false};
+
+            var data = new LinkOperationData() { LinkTo = createLinkAt, CreateLinkAt = linkTo, CopyBeforeDelete = false };
 
             String errorMessage;
             Boolean valid = validator.ValidOperation(data, out errorMessage);
@@ -66,7 +66,7 @@ namespace DirLinker.Tests.Implemenation
             var validator = new OperationValidation(fileFactory);
 
 
-            var data = new LinkOperationData() { CreateLinkAt = createLinkAt, LinkTo = linkTo, CopyBeforeDelete = true };
+            var data = new LinkOperationData() { LinkTo = createLinkAt, CreateLinkAt = linkTo, CopyBeforeDelete = true };
 
             String errorMessage;
             Boolean valid = validator.ValidOperation(data, out errorMessage);
@@ -83,7 +83,7 @@ namespace DirLinker.Tests.Implemenation
             var validator = new OperationValidation(fileFactory);
 
 
-            var data = new LinkOperationData() { CreateLinkAt = createLinkAt, LinkTo = linkTo, CopyBeforeDelete = true };
+            var data = new LinkOperationData() { LinkTo = createLinkAt, CreateLinkAt = linkTo, CopyBeforeDelete = true };
 
             String errorMessage;
             Boolean valid = validator.ValidOperation(data, out errorMessage);
