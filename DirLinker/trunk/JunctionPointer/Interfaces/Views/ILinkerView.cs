@@ -23,7 +23,7 @@ namespace DirLinker.Interfaces.Views
     public interface ILinkerView
     {
         System.Windows.Forms.Form MainForm { get; }
-
+        Func<Boolean> ValidOperation { set; get; }
         void SetOperationData(LinkOperationData data);
         
         event PathValidater ValidatePath;

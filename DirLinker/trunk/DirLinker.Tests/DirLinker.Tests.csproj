@@ -95,6 +95,7 @@
     <Compile Include="Helpers\StubDirManagerReturnSubFolderList.cs" />
     <Compile Include="Helpers\StubMainView.cs" />
     <Compile Include="Implemenation\LinkerServiceTests.cs" />
+    <Compile Include="Implemenation\OperationValidationTests.cs" />
     <Compile Include="PathValidationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

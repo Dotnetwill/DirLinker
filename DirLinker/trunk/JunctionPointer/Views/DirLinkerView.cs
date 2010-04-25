@@ -202,5 +202,8 @@ namespace DirLinker.Views
             //Set up defaults
             _linkOperationData.CopyBeforeDelete = true;
         }
+
+        public Func<Boolean> ValidOperation { get; set; }
+
     }
 }

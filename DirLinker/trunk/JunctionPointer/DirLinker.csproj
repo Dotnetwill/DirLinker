@@ -88,6 +88,8 @@
     <Compile Include="Commands\WorkReportGenerator.cs" />
     <Compile Include="Controllers\WorkerController.cs" />
     <Compile Include="Data\FeedbackData.cs" />
+    <Compile Include="Interfaces\IOperationValidation.cs" />
+    <Compile Include="Implementation\OperationValidation.cs" />
     <Compile Include="Interfaces\IMessenger.cs" />
     <Compile Include="Implementation\LinkerService.cs" />
     <Compile Include="Implementation\ThreadMessenger.cs" />

@@ -40,5 +40,22 @@ namespace DirLinker.Tests.Helpers
             throw new NotImplementedException();
         }
 
+
+        #region ILinkerView Members
+
+
+        public Func<bool> ValidOperation
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        #endregion
     }
 }
