@@ -163,7 +163,7 @@ namespace DirLinker.Commands
                 {
                     ICommand command = _undoStack.Pop();
 
-                    messenger.StatusUpdate(command.UserFeedback, PercentageComplete(commandsExe, totalNumber));
+                    messenger.StatusUpdate(String.Format("Undoing: {0}", command.UserFeedback), PercentageComplete(commandsExe, totalNumber));
 
                     command.Undo();
                     commandsExe++;
@@ -187,7 +187,8 @@ namespace DirLinker.Commands
             }
 
             _bgWorker.RunWorkerCompleted -= NotifyWorkCompleted;
-            
+
+            _cancelRequested = false;
             _undoStack.Clear();
             _commandQueue.Clear();
         }

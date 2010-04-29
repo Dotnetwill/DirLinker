@@ -139,12 +139,15 @@ namespace DirLinker.Commands
                 {
                     String targetLocation = f.FolderPath.Replace(source.FolderPath, target.FolderPath);
                     IFolder moveTarget = _folderFactory(targetLocation);
+                
                     if (!moveTarget.FolderExists())
                     {
                        moveFolderStructureCommands.Add(_factory.CreateFolder(moveTarget));
                     }
 
                     moveFolderStructureCommands.AddRange(CreateFolderMoveOperations(f, moveTarget, overwriteTargetFiles));
+
+                    moveFolderStructureCommands.Add(_factory.DeleteFolderCommand(f));
                 });
 
             source.GetFileList().ForEach(f => 
