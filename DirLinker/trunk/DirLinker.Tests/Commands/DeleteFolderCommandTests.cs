@@ -7,6 +7,7 @@ using DirLinker.Tests.Helpers;
 using DirLinker.Interfaces;
 using DirLinker.Commands;
 using DirLinker.Exceptions;
+using Rhino.Mocks;
 
 namespace DirLinker.Tests.Commands
 {
@@ -107,19 +108,48 @@ namespace DirLinker.Tests.Commands
             Assert.IsTrue(folder.FileList.TrueForAll(f => ((FakeFile)f).Attributes == System.IO.FileAttributes.Normal));
         }
 
+    
         [Test]
-        public void Execute_throws_if_folder_contains_any_subfolders()
+        public void Execute_FolderContainsSubFolders_SubFolderDeleted()
         {
+            var folder1 = MockRepository.GenerateMock<IFolder>();
+            var folder2 = MockRepository.GenerateMock<IFolder>();
             FakeFolder folder = new FakeFolder(@"fakeFolder");
             folder.FolderExistsReturnValue = true;
             folder.SubFolderList = new List<IFolder>() {
-                                                new FakeFolder("folder1"),
-                                                new FakeFolder("folder2"),
+                                                folder1,
+                                                folder2,
                                                 };
 
             ICommand deleteComand = new DeleteFolderCommand(folder);
-            
-            Assert.Throws<DirLinkerException>(() => deleteComand.Execute());
+
+            deleteComand.Execute();
+
+            folder1.AssertWasCalled(f => f.DeleteFolder());
+            folder2.AssertWasCalled(f => f.DeleteFolder());
+
+        }
+
+        [Test]
+        public void Execute_FolderContainsSubFoldersWithFiles_SubFolderFilesDeleted()
+        {
+            var folder1 = MockRepository.GenerateMock<IFolder>();
+            var file = MockRepository.GenerateMock<IFile>();
+
+            folder1.Stub(f => f.GetFileList()).Return(new List<IFile>() { file });
+
+            FakeFolder folder = new FakeFolder(@"fakeFolder");
+            folder.FolderExistsReturnValue = true;
+            folder.SubFolderList = new List<IFolder>() {
+                                                folder1,
+                                                };
+
+            ICommand deleteComand = new DeleteFolderCommand(folder);
+
+            deleteComand.Execute();
+
+            file.AssertWasCalled(f => f.Delete());
+
         }
     }
 }

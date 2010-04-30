@@ -220,25 +220,6 @@ namespace DirLinker.Tests.Commands
         }
 
         [Test]
-        public void GetCommandListForFolderTask_TargetHasSubFolderWithOneWithNoOverwriteFile_DeleteSubFolderIsAdded()
-        {
-            ICommandFactory factory = MockRepository.GenerateMock<ICommandFactory>();
-            FakeFolder subFolder = new FakeFolder(@"c:\target\subfolder\");
-            subFolder.FileList = new List<IFile> { Helpers.CreateStubHelpers.GetIFileStub("1.txt", @"c:\target\subfolder\") };
-
-            FakeFolder linkTo = new FakeFolder(@"c:\target\") { FolderExistsReturnValue = true };
-            linkTo.SubFolderList = new List<IFolder> { subFolder };
-
-            FakeFolder linkFrom = new FakeFolder(@"c:\destination\") { FolderExistsReturnValue = true };
-
-            ICommandDiscovery discoverer = new CommandDiscovery(factory, f => new FakeFile(f), f => new FakeFolder(f) { FolderExistsReturnValue = false });
-            discoverer.GetCommandListForFolderTask(linkTo, linkFrom, true, false);
-
-            factory.AssertWasCalled(fact => fact.DeleteFolderCommand(Arg<IFolder>.Matches(
-                f => f.FolderPath.Equals(@"c:\target\subfolder\"))));
-        }
-
-        [Test]
         public void GetCommandListForFolderTask_TargetHasSubFolderWithOneWithOverwriteFile_SubfolderAndOneIsMovedCreatedInSource()
         {
             ICommandFactory factory = MockRepository.GenerateMock<ICommandFactory>();

@@ -6,10 +6,7 @@ using System.IO;
 
 namespace DirLinker.Commands
 {
-    //I have considered having a seperate delete file command that is seperate or run as part of this
-    //command but this pattern is being implemented to support undo and deleting a file is not something
-    //you can undo easily or without storing the files in temp directory.  Which I don't want to do.
-
+    
     public class DeleteFolderCommand : ICommand
     {
         private IFolder _Folder;
@@ -23,15 +20,14 @@ namespace DirLinker.Commands
         {
             if (_Folder.FolderExists())
             {
-                DeleteContents();
-                _Folder.DeleteFolder();
+                DeleteFolder(_Folder);
                 _FolderDeleted = true;
             }
         }
 
-        private void DeleteContents()
+        private void DeleteFolder(IFolder folder)
         {
-            _Folder.GetFileList().ForEach(f => 
+            folder.GetFileList().ForEach(f => 
             {
                 if ((f.GetAttributes() & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
                 {
@@ -41,11 +37,8 @@ namespace DirLinker.Commands
             
             });
 
-            if (_Folder.GetSubFolderList().Count > 0)
-            {
-                throw new DirLinkerException("Can not delete a folder with subfolders", DirLinkerStage.Unknown);
-            }
-
+            folder.GetSubFolderList().ForEach(f => DeleteFolder(f));
+            _Folder.DeleteFolder();
         }
 
         public void Undo()
