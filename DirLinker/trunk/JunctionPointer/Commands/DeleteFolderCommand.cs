@@ -37,8 +37,8 @@ namespace DirLinker.Commands
             
             });
 
-            folder.GetSubFolderList().ForEach(f => DeleteFolder(f));
-            _Folder.DeleteFolder();
+            folder.GetSubFolderList().ForEach(DeleteFolder);
+            folder.DeleteFolder();
         }
 
         public void Undo()

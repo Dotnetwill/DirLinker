@@ -113,7 +113,13 @@ namespace DirLinker.Tests.Commands
         public void Execute_FolderContainsSubFolders_SubFolderDeleted()
         {
             var folder1 = MockRepository.GenerateMock<IFolder>();
+            folder1.Stub(f => f.GetSubFolderList()).Return(new List<IFolder>());
+            folder1.Stub(f => f.GetFileList()).Return(new List<IFile>());
+
             var folder2 = MockRepository.GenerateMock<IFolder>();
+            folder2.Stub(f => f.GetSubFolderList()).Return(new List<IFolder>());
+            folder2.Stub(f => f.GetFileList()).Return(new List<IFile>());
+
             FakeFolder folder = new FakeFolder(@"fakeFolder");
             folder.FolderExistsReturnValue = true;
             folder.SubFolderList = new List<IFolder>() {
@@ -134,6 +140,7 @@ namespace DirLinker.Tests.Commands
         public void Execute_FolderContainsSubFoldersWithFiles_SubFolderFilesDeleted()
         {
             var folder1 = MockRepository.GenerateMock<IFolder>();
+            folder1.Stub(f => f.GetSubFolderList()).Return(new List<IFolder>());
             var file = MockRepository.GenerateMock<IFile>();
 
             folder1.Stub(f => f.GetFileList()).Return(new List<IFile>() { file });
