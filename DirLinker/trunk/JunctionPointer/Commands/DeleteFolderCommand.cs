@@ -26,7 +26,8 @@ namespace DirLinker.Commands
         }
 
         private void DeleteFolder(IFolder folder)
-        {
+        { 
+            folder.GetSubFolderList().ForEach(DeleteFolder);
             folder.GetFileList().ForEach(f => 
             {
                 if ((f.GetAttributes() & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
@@ -37,7 +38,7 @@ namespace DirLinker.Commands
             
             });
 
-            folder.GetSubFolderList().ForEach(DeleteFolder);
+          
             folder.DeleteFolder();
         }
 

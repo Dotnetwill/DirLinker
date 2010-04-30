@@ -49,7 +49,25 @@ namespace DirLinker.Implementation
         /// <param name="foldername"></param>
         public void DeleteFolder()
         {
-            Directory.Delete(FolderPath);
+            // There has been a bug here where we are trying to delete the current path, strange but sadly true
+            //So we need to check it and change it
+            
+            var dirInfo = new DirectoryInfo(FolderPath);
+            try
+            {
+                if (Directory.GetCurrentDirectory().Equals(FolderPath, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    Directory.SetCurrentDirectory(dirInfo.Parent.FullName);
+                }
+                dirInfo.Delete();
+            
+            }
+            catch (IOException)
+            {
+                //Block here to allow the OS to catch up on all the deletes.
+                System.Threading.Thread.Sleep(0);
+                dirInfo.Delete();
+            }
         }
 
         /// <summary>
