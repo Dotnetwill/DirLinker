@@ -42,7 +42,7 @@ namespace DirLinker.Commands
             if (_Target.Exists() && _Overwrite)
             {
                 targetWriteable = !TargetFileReadOnly();
-                if (targetWriteable)
+                if(targetWriteable)
                 {
                     _Target.Delete();
                 }
@@ -58,6 +58,7 @@ namespace DirLinker.Commands
         private Boolean TargetFileReadOnly()
         {
             Boolean targetFileReadonly = false;
+            
             if ((_Target.GetAttributes() & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
             {
                 DialogResult res = RequestUserRespone(String.Format("{0} is read only.  Would you like to overwrite it?", _Target.FullFilePath));
@@ -68,7 +69,7 @@ namespace DirLinker.Commands
                 }
                 else if (res == DialogResult.No)
                 {
-                    targetFileReadonly = false;
+                    targetFileReadonly = true;
                 }
                 else if (res == DialogResult.Cancel)
                 {
