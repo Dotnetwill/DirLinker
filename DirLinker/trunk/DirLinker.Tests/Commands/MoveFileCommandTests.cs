@@ -131,6 +131,29 @@ namespace DirLinker.Tests.Commands
         }
 
         [Test]
+        public void Execute_Target_File_Readonly_User_No_Read_Only_Not_Cleared_File_Is_Not_Deleted()
+        {
+            IFile sourceFile = MockRepository.GenerateStub<IFile>();
+            sourceFile.Stub(s => s.Folder).Return(@"c:\source");
+            sourceFile.Stub(s => s.FileName).Return("File1");
+
+            IFile targetFile = MockRepository.GenerateStub<IFile>();
+            targetFile.Stub(f => f.Exists()).Return(true);
+            targetFile.Stub(f => f.GetAttributes()).Return(FileAttributes.ReadOnly);
+
+            ICommand testCopyCommand = new MoveFileCommand(sourceFile, targetFile, true);
+            testCopyCommand.AskUser += (question, options) =>
+            {
+                return System.Windows.Forms.DialogResult.No;
+            };
+
+            testCopyCommand.Execute();
+
+            targetFile.AssertWasNotCalled(t => t.Delete());
+        }
+
+
+        [Test]
         public void Execute_target_file_exists_no_overwrite_copy_not_attempted()
         {
             IFile sourceFile = MockRepository.GenerateStub<IFile>();

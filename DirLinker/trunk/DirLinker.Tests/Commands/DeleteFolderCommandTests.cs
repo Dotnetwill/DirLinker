@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using NUnit.Framework;
 using DirLinker.Tests.Helpers;
 using DirLinker.Interfaces;
 using DirLinker.Commands;
-using DirLinker.Exceptions;
 using Rhino.Mocks;
 
 namespace DirLinker.Tests.Commands
@@ -158,5 +154,7 @@ namespace DirLinker.Tests.Commands
             file.AssertWasCalled(f => f.Delete());
 
         }
+
+       
     }
 }
