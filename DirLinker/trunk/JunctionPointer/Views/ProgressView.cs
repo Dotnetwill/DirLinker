@@ -8,13 +8,25 @@ namespace DirLinker.Views
     public partial class ProgressView : Form, IWorkingView
     {
         private FeedbackData _data;
+        private EventHandler _cancelHandler;
 
         public ProgressView()
         {
             InitializeComponent();
+            FormClosing += FormClosingEvent;
         }
 
-
+        void FormClosingEvent(object sender, FormClosingEventArgs e)
+        {
+            var cancelHander = _cancelHandler;
+            
+            if(cancelHander != null)
+            {
+                cancelHander(this, new EventArgs());
+                e.Cancel = true;
+            }
+        }
+        
         public FeedbackData Feedback
         {
             set 
@@ -34,7 +46,7 @@ namespace DirLinker.Views
                                         };
 
             _data.AskUser = (m) =>  MessageBox.Show(this, m.Message, "DirLinker", m.ResponseOptions);
-               
+             
         }
 
         public string CancelButtonText
@@ -44,8 +56,16 @@ namespace DirLinker.Views
 
         public event EventHandler CancelPress
         {
-            add { cancelBtn.Click += value; }
-            remove { cancelBtn.Click -= value; }
+            add
+            {
+                _cancelHandler = value;
+                cancelBtn.Click += value;
+            }
+            remove
+            {
+                _cancelHandler = null;
+                cancelBtn.Click -= value;
+            }
         }
 
     }

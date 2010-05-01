@@ -80,6 +80,7 @@
             this.MinimumSize = new System.Drawing.Size(612, 295);
             this.Name = "ProgressView";
             this.ShowInTaskbar = false;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Progress...";
             this.ResumeLayout(false);
