@@ -1,41 +1,46 @@
 ﻿using System;
-using JunctionPointer.Interfaces.Views;
-using JunctionPointer.Interfaces;
+using DirLinker.Interfaces.Views;
 using System.Windows.Forms;
-using JunctionPointer.Interfaces.Controllers;
-using JunctionPointer.Helpers.Interfaces;
+using DirLinker.Interfaces.Controllers;
+using DirLinker.Interfaces;
+using DirLinker.Data;
 
-namespace JunctionPointer.Controllers
+namespace DirLinker.Controllers
 {
     public class MainController : IMainController
     {
-        protected ILinkerView m_View;
-        protected IDirLinker m_Linker;
-        protected IClassFactory m_ClassFactory;
+        private readonly ILinkerService _linkerService;
+        private readonly IPathValidation _pathValidator;
+        private readonly ILinkerView _view;
+        private Func<WorkerController> _workerFactory;
+        private readonly IOperationValidation _operationValidation;
 
- 
-        public MainController(IClassFactory classFactory)
+        private LinkOperationData _operationData;
+        
+        public MainController(ILinkerView view, IPathValidation pathValidator, ILinkerService linkerService, Func<WorkerController> workerFactory, IOperationValidation operationValidation)
         {
-            m_ClassFactory = classFactory;
-            m_View = m_ClassFactory.ManufactureType<ILinkerView>();
-            m_Linker = m_ClassFactory.ManufactureType<IDirLinker>();
+            _view = view;
+            _pathValidator = pathValidator;
+            _linkerService = linkerService;
+            _workerFactory = workerFactory;
+            _operationValidation = operationValidation;
         }
 
         public Form Start()
         {
-           
-            m_View.PerformOperation += PerformOperation;
-            m_View.ValidatePath += ValidatePath;
-            m_View.CopyBeforeDelete = true;
-            m_View.Setup();
-
-            return m_View.MainForm;
+            _operationData = new LinkOperationData();
+            
+            _view.SetOperationData(_operationData);
+            _view.ValidatePath += ValidatePath;
+            _view.PerformOperation += PerformOperation;
+            _view.ValidOperation = ValidateOperationData;
+            return _view.MainForm;
         }
 
         public void ValidatePath(object sender, ValidationArgs e)
         {
             String errorMessage;
-            if (m_Linker.ValidDirectoryPath(e.PathToValidate, out errorMessage))
+            if (_pathValidator.ValidPath(e.PathToValidate, out errorMessage))
             {
                 e.Valid = true;
             }
@@ -48,10 +53,23 @@ namespace JunctionPointer.Controllers
 
         public void PerformOperation(object sender, EventArgs e)
         {
-            IWorkingController workingController = m_ClassFactory.ManufactureType<IWorkingController>();
-            workingController.DoDirectoryLinkWithFeedBack(m_View.LinkPoint, m_View.LinkTo, m_View.CopyBeforeDelete, m_View.OverWriteTargetFiles);
+
+            _linkerService.SetOperationData(_operationData);
+            var worker = _workerFactory();
+            worker.ShowWorker(_view.MainForm);
         }
 
-     
+        private Boolean ValidateOperationData()
+        {
+            String message;
+
+            if (!_operationValidation.ValidOperation(_operationData, out message))
+            {
+                _view.ShowMesage(message);
+                return false;
+            }
+
+            return true;
+        }
     }
 }

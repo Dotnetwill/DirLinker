@@ -1,4 +1,4 @@
-﻿namespace JunctionPointer.Views
+﻿namespace DirLinker.Views
 {
     partial class DirLinkerView
     {
@@ -43,6 +43,8 @@
             this.Go = new System.Windows.Forms.Button();
             this.CloseBtn = new System.Windows.Forms.Button();
             this.ErrorProvider = new System.Windows.Forms.ErrorProvider(this.components);
+            this.BrowseFilePoint = new System.Windows.Forms.Button();
+            this.BrowseFileTarget = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ErrorProvider)).BeginInit();
             this.SuspendLayout();
@@ -62,11 +64,12 @@
             // BrowsePoint
             // 
             this.BrowsePoint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.BrowsePoint.BackgroundImage = global::DirLinker.Properties.Resources._1272101353_folder_horizontal_open;
+            this.BrowsePoint.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.BrowsePoint.Location = new System.Drawing.Point(447, 12);
             this.BrowsePoint.Name = "BrowsePoint";
-            this.BrowsePoint.Size = new System.Drawing.Size(71, 23);
-            this.BrowsePoint.TabIndex = 1;
-            this.BrowsePoint.Text = "Browse";
+            this.BrowsePoint.Size = new System.Drawing.Size(30, 23);
+            this.BrowsePoint.TabIndex = 2;
             this.BrowsePoint.UseVisualStyleBackColor = true;
             // 
             // label1
@@ -87,16 +90,17 @@
             this.LinkFrom.Location = new System.Drawing.Point(92, 42);
             this.LinkFrom.Name = "LinkFrom";
             this.LinkFrom.Size = new System.Drawing.Size(337, 20);
-            this.LinkFrom.TabIndex = 3;
+            this.LinkFrom.TabIndex = 1;
             // 
             // BrowseTarget
             // 
             this.BrowseTarget.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.BrowseTarget.BackgroundImage = global::DirLinker.Properties.Resources._1272101353_folder_horizontal_open;
+            this.BrowseTarget.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.BrowseTarget.Location = new System.Drawing.Point(447, 39);
             this.BrowseTarget.Name = "BrowseTarget";
-            this.BrowseTarget.Size = new System.Drawing.Size(70, 23);
+            this.BrowseTarget.Size = new System.Drawing.Size(30, 23);
             this.BrowseTarget.TabIndex = 4;
-            this.BrowseTarget.Text = "Browse";
             this.BrowseTarget.UseVisualStyleBackColor = true;
             // 
             // label2
@@ -119,7 +123,7 @@
             this.groupBox1.Location = new System.Drawing.Point(15, 68);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(505, 147);
-            this.groupBox1.TabIndex = 6;
+            this.groupBox1.TabIndex = 9;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "If the link location exists";
             // 
@@ -180,11 +184,33 @@
             this.ErrorProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
             this.ErrorProvider.ContainerControl = this;
             // 
+            // BrowseFilePoint
+            // 
+            this.BrowseFilePoint.BackgroundImage = global::DirLinker.Properties.Resources._1272101321_old_edit_find;
+            this.BrowseFilePoint.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.BrowseFilePoint.Location = new System.Drawing.Point(483, 13);
+            this.BrowseFilePoint.Name = "BrowseFilePoint";
+            this.BrowseFilePoint.Size = new System.Drawing.Size(33, 23);
+            this.BrowseFilePoint.TabIndex = 3;
+            this.BrowseFilePoint.UseVisualStyleBackColor = true;
+            // 
+            // BrowseFileTarget
+            // 
+            this.BrowseFileTarget.BackgroundImage = global::DirLinker.Properties.Resources._1272101321_old_edit_find;
+            this.BrowseFileTarget.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.BrowseFileTarget.Location = new System.Drawing.Point(483, 39);
+            this.BrowseFileTarget.Name = "BrowseFileTarget";
+            this.BrowseFileTarget.Size = new System.Drawing.Size(33, 23);
+            this.BrowseFileTarget.TabIndex = 5;
+            this.BrowseFileTarget.UseVisualStyleBackColor = true;
+            // 
             // DirLinkerView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(530, 252);
+            this.Controls.Add(this.BrowseFileTarget);
+            this.Controls.Add(this.BrowseFilePoint);
             this.Controls.Add(this.CloseBtn);
             this.Controls.Add(this.Go);
             this.Controls.Add(this.groupBox1);
@@ -222,5 +248,7 @@
         private System.Windows.Forms.Button CloseBtn;
         private System.Windows.Forms.CheckBox chkTargetFileOverwrite;
         private System.Windows.Forms.ErrorProvider ErrorProvider;
+        private System.Windows.Forms.Button BrowseFileTarget;
+        private System.Windows.Forms.Button BrowseFilePoint;
     }
 }

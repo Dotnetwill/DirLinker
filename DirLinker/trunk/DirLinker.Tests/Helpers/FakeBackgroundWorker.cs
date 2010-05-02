@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using JunctionPointer.Interfaces;
+using DirLinker.Interfaces;
 using System.ComponentModel;
 
 namespace DirLinker.Tests.Helpers
@@ -16,7 +16,12 @@ namespace DirLinker.Tests.Helpers
 #pragma warning restore 0067
         public void RunWorkerAsync()
         {
-            DoWork(this, new DoWorkEventArgs(null));
+            RunWorkerAsync(null);
+        }
+
+        public void RunWorkerAsync(Object args)
+        {
+            DoWork(this, new DoWorkEventArgs(args));
         }
 
     }

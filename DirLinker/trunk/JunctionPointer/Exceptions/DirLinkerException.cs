@@ -1,7 +1,7 @@
 ﻿using System;
-using JunctionPointer.Interfaces;
+using DirLinker.Interfaces;
 
-namespace JunctionPointer.Exceptions
+namespace DirLinker.Exceptions
 {
     public class DirLinkerException : Exception
     {

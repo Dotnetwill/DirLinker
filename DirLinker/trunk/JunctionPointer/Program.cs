@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
-using JunctionPointer.Views;
-using JunctionPointer.Controllers;
-using JunctionPointer.Implemenation;
-using JunctionPointer.Interfaces;
-using JunctionPointer.Interfaces.Controllers;
-using JunctionPointer.Interfaces.Views;
-using JunctionPointer.Helpers.Interfaces;
-using JunctionPointer.Helpers.OCInject;
+using DirLinker.Views;
+using DirLinker.Controllers;
+using DirLinker.Implementation;
+using DirLinker.Interfaces;
+using DirLinker.Interfaces.Controllers;
+using DirLinker.Interfaces.Views;
+using OCInject;
+using DirLinker.Commands;
 
-namespace JunctionPointer
+namespace DirLinker
+
 {
     static class Program
     {
@@ -24,20 +23,35 @@ namespace JunctionPointer
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            IClassFactory classFactory = new ClassFactory();
+            ClassFactory classFactory = new ClassFactory();
             FillIoCContainer(classFactory);
 
-            IMainController mainController = new MainController(classFactory);
+            IMainController mainController = classFactory.ManufactureType<IMainController>();
             Application.Run(mainController.Start());
         }
-        private static void FillIoCContainer(IClassFactory classFactory)
+
+        private static void FillIoCContainer(ClassFactory classFactory)
         {
 
-            classFactory.RegisterType<IDirLinker, DirLinker>();
-            classFactory.RegisterType<IWorkingController, WorkingDialogController>();
+            classFactory.RegisterType<IPathValidation, PathValidation>().AsSingleton();
+            classFactory.RegisterType<IOperationValidation, OperationValidation>().AsSingleton();
+            classFactory.RegisterType<IMainController, MainController>().AsSingleton();
+            classFactory.RegisterType<ILinkerService, LinkerService>().AsSingleton();
+            classFactory.RegisterType<ICommandDiscovery, CommandDiscovery>().AsSingleton();
+            classFactory.RegisterType<ICommandFactory, CommandFactory>().AsSingleton();
+
+            classFactory.RegisterType<ITransactionalCommandRunner, TransactionalCommandRunner>();
+            classFactory.RegisterType<IWorkingView, ProgressView>();
+            classFactory.RegisterType<ILocker, Locker>();
             classFactory.RegisterType<ILinkerView, DirLinkerView>();
-            classFactory.RegisterType<IWorkingView, ProgessView>();
             classFactory.RegisterType<IBackgroundWorker, BackgroundWorkerImp>();
+            classFactory.RegisterType<ThreadSafeQueue<ICommand>>();
+            
+            classFactory.RegisterType<WorkerController>();
+
+            classFactory.RegisterType<IMessenger, ThreadMessenger>()
+                .WithFactory<ThreadMessengerFactory>();
+
             classFactory.RegisterType<IFolder, FolderImp>()
                 .WithFactory<IFolderFactoryForPath>();
 

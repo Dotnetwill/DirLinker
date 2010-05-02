@@ -2,14 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using JunctionPointer.Interfaces;
+using DirLinker.Interfaces;
 using System.IO;
 
 namespace DirLinker.Tests.Helpers
 {
     public class FakeFile : IFile
     {
+        public String FileLinkCreatedAt { get; set; }
         
+        public bool CreateLinkToFileAt(String linkToBeCreated)
+        {
+            FileLinkCreatedAt = linkToBeCreated;
+            return true;
+        }
+
+        public void MoveFile(IFile _Target)
+        {
+            throw new NotImplementedException();
+        }
+
         public FakeFile(String filename)
         {
             FullFilePath = filename;

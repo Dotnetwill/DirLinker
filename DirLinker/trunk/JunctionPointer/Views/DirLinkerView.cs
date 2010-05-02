@@ -1,30 +1,19 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Forms;
-using JunctionPointer.Interfaces.Views;
+using DirLinker.Data;
+using DirLinker.Interfaces.Views;
 
-namespace JunctionPointer.Views
+namespace DirLinker.Views
 {
     public partial class DirLinkerView : Form, ILinkerView
     {
+        private LinkOperationData _linkOperationData;
+
         public DirLinkerView()
         {
             InitializeComponent();
-        }
-
-        protected event PathValidater m_ValidatePath;
-
-        protected event PerformLink m_PerformOperation;
-
-        public event PerformLink PerformOperation
-        {
-            add{ m_PerformOperation += value; }
-            remove { m_PerformOperation -= value; }
-        }
-
-        public event PathValidater ValidatePath
-        {
-            add { m_ValidatePath += value; }
-            remove { m_ValidatePath -= value;  }
+            RegisterHandlers();
         }
 
         public string LinkPoint { get; set; }
@@ -35,7 +24,48 @@ namespace JunctionPointer.Views
 
         public bool OverWriteTargetFiles { get; set; }
 
- 
+        #region ILinkerView Members
+
+        public event PerformLink PerformOperation
+        {
+            add { m_PerformOperation += value; }
+            remove { m_PerformOperation -= value; }
+        }
+
+        public event PathValidater ValidatePath
+        {
+            add { m_ValidatePath += value; }
+            remove { m_ValidatePath -= value; }
+        }
+
+        public Form MainForm
+        {
+            get { return this; }
+        }
+
+        public void SetOperationData(LinkOperationData data)
+        {
+            _linkOperationData = data;
+            BindToFields();
+
+            //Set up defaults
+            _linkOperationData.CopyBeforeDelete = true;
+        }
+
+        public Func<Boolean> ValidOperation { get; set; }
+
+        public void ShowMesage(string message)
+        {
+            MessageBox.Show(this, message, "Directory Linker");
+        }
+
+        #endregion
+
+        protected event PathValidater m_ValidatePath;
+
+        protected event PerformLink m_PerformOperation;
+
+
         /// <summary>
         /// Triggers the ValidatePath event.
         /// </summary>
@@ -44,7 +74,7 @@ namespace JunctionPointer.Views
             if (m_ValidatePath != null)
                 m_ValidatePath(this, ea);
         }
-        
+
         /// <summary>
         /// Triggers the PerformOperation event.
         /// </summary>
@@ -54,26 +84,18 @@ namespace JunctionPointer.Views
                 m_PerformOperation(this, ea);
         }
 
-        public Form MainForm
-        {
-            get { return this; }
-        }
-
-        public void Setup()
-        {
-            BindToFields();
-            RegisterHandlers();
-        }
 
         private void BindToFields()
         {
-            LinkFrom.DataBindings.Add("Text", this, "LinkTo", false, DataSourceUpdateMode.OnPropertyChanged);
-            LinkPointEdit.DataBindings.Add("Text", this, "LinkPoint", false, DataSourceUpdateMode.OnPropertyChanged);
-            chkTargetFileOverwrite.DataBindings.Add("Checked", this, "OverWriteTargetFiles", false, DataSourceUpdateMode.OnPropertyChanged);
+            LinkFrom.DataBindings.Add("Text", _linkOperationData, "CreateLinkAt", false,
+                                      DataSourceUpdateMode.OnPropertyChanged);
+            LinkPointEdit.DataBindings.Add("Text", _linkOperationData, "LinkTo", false,
+                                           DataSourceUpdateMode.OnPropertyChanged);
+            chkTargetFileOverwrite.DataBindings.Add("Checked", _linkOperationData, "OverwriteExistingFiles", false,
+                                                    DataSourceUpdateMode.OnPropertyChanged);
 
-            CopyToTarget.CheckedChanged += (object sender, EventArgs e) => CopyBeforeDelete = CopyToTarget.Checked;
-            //DeleteIt.CheckedChanged 
-            
+            CopyToTarget.CheckedChanged +=
+                (sender, e) => _linkOperationData.CopyBeforeDelete = CopyToTarget.Checked;
         }
 
 
@@ -81,12 +103,44 @@ namespace JunctionPointer.Views
         {
             RegisterFolderBrowser(BrowsePoint, LinkPointEdit);
             RegisterFolderBrowser(BrowseTarget, LinkFrom);
-            
+            RegisterFileBrowser(BrowseFilePoint, LinkPointEdit);
+            RegisterFileBrowser(BrowseFileTarget, LinkFrom);
+
             Go.Click += Go_Click;
 
-            CopyToTarget.CheckedChanged += (sender, e) => chkTargetFileOverwrite.Enabled = !chkTargetFileOverwrite.Enabled;
+            CopyToTarget.CheckedChanged +=
+                (sender, e) => chkTargetFileOverwrite.Enabled = !chkTargetFileOverwrite.Enabled;
             CloseBtn.Click += (sender, e) => Application.Exit();
+        }
 
+        private void RegisterFileBrowser(Button browseFilePoint, TextBox linkPointEdit)
+        {
+            browseFilePoint.Tag = linkPointEdit;
+            browseFilePoint.Click += BrowseForFile;
+        }
+
+        private void BrowseForFile(object sender, EventArgs e)
+        {
+            var button = sender as Button;
+            var textBox = button.Tag as TextBox;
+            if (textBox != null)
+            {
+                using (var browser = new OpenFileDialog())
+                {
+                    browser.CheckFileExists = false;
+                    browser.DereferenceLinks = false;
+
+                    if (textBox.Text.Trim() != String.Empty)
+                    {
+                        browser.InitialDirectory = textBox.Text;
+                    }
+
+                    if (browser.ShowDialog() == DialogResult.OK)
+                    {
+                        textBox.Text = browser.FileName;
+                    }
+                }
+            }
         }
 
         private void RegisterFolderBrowser(Button button, TextBox textbox)
@@ -95,9 +149,9 @@ namespace JunctionPointer.Views
             button.Click += BrowseForFolder;
         }
 
-        void Go_Click(object sender, EventArgs e)
+        private void Go_Click(object sender, EventArgs e)
         {
-            if (FormValid())
+            if (FormValid() && ValidOperation())
             {
                 CallPerformOperation(new EventArgs());
             }
@@ -115,7 +169,7 @@ namespace JunctionPointer.Views
 
         private Boolean ValidateEditor(TextBox textBox)
         {
-            ValidationArgs validEA = new ValidationArgs(textBox.Text);
+            var validEA = new ValidationArgs(textBox.Text);
             CallValidatePath(validEA);
 
             if (!validEA.Valid)
@@ -132,27 +186,27 @@ namespace JunctionPointer.Views
             return validEA.Valid;
         }
 
-        void RealTimeValidation(object sender, EventArgs e)
+        private void RealTimeValidation(object sender, EventArgs e)
         {
-            TextBox textBox = sender as TextBox;
+            var textBox = sender as TextBox;
             ValidateEditor(textBox);
         }
 
-        void BrowseForFolder(object sender, EventArgs e)
+        private void BrowseForFolder(object sender, EventArgs e)
         {
-            Button button = sender as Button;
+            var button = sender as Button;
             if (button != null && button.Tag is TextBox)
             {
-                TextBox textBox = button.Tag as TextBox;
+                var textBox = button.Tag as TextBox;
 
-                using (FolderBrowserDialog browser = new FolderBrowserDialog())
+                using (var browser = new FolderBrowserDialog())
                 {
-                    if(textBox.Text.Trim() != String.Empty)
+                    if (textBox.Text.Trim() != String.Empty)
                     {
                         browser.SelectedPath = textBox.Text;
                     }
 
-                    if(browser.ShowDialog() == DialogResult.OK)
+                    if (browser.ShowDialog() == DialogResult.OK)
                     {
                         textBox.Text = browser.SelectedPath;
                     }
@@ -160,9 +214,8 @@ namespace JunctionPointer.Views
             }
             else
             {
-                System.Diagnostics.Trace.WriteLine("Delegate not registered to button or the textbox is specified.");
+                Trace.WriteLine("Delegate not registered to button or the textbox is specified.");
             }
         }
-      
     }
 }

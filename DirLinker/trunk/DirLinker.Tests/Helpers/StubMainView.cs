@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using JunctionPointer.Interfaces.Views;
+using DirLinker.Interfaces.Views;
 
 namespace DirLinker.Tests.Helpers
 {
@@ -32,6 +32,40 @@ namespace DirLinker.Tests.Helpers
         public event PathValidater ValidatePath;
         public event PerformLink PerformOperation;
 #pragma warning restore 0067
+        #endregion
+
+      
+        public void SetOperationData(DirLinker.Data.LinkOperationData data)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        #region ILinkerView Members
+
+
+        public Func<bool> ValidOperation
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        #endregion
+
+        #region ILinkerView Members
+
+
+        public void ShowMesage(string message)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 }

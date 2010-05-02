@@ -1,10 +1,13 @@
 ﻿using System;
 
-namespace JunctionPointer.Interfaces
+namespace DirLinker.Interfaces
 {
     public delegate IFile IFileFactoryForPath(String filePath);
     public interface IFile
     {
+
+        bool CreateLinkToFileAt(String linkToBeCreated);
+        void MoveFile(IFile target);
 
         String FileName { get; }
         String Folder { get; }

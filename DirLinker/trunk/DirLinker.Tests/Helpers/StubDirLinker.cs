@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using JunctionPointer.Interfaces;
+using DirLinker.Interfaces;
 
 namespace DirLinker.Tests.Helpers
 {
@@ -16,7 +16,7 @@ namespace DirLinker.Tests.Helpers
         public Boolean OverwriteTargetFiles;
         //We know these are unused because it's a test double so disable the warnings
 #pragma warning disable 0067
-        public event UserMessage UserMessage;
+      //  public event UserMessage UserMessage;
 
         public event ReportProgress ReportFeedback;
 #pragma warning restore 0067

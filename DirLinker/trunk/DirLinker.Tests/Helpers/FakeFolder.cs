@@ -1,5 +1,5 @@
 ﻿using System;
-using JunctionPointer.Interfaces;
+using DirLinker.Interfaces;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -37,16 +37,17 @@ namespace DirLinker.Tests.Helpers
         {
             DeleteFolderCalled = true;
         }
-
+        
         public List<IFile> FileList {get; set;}
         public List<IFile> GetFileList()
         {
+            FileList = FileList ?? new List<IFile>();
             return FileList;
         }
-
         public List<IFolder> SubFolderList {get; set;}
         public List<IFolder> GetSubFolderList()
         {
+            SubFolderList = SubFolderList ?? new List<IFolder>();
             return SubFolderList;
         }
 
@@ -104,6 +105,24 @@ namespace DirLinker.Tests.Helpers
         {
             get;
             set;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is FakeFolder)
+            {
+                FakeFolder other = obj as FakeFolder;
+                return this.FolderPath.Equals(other.FolderPath, StringComparison.CurrentCultureIgnoreCase);
+            }
+            else
+            {
+                return base.Equals(obj);
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
 
         #endregion

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using JunctionPointer.Interfaces;
+using DirLinker.Interfaces;
 using Rhino.Mocks;
 using System.IO;
 
@@ -10,7 +10,7 @@ namespace DirLinker.Tests.Helpers
 {
     public static class CreateStubHelpers
     {
-        public static IFolder GetIDirectoryManagerStub()
+        public static IFolder GetIFolderStub()
         {
             return GetIDirectoryManagerStub(new Char[] { }, 254);
         }
@@ -44,6 +44,7 @@ namespace DirLinker.Tests.Helpers
 
             file.Stub(f => f.FileName).Return(fileName);
             file.Stub(f => f.Folder).Return(path);
+            file.Stub(f => f.FullFilePath).Return(Path.Combine(path, fileName));
             file.Stub(f => f.GetAttributes()).Return(attr);
 
             return file;

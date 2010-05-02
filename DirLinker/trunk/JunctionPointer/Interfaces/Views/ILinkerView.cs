@@ -1,7 +1,8 @@
 ﻿using System;
+using DirLinker.Data;
 
 
-namespace JunctionPointer.Interfaces.Views
+namespace DirLinker.Interfaces.Views
 {
     public class ValidationArgs : EventArgs
     {
@@ -21,14 +22,10 @@ namespace JunctionPointer.Interfaces.Views
 
     public interface ILinkerView
     {
-        String LinkPoint { get; set; }
-        String LinkTo { get; set; }
-        Boolean CopyBeforeDelete { get; set; }
-        Boolean OverWriteTargetFiles { get; set; }
         System.Windows.Forms.Form MainForm { get; }
-
-        void Setup();
-
+        Func<Boolean> ValidOperation { set; get; }
+        void SetOperationData(LinkOperationData data);
+        void ShowMesage(String message);
         event PathValidater ValidatePath;
         event PerformLink PerformOperation;
     }

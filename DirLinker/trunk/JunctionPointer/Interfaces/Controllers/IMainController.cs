@@ -1,9 +1,9 @@
 using System;
-using JunctionPointer.Interfaces.Views;
-using JunctionPointer.Interfaces;
+using DirLinker.Interfaces.Views;
+using DirLinker.Interfaces;
 using System.Windows.Forms;
 
-namespace JunctionPointer.Interfaces.Controllers
+namespace DirLinker.Interfaces.Controllers
 {
     public interface IMainController
     {
