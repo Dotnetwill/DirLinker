@@ -90,7 +90,7 @@ namespace DirLinker.Tests.Implemenation
         }
 
         [Test]
-        public void ValidOperation_AttemptsToLinkFileToFolder_NotValid()
+        public void ValidOperation_AttemptsToLinkFileToFolder_Valid()
         {
             String createLinkAt = "linkAt";
             String linkTo = "linkTo";
@@ -104,7 +104,7 @@ namespace DirLinker.Tests.Implemenation
             String errorMessage;
             Boolean valid = validator.ValidOperation(data, out errorMessage);
 
-            Assert.IsFalse(valid);
+            Assert.IsTrue(valid);
         }
 
         [Test]

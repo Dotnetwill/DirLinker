@@ -51,11 +51,6 @@ namespace DirLinker.Implementation
             var createLinkAtAsFile = _fileFactory(linkData.CreateLinkAt);
             var createLinkAtAsFolder = _folderFactory(linkData.CreateLinkAt);
 
-            if(linkToAsFile.Exists() && createLinkAtAsFolder.FolderExists())
-            {
-                return true;
-            }
-
             if (linkToAsFolder.FolderExists() && createLinkAtAsFile.Exists())
             {
                 return true;
