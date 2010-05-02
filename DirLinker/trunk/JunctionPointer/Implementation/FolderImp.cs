@@ -60,11 +60,16 @@ namespace DirLinker.Implementation
                     Directory.SetCurrentDirectory(dirInfo.Parent.FullName);
                 }
                 dirInfo.Delete();
-            
+
             }
             catch (IOException)
             {
                 //Block here to allow the OS to catch up on all the deletes.
+                //The user can have the path open in explorer or another process so we need wait for it to be closed
+                //This is here because of an intermitent bug.
+
+                //My best guess is that a subfolder is being held open by explorer or the folder browser preventing it from being closed
+                //so that it's not deleted and the folder can not be deleted because it's not empty.   I can't reproduce it now to comfirm this via procmon
                 System.Threading.Thread.Sleep(0);
                 dirInfo.Delete();
             }

@@ -19,8 +19,8 @@ namespace DirLinker.Views
         void FormClosingEvent(object sender, FormClosingEventArgs e)
         {
             var cancelHander = _cancelHandler;
-            
-            if(cancelHander != null)
+
+            if (cancelHander != null && cancelBtn.Text.Equals("cancel", StringComparison.CurrentCultureIgnoreCase))
             {
                 cancelHander(this, new EventArgs());
                 e.Cancel = true;
