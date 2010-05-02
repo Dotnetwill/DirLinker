@@ -84,13 +84,17 @@ namespace DirLinker.Commands
         /// </summary>
         public void RunAsync(IMessenger messenger)
         {
-            _bgWorker.DoWork += (sender, args) => RunCommandQueue(args.Argument as IMessenger);
+            _bgWorker.DoWork += RunWorker;
 
             _bgWorker.RunWorkerCompleted += NotifyWorkCompleted;
             _bgWorker.RunWorkerAsync(messenger); 
         }
 
 
+        private void RunWorker(object sender, DoWorkEventArgs args)
+        {
+            RunCommandQueue(args.Argument as IMessenger);
+        }
         /// <summary>
         /// Requests the work is cancelled.  The cancel flag is only checked between running commands.
         /// </summary>
@@ -187,6 +191,7 @@ namespace DirLinker.Commands
             }
 
             _bgWorker.RunWorkerCompleted -= NotifyWorkCompleted;
+            _bgWorker.DoWork -= RunWorker;
 
             _cancelRequested = false;
             _undoStack.Clear();
