@@ -10,9 +10,11 @@ namespace DirLinker.Implementation
     public class OperationValidation : IOperationValidation
     {
         private readonly IFileFactoryForPath _fileFactory;
+        private IFolderFactoryForPath _folderFactory;
 
-        public OperationValidation(Interfaces.IFileFactoryForPath fileFactory)
+        public OperationValidation(IFileFactoryForPath fileFactory, IFolderFactoryForPath folderFactory)
         {
+            _folderFactory = folderFactory;
             _fileFactory = fileFactory;
         }
 
@@ -25,13 +27,41 @@ namespace DirLinker.Implementation
                 errorMessage = "A path can not be linked to itself";
                 return false;
             }
+            
             if(!IsValidFileLink(linkData))
             {
                 errorMessage = "When creating a file link the linked to file must exist";
                 return false;
             }
 
+            if (TryingToLinkFileToFolder(linkData))
+            {
+                errorMessage = "A file can not be linked to a folder";
+                return false;
+            }
+
             return true;
+        }
+
+        private bool TryingToLinkFileToFolder(LinkOperationData linkData)
+        {
+            var linkToAsFile = _fileFactory(linkData.LinkTo);
+            var linkToAsFolder = _folderFactory(linkData.LinkTo);
+
+            var createLinkAtAsFile = _fileFactory(linkData.CreateLinkAt);
+            var createLinkAtAsFolder = _folderFactory(linkData.CreateLinkAt);
+
+            if(linkToAsFile.Exists() && createLinkAtAsFolder.FolderExists())
+            {
+                return true;
+            }
+
+            if (linkToAsFolder.FolderExists() && createLinkAtAsFile.Exists())
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private Boolean IsValidFileLink(LinkOperationData linkData)

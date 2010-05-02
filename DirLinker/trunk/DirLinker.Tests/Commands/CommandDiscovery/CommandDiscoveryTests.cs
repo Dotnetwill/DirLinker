@@ -429,7 +429,7 @@ namespace DirLinker.Tests.Commands
         }
 
 
-        private IFileFactoryForPath GetFileFactoryThatReturnsExistsFor(String fileToReturnTrueFor)
+        public static IFileFactoryForPath GetFileFactoryThatReturnsExistsFor(String fileToReturnTrueFor)
         {
            IFileFactoryForPath fileFactory = (f) =>
             {
@@ -443,7 +443,7 @@ namespace DirLinker.Tests.Commands
             return fileFactory;
         }
 
-        private IFolderFactoryForPath GetFolderFactoryThatReturnsExistsFor(String folderToReturnTrueFor)
+        public static IFolderFactoryForPath GetFolderFactoryThatReturnsExistsFor(String folderToReturnTrueFor)
         {
             IFolderFactoryForPath folderFactory = (f) =>
             {
