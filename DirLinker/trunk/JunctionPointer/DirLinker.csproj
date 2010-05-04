@@ -90,7 +90,9 @@
     <Compile Include="Controllers\WorkerController.cs" />
     <Compile Include="Data\FeedbackData.cs" />
     <Compile Include="Implementation\JunctionPointXP.cs" />
+    <Compile Include="Implementation\OperatingSystemVersion.cs" />
     <Compile Include="Interfaces\IJunctionPointXP.cs" />
+    <Compile Include="Interfaces\IOperatingSystemVersion.cs" />
     <Compile Include="Interfaces\IOperationValidation.cs" />
     <Compile Include="Implementation\OperationValidation.cs" />
     <Compile Include="Interfaces\IMessenger.cs" />
