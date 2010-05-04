@@ -80,6 +80,7 @@
     <Compile Include="Commands\CreateFileLinkCommand.cs" />
     <Compile Include="Commands\CreateFolderCommand.cs" />
     <Compile Include="Commands\CreateFolderLinkCommand.cs" />
+    <Compile Include="Commands\CreateLinkXpCommand.cs" />
     <Compile Include="Commands\DeleteFileCommand.cs" />
     <Compile Include="Commands\DeleteFolderCommand.cs" />
     <Compile Include="Commands\ICommandFactory.cs" />
@@ -88,6 +89,8 @@
     <Compile Include="Commands\WorkReportGenerator.cs" />
     <Compile Include="Controllers\WorkerController.cs" />
     <Compile Include="Data\FeedbackData.cs" />
+    <Compile Include="Implementation\JunctionPointXP.cs" />
+    <Compile Include="Interfaces\IJunctionPointXP.cs" />
     <Compile Include="Interfaces\IOperationValidation.cs" />
     <Compile Include="Implementation\OperationValidation.cs" />
     <Compile Include="Interfaces\IMessenger.cs" />

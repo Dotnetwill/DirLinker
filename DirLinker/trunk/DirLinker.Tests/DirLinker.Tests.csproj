@@ -82,6 +82,7 @@
     <Compile Include="Commands\CreateFileLinkCommandTests.cs" />
     <Compile Include="Commands\CreateLinkCommandTests.cs" />
     <Compile Include="Commands\DeleteFileCommandTests.cs" />
+    <Compile Include="Commands\CreateLinkXPCommandTests.cs" />
     <Compile Include="Commands\MoveFileCommandTests.cs" />
     <Compile Include="Commands\CreateFolderCommandTests.cs" />
     <Compile Include="Commands\DeleteFolderCommandTests.cs" />
