@@ -1,16 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using DirLinker.Exceptions;
 using DirLinker.Interfaces;
 
 namespace DirLinker.Commands
 {
     public class CommandFactory : ICommandFactory
     {
+        private readonly IOperatingSystemVersion _OsVersion;
+        private readonly IJunctionPointXp _JunctionPointXp;
+
+        public CommandFactory(IOperatingSystemVersion osVersion, IJunctionPointXp junctionPointXp)
+        {
+            _JunctionPointXp = junctionPointXp;
+            _OsVersion = osVersion;   
+        }
+
         public ICommand CreateFolderLinkCommand(IFolder linkTo, IFolder linkFrom)
         {
-            return new CreateFolderLinkCommand(linkTo, linkFrom);
+            if(_OsVersion.IsVistaOrLater())
+            {
+                return new CreateFolderLinkCommand(linkTo, linkFrom);
+            }
+            else
+            {
+                return new CreateLinkXpCommand(linkTo.FolderPath, linkFrom.FolderPath, _JunctionPointXp);
+            }
         }
 
         public ICommand DeleteFolderCommand(IFolder folder)
@@ -31,7 +45,14 @@ namespace DirLinker.Commands
 
         public ICommand CreateFileLinkCommand(IFile linkTo, IFile linkFrom)
         {
-            return new CreateFileLinkCommand(linkTo, linkFrom);
+            if (_OsVersion.IsVistaOrLater())
+            {
+                return new CreateFileLinkCommand(linkTo, linkFrom);
+            }
+            else
+            {
+               throw new DirLinkerException("File links are not supported on XP", DirLinkerStage.None);
+            }
         }
 
         public ICommand DeleteFileCommand(IFile file)

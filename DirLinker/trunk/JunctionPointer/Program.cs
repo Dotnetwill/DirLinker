@@ -39,6 +39,8 @@ namespace DirLinker
             classFactory.RegisterType<ILinkerService, LinkerService>().AsSingleton();
             classFactory.RegisterType<ICommandDiscovery, CommandDiscovery>().AsSingleton();
             classFactory.RegisterType<ICommandFactory, CommandFactory>().AsSingleton();
+            classFactory.RegisterType<IOperatingSystemVersion, OperatingSystemVersion>().AsSingleton();
+            classFactory.RegisterType<IJunctionPointXp, JunctionPointXp>().AsSingleton();
 
             classFactory.RegisterType<ITransactionalCommandRunner, TransactionalCommandRunner>();
             classFactory.RegisterType<IWorkingView, ProgressView>();
