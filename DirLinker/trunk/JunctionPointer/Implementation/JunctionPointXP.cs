@@ -94,6 +94,8 @@ namespace DirLinker.Implementation
         {
             target = Path.GetFullPath(target);
 
+            Directory.CreateDirectory(junctionPoint);
+
             using (SafeFileHandle handle = OpenReparsePoint(junctionPoint, EFileAccess.GenericWrite))
             {
                 byte[] targetDirBytes = Encoding.Unicode.GetBytes(NonInterpretedPathPrefix + Path.GetFullPath(target));

@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using DirLinker.Exceptions;
 using DirLinker.Interfaces;
 using DirLinker.Data;
 using System.Windows.Threading;
 using DirLinker.Commands;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace DirLinker.Implementation
 {
@@ -41,9 +43,23 @@ namespace DirLinker.Implementation
         
         public void PerformOperation()
         {
-            QueueCommands();
+            try
+            {
+                QueueCommands();
 
-            RunCommandRunner();
+                RunCommandRunner();
+            }
+            catch (DirLinkerException ex)
+            {
+                _feedback.AskUser(new FeedbackData.UserMessage()
+                                      {
+                                          Message = String.Format("Unable to Perform Operation: {0} {1}", Environment.NewLine, ex.Message), 
+                                          ResponseOptions = MessageBoxButtons.OK
+                                      });
+
+                OnCommandRunnerOnWorkCompleted(new WorkReport(WorkStatus.CommandFailWithException, ex));
+
+            }
         }
 
         
@@ -59,16 +75,18 @@ namespace DirLinker.Implementation
 
         private void QueueCommands()
         {
-            UpdateFeedBack("Building Task List");
+           
+                UpdateFeedBack("Building Task List");
 
-            var commandList = _commandDiscovery.GetCommandListTask(
-                            _operationData.LinkTo,
-                            _operationData.CreateLinkAt,  
-                            _operationData.CopyBeforeDelete,
-                            _operationData.OverwriteExistingFiles);
+                var commandList = _commandDiscovery.GetCommandListTask(
+                    _operationData.LinkTo,
+                    _operationData.CreateLinkAt,
+                    _operationData.CopyBeforeDelete,
+                    _operationData.OverwriteExistingFiles);
 
-            _commandRunner.QueueRange(commandList);
-    
+                _commandRunner.QueueRange(commandList);
+          
+
         }
 
         private void RunCommandRunner()

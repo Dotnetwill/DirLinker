@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using DirLinker.Exceptions;
 using DirLinker.Interfaces;
 
 namespace DirLinker.Commands
@@ -25,7 +23,7 @@ namespace DirLinker.Commands
             }
             else
             {
-                return new CreateLinkXpCommand(linkTo.FolderPath, linkTo.FolderPath, _JunctionPointXp);
+                return new CreateLinkXpCommand(linkTo.FolderPath, linkFrom.FolderPath, _JunctionPointXp);
             }
         }
 
@@ -53,7 +51,7 @@ namespace DirLinker.Commands
             }
             else
             {
-                return new CreateLinkXpCommand(linkTo.FullFilePath, linkTo.FullFilePath, _JunctionPointXp);
+               throw new DirLinkerException("File links are not supported on XP", DirLinkerStage.None);
             }
         }
 
