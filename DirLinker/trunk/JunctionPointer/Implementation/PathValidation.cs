@@ -8,11 +8,14 @@ namespace DirLinker.Implementation
     public class PathValidation : IPathValidation
     {
         private readonly IFolderFactoryForPath _folderFactory;
-        private readonly String regexForDrive = @"^([a-zA-Z]\:)";
+        private readonly IOperatingSystemVersion _operatingSystemVersion;
+        private const String RegexForDrive = @"^([a-zA-Z]\:)";
+        private readonly String regexForUncPAth = @"^(\\{2})([^/:*?<>""|]*)+";
 
-        public PathValidation(IFolderFactoryForPath folderFactory)
+        public PathValidation(IFolderFactoryForPath folderFactory, IOperatingSystemVersion operatingSystemVersion)
         {
             _folderFactory = folderFactory;
+            _operatingSystemVersion = operatingSystemVersion;
         }
 
 
@@ -35,23 +38,40 @@ namespace DirLinker.Implementation
                     return false;
                 }
 
+                String preappend = String.Empty;
+
+                if (path.StartsWith(@"\\"))
+                {
+                    preappend = @"\\";
+                    path = path.Remove(0, 2);
+                }
+
                 String[] pathParts = path.Split('\\');
-                if (pathParts.Length == 0 || !Regex.IsMatch(pathParts[0], regexForDrive))
+                if (pathParts.Length == 0)
                 {
                     errorMessage = "The path is not well formed";
                     return false;
                 }
-                else if (pathParts.Length > 1)
+                
+                if(IsValidLocation(preappend + pathParts[0]))
                 {
-                    String pathWithoutDrive = path.Replace(pathParts[0], String.Empty);
-
-                    Int32 count = folder.GetIllegalPathChars().Count(c => pathWithoutDrive.Contains(c));
-
-                    if (count > 0)
+                    if (pathParts.Length > 1)
                     {
-                        errorMessage = "Path contains illegal characters";
-                        return false;
+                        String pathWithoutDrive = path.Replace(pathParts[0], String.Empty);
+
+                        Int32 count = folder.GetIllegalPathChars().Count(c => pathWithoutDrive.Contains(c));
+
+                        if (count > 0)
+                        {
+                            errorMessage = "Path contains illegal characters";
+                            return false;
+                        }
                     }
+                }
+                else
+                {
+                    errorMessage = "Invalid path";
+                    return false;
                 }
 
             }
@@ -63,10 +83,19 @@ namespace DirLinker.Implementation
 
             return true;
         }
-        
-         private bool IsDriveLetter(String path)
+
+        private Boolean IsValidLocation(String pathPart)
         {
-            if (path.Length < 4 && Regex.IsMatch(path, regexForDrive))
+            if(!Regex.IsMatch(pathPart, RegexForDrive))
+            {
+                return !_operatingSystemVersion.IsXp() && Regex.IsMatch(pathPart, regexForUncPAth);
+            }
+            return true;
+        }
+
+        private bool IsDriveLetter(String path)
+        {
+            if (path.Length < 4 && Regex.IsMatch(path, RegexForDrive))
             {
                 return true;
             }

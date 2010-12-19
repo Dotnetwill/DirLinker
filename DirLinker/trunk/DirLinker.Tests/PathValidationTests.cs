@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
 using DirLinker.Interfaces;
 using DirLinker.Implementation;
+using Rhino.Mocks;
 
 namespace DirLinker.Tests
 {
@@ -25,7 +23,7 @@ namespace DirLinker.Tests
             //Arrange
             IFolder dirManager = Helpers.CreateStubHelpers.GetIFolderStub();
 
-            IPathValidation controller = new PathValidation(s => dirManager);
+            IPathValidation controller = new PathValidation(s => dirManager, GetMockOperatingSystemVersion());
 
             //Act
             String errorMessage;
@@ -42,7 +40,7 @@ namespace DirLinker.Tests
             //Arrange
             IFolder dirManager = Helpers.CreateStubHelpers.GetIFolderStub();
 
-            IPathValidation controller = new PathValidation(s => dirManager);
+            IPathValidation controller = new PathValidation(s => dirManager, GetMockOperatingSystemVersion());
 
         
             //Act
@@ -61,7 +59,7 @@ namespace DirLinker.Tests
             //Arrange
             IFolder dirManager = Helpers.CreateStubHelpers.GetIFolderStub();
 
-            IPathValidation controller = new PathValidation(s => dirManager);
+            IPathValidation controller = new PathValidation(s => dirManager, GetMockOperatingSystemVersion());
 
             //Act
             String errorMessage;
@@ -78,7 +76,7 @@ namespace DirLinker.Tests
             //Arrange
             IFolder dirManager = Helpers.CreateStubHelpers.GetIDirectoryManagerStub(1);
 
-            IPathValidation controller = new PathValidation(s => dirManager);
+            IPathValidation controller = new PathValidation(s => dirManager, GetMockOperatingSystemVersion());
 
             String longPath = @"c:\testPathThatIsLongerTheDirManagerAllows";
 
@@ -99,7 +97,7 @@ namespace DirLinker.Tests
             //Arrange
             IFolder dirManager = Helpers.CreateStubHelpers.GetIDirectoryManagerStub(new Char[] { '|', '?', ':' });
 
-            IPathValidation controller = new PathValidation(s => dirManager);
+            IPathValidation controller = new PathValidation(s => dirManager, GetMockOperatingSystemVersion());
 
             //Act
             String errorMessage;
@@ -118,7 +116,7 @@ namespace DirLinker.Tests
             //Arrange
             IFolder dirManager = Helpers.CreateStubHelpers.GetIDirectoryManagerStub(new Char[] { '|', '?', ':' });
 
-            IPathValidation controller = new PathValidation(s => dirManager);
+            IPathValidation controller = new PathValidation(s => dirManager, GetMockOperatingSystemVersion());
 
             //Act
             String errorMessage;
@@ -136,7 +134,7 @@ namespace DirLinker.Tests
             //Arrange
             IFolder dirManager = Helpers.CreateStubHelpers.GetIFolderStub();
 
-            IPathValidation controller = new PathValidation(s => dirManager);
+            IPathValidation controller = new PathValidation(s => dirManager, GetMockOperatingSystemVersion());
 
             //Act
             String errorMessage;
@@ -154,7 +152,7 @@ namespace DirLinker.Tests
             //Arrange
             IFolder dirManager = Helpers.CreateStubHelpers.GetIFolderStub();
 
-            IPathValidation controller = new PathValidation(s => dirManager);
+            IPathValidation controller = new PathValidation(s => dirManager, GetMockOperatingSystemVersion());
 
             //Act
             String errorMessage;
@@ -172,7 +170,7 @@ namespace DirLinker.Tests
             //Arrange
             IFolder dirManager = Helpers.CreateStubHelpers.GetIFolderStub();
 
-            IPathValidation controller = new PathValidation(s => dirManager);
+            IPathValidation controller = new PathValidation(s => dirManager, GetMockOperatingSystemVersion());
 
             //Act
             String errorMessage;
@@ -190,7 +188,7 @@ namespace DirLinker.Tests
             //Arrange
             IFolder dirManager = Helpers.CreateStubHelpers.GetIFolderStub();
 
-            IPathValidation controller = new PathValidation(s => dirManager);
+            IPathValidation controller = new PathValidation(s => dirManager, GetMockOperatingSystemVersion());
 
             //Act
             String errorMessage;
@@ -202,12 +200,12 @@ namespace DirLinker.Tests
         }
 
         [Test]
-        public void ValidatePath_UNCPath_Invalid()
+        public void ValidatePath_UNCPathOnXp_Invalid()
         {
             //Arrange
             IFolder dirManager = Helpers.CreateStubHelpers.GetIFolderStub();
 
-            IPathValidation controller = new PathValidation(s => dirManager);
+            IPathValidation controller = new PathValidation(s => dirManager, GetMockOperatingSystemVersion(isVista:false));
 
             //Act
             String errorMsg;
@@ -218,5 +216,29 @@ namespace DirLinker.Tests
             Assert.IsNotEmpty(errorMsg);
         }
 
+        [Test]
+        public void ValidatePath_UNCPathOnVista_Valid()
+        {
+            //Arrange
+            IFolder dirManager = Helpers.CreateStubHelpers.GetIFolderStub();
+
+            IPathValidation controller = new PathValidation(s => dirManager, GetMockOperatingSystemVersion(isXp:false));
+
+            //Act
+            String errorMsg;
+            Boolean valid = controller.ValidPath(@"\\network\share", out errorMsg);
+
+            //Assert
+            Assert.IsTrue(valid);
+            Assert.IsEmpty(errorMsg);
+        }
+
+        protected IOperatingSystemVersion GetMockOperatingSystemVersion(Boolean isXp = true, Boolean isVista = true)
+        {
+            var osVersion = MockRepository.GenerateStub<IOperatingSystemVersion>();
+            osVersion.Stub(o => o.IsVistaOrLater()).Return(isVista);
+            osVersion.Stub(o => o.IsXp()).Return(isXp);
+            return osVersion;
+        }
     }
 }

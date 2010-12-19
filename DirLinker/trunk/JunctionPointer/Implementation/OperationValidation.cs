@@ -45,12 +45,9 @@ namespace DirLinker.Implementation
 
         private bool TryingToLinkFileToFolder(LinkOperationData linkData)
         {
-            var linkToAsFile = _fileFactory(linkData.LinkTo);
             var linkToAsFolder = _folderFactory(linkData.LinkTo);
-
             var createLinkAtAsFile = _fileFactory(linkData.CreateLinkAt);
-            var createLinkAtAsFolder = _folderFactory(linkData.CreateLinkAt);
-
+            
             if (linkToAsFolder.FolderExists() && createLinkAtAsFile.Exists())
             {
                 return true;
