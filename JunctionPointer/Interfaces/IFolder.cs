@@ -4,12 +4,6 @@ using System.IO;
 
 namespace DirLinker.Interfaces
 {
-    public enum SYMBOLIC_LINK_FLAG
-    {
-        File = 0,
-        Directory = 1
-    }
-
     public enum DirLinkerStage
     {
         None,

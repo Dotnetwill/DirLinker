@@ -1,16 +1,11 @@
 ﻿using System;
 using DirLinker.Interfaces;
 using System.IO;
-using System.Runtime.InteropServices;
 
 namespace DirLinker.Implementation
 {
     class FileImp : IFile
     {
-        [DllImport("kernel32.dll", SetLastError = true)]
-        [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.I1)]
-        private static extern bool CreateSymbolicLink(String lpSymlinkFileName, String lpTargetFileName, SYMBOLIC_LINK_FLAG dwFlags);
-
         public FileImp(String fullPath)
         {
             m_FullPath = fullPath;
@@ -74,7 +69,8 @@ namespace DirLinker.Implementation
 
         public bool CreateLinkToFileAt(String linkToBeCreated)
         {
-            return CreateSymbolicLink(linkToBeCreated, m_FullPath, SYMBOLIC_LINK_FLAG.File);
+            var service = ElevatedWorker.Client.Connect(Program.PipeName);
+            using ((IDisposable)service) return service.CreateLinkToFileAt(linkToBeCreated, m_FullPath);
         }
     }
 }
