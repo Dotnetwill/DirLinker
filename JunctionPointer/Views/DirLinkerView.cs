@@ -127,11 +127,7 @@ namespace DirLinker.Views
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 var FileList = (string[])e.Data.GetData(DataFormats.FileDrop, false);
-                if (FileList.Length == 1)
-                {
-                    if (Directory.Exists(FileList.Single()))
-                        e.Effect = DragDropEffects.Copy;
-                }
+                if (FileList.Length == 1) e.Effect = DragDropEffects.Copy;
             }
         }
 
