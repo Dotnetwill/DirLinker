@@ -192,6 +192,12 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ElevatedWorker\ElevatedWorker.csproj">
+      <Project>{0e0caa93-b18a-4969-9514-5dec5ebcfc66}</Project>
+      <Name>ElevatedWorker</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

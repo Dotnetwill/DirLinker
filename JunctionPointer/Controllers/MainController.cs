@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using DirLinker.Interfaces.Controllers;
 using DirLinker.Interfaces;
 using DirLinker.Data;
+using System.Diagnostics;
 
 namespace DirLinker.Controllers
 {
@@ -28,6 +29,8 @@ namespace DirLinker.Controllers
 
         public Form Start()
         {
+            Process.Start("ElevatedWorker.exe");
+
             _operationData = new LinkOperationData();
             
             _view.SetOperationData(_operationData);
