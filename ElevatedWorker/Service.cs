@@ -1,10 +1,17 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.ServiceModel;
 using System.Threading;
 using System.Xml;
 
 namespace ElevatedWorker
 {
+    public enum SYMBOLIC_LINK_FLAG
+    {
+        File = 0,
+        Directory = 1
+    }
+
     [ServiceBehavior(
         ConcurrencyMode = ConcurrencyMode.Multiple,
         InstanceContextMode = InstanceContextMode.Single,
@@ -12,14 +19,24 @@ namespace ElevatedWorker
         MaxItemsInObjectGraph = int.MaxValue)]
     internal sealed class Server : IElevatedWorker
     {
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.I1)]
+
+        private static extern bool CreateSymbolicLink(String lpSymlinkFileName, String lpTargetFileName, SYMBOLIC_LINK_FLAG dwFlags);
+
         public void CreateJunctionPoint(string junctionPoint, string target)
         {
             throw new NotImplementedException();
         }
 
-        public void CreateLinkToFolderAt(string linkToBeCreated, string folder)
+        public bool CreateLinkToFileAt(string linkToBeCreated, string path)
         {
-            throw new NotImplementedException();
+            return CreateSymbolicLink(linkToBeCreated, path, SYMBOLIC_LINK_FLAG.File);
+        }
+
+        public bool CreateLinkToFolderAt(string linkToBeCreated, string folder)
+        {
+            return CreateSymbolicLink(linkToBeCreated, folder, SYMBOLIC_LINK_FLAG.Directory);
         }
 
         public static void Startup(string AppName, ManualResetEvent StopSignal)

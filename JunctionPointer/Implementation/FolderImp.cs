@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using DirLinker.Interfaces;
 using System.IO;
-using System.Runtime.InteropServices;
-using OCInject;
 
 namespace DirLinker.Implementation
 {
@@ -15,14 +13,12 @@ namespace DirLinker.Implementation
         IFileFactoryForPath FileFactoryForFile;
         IFolderFactoryForPath FolderFactoryForPath;
 
-        [DllImport("kernel32.dll", SetLastError=true)]
-        [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.I1)]
-        
-        private static extern bool CreateSymbolicLink(String lpSymlinkFileName, String lpTargetFileName, SYMBOLIC_LINK_FLAG dwFlags);
+
 
         public bool CreateLinkToFolderAt(String linkToBeCreated)
         {
-            return CreateSymbolicLink(linkToBeCreated, FolderPath, SYMBOLIC_LINK_FLAG.Directory);
+            var service = ElevatedWorker.Client.Connect("DirLinker_ElevatedWorker");
+            using ((IDisposable)service) return service.CreateLinkToFolderAt(linkToBeCreated, FolderPath);
         }
 
         public FolderImp(IFileFactoryForPath fileFactory, IFolderFactoryForPath folderFactory, String path)

@@ -9,6 +9,9 @@ namespace ElevatedWorker
         void CreateJunctionPoint(string junctionPoint, string target);
 
         [OperationContract]
-        void CreateLinkToFolderAt(string linkToBeCreated, string folder);
+        bool CreateLinkToFolderAt(string linkToBeCreated, string folder);
+
+        [OperationContract]
+        bool CreateLinkToFileAt(string linkToBeCreated, string path);
     }
 }
