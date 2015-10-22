@@ -8,7 +8,7 @@
 
 
 Directory Linker is an application that allows the user to quickly and easily create symbolic links for files and folders. 
-Very useful for manual clearing space on SSD drives by moving huge folders onto another drives.
+Very useful for manual clearing space on SSD drives by moving huge folders onto another drive.
 
 Features:
 * Creates symbolic folder links
@@ -18,7 +18,7 @@ Features:
 * Supports dragging folders and files into UI.
 
 Requirements:
-* Win XP or later (It has been tested on Vista x86 and Win7 x64)
+* Win XP or later (It has been tested on Vista x86, Win7 x64 and Win8 x64)
 * .NET 3.5
 * Admin rights
 
