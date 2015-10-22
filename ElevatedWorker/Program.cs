@@ -1,29 +1,32 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Threading;
+using System.ServiceModel;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace ElevatedWorker
 {
     static class Program
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
+
         [STAThread]
         static void Main()
         {
             AppDomain.CurrentDomain.UnhandledException += (s, e) => MessageBox.Show((e.ExceptionObject as Exception).Message);
 
-            using (var Signal = new ManualResetEvent(false))
+            using (var srv = new ServiceHost(new Server()))
             {
-                new Thread(() =>
+                srv.AddServiceEndpoint(typeof(IElevatedWorker), new NetNamedPipeBinding()
                 {
-                    Server.Startup("DirLinker_ElevatedWorker", Signal);
-                }).Start();
-
+                    ReceiveTimeout = TimeSpan.FromMinutes(1),
+                    SendTimeout = TimeSpan.FromMinutes(1),
+                    CloseTimeout = TimeSpan.FromMinutes(1),
+                    OpenTimeout = TimeSpan.FromMinutes(1),
+                    ReaderQuotas = new XmlDictionaryReaderQuotas() { MaxArrayLength = int.MaxValue, MaxBytesPerRead = int.MaxValue },
+                    MaxReceivedMessageSize = int.MaxValue
+                }, string.Format("net.pipe://localhost/{0}", "DirLinker_ElevatedWorker"));
+                srv.Open();
                 Process.GetCurrentProcess().Parent().WaitForExit();
-                Signal.Set();
             }
         }
     }

@@ -38,24 +38,6 @@ namespace ElevatedWorker
         {
             return CreateSymbolicLink(linkToBeCreated, folder, SYMBOLIC_LINK_FLAG.Directory);
         }
-
-        public static void Startup(string AppName, ManualResetEvent StopSignal)
-        {
-            using (var srv = new ServiceHost(new Server()))
-            {
-                srv.AddServiceEndpoint(typeof(IElevatedWorker), new NetNamedPipeBinding()
-                {
-                    ReceiveTimeout = TimeSpan.FromMinutes(1),
-                    SendTimeout = TimeSpan.FromMinutes(1),
-                    CloseTimeout = TimeSpan.FromMinutes(1),
-                    OpenTimeout = TimeSpan.FromMinutes(1),
-                    ReaderQuotas = new XmlDictionaryReaderQuotas() { MaxArrayLength = int.MaxValue, MaxBytesPerRead = int.MaxValue },
-                    MaxReceivedMessageSize = int.MaxValue
-                }, string.Format("net.pipe://localhost/{0}", AppName));
-                srv.Open();
-                StopSignal.WaitOne();
-            }
-        }
     }
 
     public static class Client

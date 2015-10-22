@@ -12,6 +12,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ThirdPartyTools - Testing",
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DirLinker", "JunctionPointer\DirLinker.csproj", "{3EBCE70F-0A6B-4F50-B381-AE4E8743873B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0E0CAA93-B18A-4969-9514-5DEC5EBCFC66} = {0E0CAA93-B18A-4969-9514-5DEC5EBCFC66}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DirLinker.Tests", "DirLinker.Tests\DirLinker.Tests.csproj", "{0139DC32-D96B-4FD6-8C0B-92352916A88D}"
 EndProject
