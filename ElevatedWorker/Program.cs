@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace ElevatedWorker
@@ -12,41 +13,22 @@ namespace ElevatedWorker
         [STAThread]
         static void Main()
         {
-            Process.GetCurrentProcess().Parent().WaitForExit();
-        }
-    }
+            AppDomain.CurrentDomain.UnhandledException += (s, e) => MessageBox.Show((e.ExceptionObject as Exception).Message);
 
-    // http://stackoverflow.com/questions/394816/how-to-get-parent-process-in-net-in-managed-way
-    public static class ProcessExtensions
-    {
-        private static string FindIndexedProcessName(int pid)
-        {
-            var processName = Process.GetProcessById(pid).ProcessName;
-            var processesByName = Process.GetProcessesByName(processName);
-            string processIndexdName = null;
-
-            for (var index = 0; index < processesByName.Length; index++)
+            using (var Signal = new ManualResetEvent(false))
             {
-                processIndexdName = index == 0 ? processName : processName + "#" + index;
-                var processId = new PerformanceCounter("Process", "ID Process", processIndexdName);
-                if ((int)processId.NextValue() == pid)
+                new Thread(() =>
                 {
-                    return processIndexdName;
-                }
+                    Server.Startup("DirLinker_ElevatedWorker", Signal);
+                }).Start();
+
+                Process.GetCurrentProcess().Parent().WaitForExit();
+                Signal.Set();
             }
-
-            return processIndexdName;
-        }
-
-        private static Process FindPidFromIndexedProcessName(string indexedProcessName)
-        {
-            var parentId = new PerformanceCounter("Process", "Creating Process ID", indexedProcessName);
-            return Process.GetProcessById((int)parentId.NextValue());
-        }
-
-        public static Process Parent(this Process process)
-        {
-            return FindPidFromIndexedProcessName(FindIndexedProcessName(process.Id));
         }
     }
+
+
+
+
 }
