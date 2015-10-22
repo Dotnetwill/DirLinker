@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using DirLinker.Data;
 using DirLinker.Interfaces.Views;
+using System.IO;
+using System.Linq;
 
 namespace DirLinker.Views
 {
@@ -108,10 +110,28 @@ namespace DirLinker.Views
 
             Go.Click += Go_Click;
 
+            LinkPointEdit.DragEnter += new DragEventHandler(textBox_DragEnter);
+            LinkPointEdit.DragDrop += new DragEventHandler(textBox_DragDrop);
+
+            LinkFrom.DragEnter += new DragEventHandler(textBox_DragEnter);
+            LinkFrom.DragDrop += new DragEventHandler(textBox_DragDrop);
+
             CopyToTarget.CheckedChanged +=
                 (sender, e) => chkTargetFileOverwrite.Enabled = !chkTargetFileOverwrite.Enabled;
             CloseBtn.Click += (sender, e) => Application.Exit();
         }
+
+        private void textBox_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.None;
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                var FileList = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+                if (FileList.Length == 1) e.Effect = DragDropEffects.Copy;
+            }
+        }
+
+        private void textBox_DragDrop(object sender, DragEventArgs e) => (sender as TextBox).Text = ((string[])e.Data.GetData(DataFormats.FileDrop, false)).Single();            
 
         private void RegisterFileBrowser(Button browseFilePoint, TextBox linkPointEdit)
         {
