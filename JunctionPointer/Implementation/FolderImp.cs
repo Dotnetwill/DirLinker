@@ -17,7 +17,7 @@ namespace DirLinker.Implementation
 
         public bool CreateLinkToFolderAt(String linkToBeCreated)
         {
-            var service = ElevatedWorker.Client.Connect("DirLinker_ElevatedWorker");
+            var service = ElevatedWorker.Client.Connect(Program.PipeName);
             using ((IDisposable)service) return service.CreateLinkToFolderAt(linkToBeCreated, FolderPath);
         }
 

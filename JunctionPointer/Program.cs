@@ -14,6 +14,8 @@ namespace DirLinker
 {
     static class Program
     {
+        public const string PipeName = "DirLinker_ElevatedWorker";
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>

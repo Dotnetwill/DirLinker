@@ -69,7 +69,7 @@ namespace DirLinker.Implementation
 
         public bool CreateLinkToFileAt(String linkToBeCreated)
         {
-            var service = ElevatedWorker.Client.Connect("DirLinker_ElevatedWorker");
+            var service = ElevatedWorker.Client.Connect(Program.PipeName);
             using ((IDisposable)service) return service.CreateLinkToFileAt(linkToBeCreated, m_FullPath);
         }
     }

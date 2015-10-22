@@ -26,7 +26,7 @@ namespace ElevatedWorker
 
         public void CreateJunctionPoint(string junctionPoint, string target)
         {
-            throw new NotImplementedException();
+            new JunctionPointXp().Create(junctionPoint, target);
         }
 
         public bool CreateLinkToFileAt(string linkToBeCreated, string path)
